@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Salary Hike Calculator — Dhruv Agrawal</title>
+    <meta name="description" content="Salary Hike Calculator with Indian CTC breakdown">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#050508;--surface:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.08);
+            --text:#eef0f4;--text-sec:#8b92a5;--accent:#6c63ff;--accent-light:#8b83ff;
+            --green:#00e88f;--warm:#ff6b6b;--cyan:#00d4ff;
+            --font:'Space Grotesk',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+        }
+        [data-theme="light"]{
+            --bg:#f5f5f7;--surface:rgba(0,0,0,0.03);--border:rgba(0,0,0,0.1);
+            --text:#1a1a2e;--text-sec:#555;--accent:#6c63ff;--accent-light:#5a52d5;
+            --green:#00b368;--warm:#e04040;--cyan:#0099cc;
+        }
+        html{scroll-behavior:smooth}
+        body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;transition:background .4s,color .4s}
+
+        .container{max-width:900px;margin:0 auto;padding:24px 20px}
+        header{text-align:center;padding:40px 0 32px;position:relative}
+        .back-link{color:var(--text-sec);text-decoration:none;font-size:.85rem;transition:color .3s;display:inline-flex;align-items:center;gap:6px}
+        .back-link:hover{color:var(--accent)}
+        .page-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;margin:16px 0 6px;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .page-sub{color:var(--text-sec);font-size:.9rem}
+        .theme-btn{position:absolute;top:40px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;color:var(--text);transition:all .3s;display:flex;align-items:center;justify-content:center}
+        .theme-btn:hover{border-color:var(--accent);background:rgba(108,99,255,.08)}
+        .theme-btn svg{width:18;height:18}
+
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px;transition:border-color .3s;backdrop-filter:blur(12px)}
+        .card:hover{border-color:rgba(108,99,255,.2)}
+        .card-title{font-size:1.05rem;font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+        .card-title .icon{font-size:1.2rem}
+
+        label{display:block;font-size:.75rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;margin-top:16px}
+        label:first-of-type{margin-top:0}
+        .input-wrap{display:flex;align-items:center;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .3s}
+        [data-theme="light"] .input-wrap{background:rgba(0,0,0,0.03)}
+        .input-wrap:focus-within{border-color:var(--accent)}
+        .input-prefix{padding:0 12px;color:var(--text-sec);font-size:.9rem;font-family:var(--mono);white-space:nowrap}
+        .input-suffix{padding:0 12px;color:var(--text-sec);font-size:.85rem;font-family:var(--mono)}
+        input[type="number"]{flex:1;padding:14px 14px 14px 0;background:transparent;border:none;color:var(--text);font-size:1rem;font-family:var(--mono);outline:none;width:100%;-moz-appearance:textfield}
+        input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+        .mode-toggle{display:flex;gap:8px;margin-top:16px}
+        .mode-btn{flex:1;padding:11px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;color:var(--text-sec);font-size:.85rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s}
+        [data-theme="light"] .mode-btn{background:rgba(0,0,0,0.03)}
+        .mode-btn.active{background:rgba(108,99,255,.12);border-color:var(--accent);color:var(--accent-light)}
+
+        .calc-btn{width:100%;padding:15px;margin-top:24px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font);box-shadow:0 4px 24px rgba(108,99,255,.35);transition:transform .2s,box-shadow .2s}
+        .calc-btn:hover{transform:translateY(-1px);box-shadow:0 6px 32px rgba(108,99,255,.5)}
+        .calc-btn:active{transform:translateY(0)}
+
+        .results{display:none}
+        .results.show{display:block;animation:fadeUp .5s ease}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+        .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+        .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;transition:border-color .3s}
+        .summary-card:hover{border-color:rgba(108,99,255,.2)}
+        .summary-label{display:block;font-size:.7rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+        .summary-value{font-weight:700;font-family:var(--mono);font-size:1.4rem}
+        .summary-card.big{grid-column:1/-1}
+        .summary-card.big .summary-value{font-size:2rem}
+
+        .breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0}
+        .b-label{color:var(--text-sec);font-size:.88rem}
+        .b-value{font-family:var(--mono);font-size:.92rem;font-weight:500}
+        .b-divider{border-top:1px solid var(--border);margin:8px 0}
+
+        table{width:100%;border-collapse:collapse;margin-top:8px}
+        th{font-size:.7rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.08em;text-align:left;padding:10px 0;border-bottom:1px solid var(--border)}
+        th:last-child{text-align:right}
+        td{padding:10px 0;font-size:.9rem;border-bottom:1px solid rgba(255,255,255,0.03)}
+        [data-theme="light"] td{border-bottom:1px solid rgba(0,0,0,0.05)}
+        td:last-child{text-align:right;font-family:var(--mono);font-weight:500}
+        tr:last-child td{border-bottom:none;font-weight:700;padding-top:14px;border-top:1px solid var(--accent)}
+
+        .note{font-size:.75rem;color:var(--text-sec);margin-top:16px;line-height:1.6;padding:12px;background:rgba(108,99,255,.05);border-radius:10px;border:1px solid rgba(108,99,255,.1)}
+
+        footer{text-align:center;padding:40px 0 24px;color:var(--text-sec);font-size:.8rem}
+
+        @media(max-width:600px){
+            .summary-grid{grid-template-columns:1fr 1fr}
+            .summary-card.big{grid-column:1/-1}
+            .container{padding:16px 14px}
+            header{padding:24px 0 20px}
+            .card{padding:20px}
+            .theme-btn{top:24px}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-link">← Back to Portfolio</a>
+            <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
+                <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <svg class="moon-icon" style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            </button>
+            <h1 class="page-title">💰 Salary Hike Calculator</h1>
+            <p class="page-sub">Indian CTC Breakdown · Lakhs & Crores Formatting</p>
+        </header>
+
+        <!-- Input Section -->
+        <div class="card">
+            <div class="card-title"><span class="icon">📊</span> Enter Details</div>
+
+            <label>Current CTC (Annual)</label>
+            <div class="input-wrap">
+                <span class="input-prefix">₹</span>
+                <input type="number" id="currentCTC" placeholder="e.g. 1200000" aria-label="Current CTC">
+            </div>
+
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="hike" id="modeHike">Enter Hike %</button>
+                <button class="mode-btn" data-mode="new" id="modeNew">Enter New CTC</button>
+            </div>
+
+            <div id="hikeInput">
+                <label>Hike Percentage</label>
+                <div class="input-wrap">
+                    <input type="number" id="hikePercent" placeholder="e.g. 30" aria-label="Hike percentage" step="0.1">
+                    <span class="input-suffix">%</span>
+                </div>
+            </div>
+
+            <div id="newCTCInput" style="display:none">
+                <label>New CTC (Annual)</label>
+                <div class="input-wrap">
+                    <span class="input-prefix">₹</span>
+                    <input type="number" id="newCTC" placeholder="e.g. 1560000" aria-label="New CTC">
+                </div>
+            </div>
+
+            <button class="calc-btn" id="calcBtn">Calculate Hike & Breakdown</button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results" id="results">
+            <div class="summary-grid">
+                <div class="summary-card big">
+                    <span class="summary-label">Hike Percentage</span>
+                    <span class="summary-value" id="resHikePercent" style="color:var(--accent-light)">—</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">Absolute Hike</span>
+                    <span class="summary-value" id="resAbsHike" style="color:var(--green)">—</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">Monthly Increase</span>
+                    <span class="summary-value" id="resMonthly" style="color:var(--cyan)">—</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">New CTC</span>
+                    <span class="summary-value" id="resNewCTC" style="color:var(--text)">—</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">Old Monthly</span>
+                    <span class="summary-value" id="resOldMonthly" style="color:var(--text-sec)">—</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">New Monthly</span>
+                    <span class="summary-value" id="resNewMonthly" style="color:var(--green)">—</span>
+                </div>
+            </div>
+
+            <!-- Old CTC Breakdown -->
+            <div class="card">
+                <div class="card-title"><span class="icon">📋</span> Old CTC Breakdown</div>
+                <table id="oldBreakdownTable"><thead><tr><th>Component</th><th>Annual (₹)</th></tr></thead><tbody></tbody></table>
+            </div>
+
+            <!-- New CTC Breakdown -->
+            <div class="card">
+                <div class="card-title"><span class="icon">✨</span> New CTC Breakdown</div>
+                <table id="newBreakdownTable"><thead><tr><th>Component</th><th>Annual (₹)</th></tr></thead><tbody></tbody></table>
+            </div>
+
+            <!-- Comparison -->
+            <div class="card">
+                <div class="card-title"><span class="icon">⚖️</span> Component-wise Comparison</div>
+                <table id="comparisonTable"><thead><tr><th>Component</th><th>Old (₹)</th><th style="text-align:right">New (₹)</th></tr></thead><tbody></tbody></table>
+            </div>
+
+            <div class="note">
+                ⚠️ This is an approximate breakdown using standard Indian salary structure assumptions. Actual components may vary based on employer policy. Basic = 40% of CTC, HRA = 50% of Basic, Special Allowance = remaining after PF & other deductions. Employer PF = 12% of Basic (capped at ₹1,800/month). Gratuity = 4.81% of Basic.
+            </div>
+        </div>
+
+        <footer>Built for personal use · Dhruv Agrawal</footer>
+    </div>
+
+    <script>
+    // ── Indian Number Formatting ──
+    function fmtINR(n) {
+        if (n == null || isNaN(n)) return '₹0';
+        n = Math.round(n);
+        const neg = n < 0;
+        n = Math.abs(n);
+        const s = n.toString();
+        let result;
+        if (s.length <= 3) {
+            result = s;
+        } else {
+            const last3 = s.slice(-3);
+            let remaining = s.slice(0, -3);
+            const parts = [];
+            while (remaining.length > 2) {
+                parts.unshift(remaining.slice(-2));
+                remaining = remaining.slice(0, -2);
+            }
+            if (remaining) parts.unshift(remaining);
+            result = parts.join(',') + ',' + last3;
+        }
+        return (neg ? '-' : '') + '₹' + result;
+    }
+
+    function fmtLakhsCrores(n) {
+        n = Math.round(n);
+        if (n >= 10000000) return (n / 10000000).toFixed(2) + ' Cr';
+        if (n >= 100000) return (n / 100000).toFixed(2) + ' L';
+        return fmtINR(n).replace('₹', '');
+    }
+
+    // ── CTC Breakdown (Standard Indian Structure) ──
+    function breakdownCTC(ctc) {
+        const basic = Math.round(ctc * 0.40);
+        const hra = Math.round(basic * 0.50);
+        const pfBasic = Math.min(basic, 15000 * 12); // PF capped at 15k/month basic
+        const employerPF = Math.round(pfBasic * 0.12);
+        const gratuity = Math.round(basic * 0.0481);
+        const specialAllowance = Math.max(0, ctc - basic - hra - employerPF - gratuity);
+        return [
+            { name: 'Basic Salary', value: basic },
+            { name: 'HRA', value: hra },
+            { name: 'Special Allowance', value: specialAllowance },
+            { name: 'Employer PF (12%)', value: employerPF },
+            { name: 'Gratuity (4.81%)', value: gratuity },
+            { name: 'Total CTC', value: ctc },
+        ];
+    }
+
+    function renderTable(tableId, rows) {
+        const tbody = document.querySelector('#' + tableId + ' tbody');
+        tbody.innerHTML = '';
+        rows.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + r.name + '</td><td>' + fmtINR(r.value) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderComparison(oldRows, newRows) {
+        const tbody = document.querySelector('#comparisonTable tbody');
+        tbody.innerHTML = '';
+        for (let i = 0; i < oldRows.length; i++) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + oldRows[i].name + '</td><td style="font-family:var(--mono);font-weight:500">' + fmtINR(oldRows[i].value) + '</td><td style="text-align:right;font-family:var(--mono);font-weight:500;color:var(--green)">' + fmtINR(newRows[i].value) + '</td>';
+            tbody.appendChild(tr);
+        }
+    }
+
+    // ── Theme Toggle ──
+    const themeBtn = document.getElementById('themeToggle');
+    const sunIcon = themeBtn.querySelector('.sun-icon');
+    const moonIcon = themeBtn.querySelector('.moon-icon');
+
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('salary-calc-theme', theme);
+        if (theme === 'light') {
+            sunIcon.style.display = 'none';
+            moonIcon.style.display = 'block';
+        } else {
+            sunIcon.style.display = 'block';
+            moonIcon.style.display = 'none';
+        }
+    }
+
+    themeBtn.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        setTheme(current === 'light' ? 'dark' : 'light');
+    });
+
+    // Init theme
+    const savedTheme = localStorage.getItem('salary-calc-theme') || 'dark';
+    if (savedTheme === 'light') setTheme('light');
+
+    // ── Mode Toggle ──
+    const modeHikeBtn = document.getElementById('modeHike');
+    const modeNewBtn = document.getElementById('modeNew');
+    const hikeInputDiv = document.getElementById('hikeInput');
+    const newCTCInputDiv = document.getElementById('newCTCInput');
+    let mode = 'hike';
+
+    modeHikeBtn.addEventListener('click', () => {
+        mode = 'hike';
+        modeHikeBtn.classList.add('active');
+        modeNewBtn.classList.remove('active');
+        hikeInputDiv.style.display = 'block';
+        newCTCInputDiv.style.display = 'none';
+    });
+
+    modeNewBtn.addEventListener('click', () => {
+        mode = 'new';
+        modeNewBtn.classList.add('active');
+        modeHikeBtn.classList.remove('active');
+        newCTCInputDiv.style.display = 'block';
+        hikeInputDiv.style.display = 'none';
+    });
+
+    // ── Calculate ──
+    document.getElementById('calcBtn').addEventListener('click', () => {
+        const currentCTC = parseFloat(document.getElementById('currentCTC').value) || 0;
+        if (currentCTC <= 0) return;
+
+        let newCTCVal, hikePercentVal;
+
+        if (mode === 'hike') {
+            hikePercentVal = parseFloat(document.getElementById('hikePercent').value) || 0;
+            newCTCVal = Math.round(currentCTC * (1 + hikePercentVal / 100));
+        } else {
+            newCTCVal = parseFloat(document.getElementById('newCTC').value) || 0;
+            if (newCTCVal <= 0) return;
+            hikePercentVal = ((newCTCVal - currentCTC) / currentCTC) * 100;
+        }
+
+        const absHike = newCTCVal - currentCTC;
+        const monthlyIncrease = Math.round(absHike / 12);
+
+        // Update summary cards
+        document.getElementById('resHikePercent').textContent = hikePercentVal.toFixed(1) + '%';
+        document.getElementById('resAbsHike').textContent = fmtINR(absHike);
+        document.getElementById('resMonthly').textContent = fmtINR(monthlyIncrease) + '/mo';
+        document.getElementById('resNewCTC').textContent = fmtINR(newCTCVal);
+        document.getElementById('resOldMonthly').textContent = fmtINR(Math.round(currentCTC / 12));
+        document.getElementById('resNewMonthly').textContent = fmtINR(Math.round(newCTCVal / 12));
+
+        // Breakdowns
+        const oldBreakdown = breakdownCTC(currentCTC);
+        const newBreakdown = breakdownCTC(newCTCVal);
+        renderTable('oldBreakdownTable', oldBreakdown);
+        renderTable('newBreakdownTable', newBreakdown);
+        renderComparison(oldBreakdown, newBreakdown);
+
+        // Show results
+        const resultsEl = document.getElementById('results');
+        resultsEl.classList.add('show');
+        resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // Allow Enter key to trigger calculation
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('calcBtn').click();
+        });
+    });
+    </script>
+</body>
+</html>

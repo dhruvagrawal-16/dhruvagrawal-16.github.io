@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>Utilities — Dhruv Agrawal</title>
+    <meta name="description" content="Free financial calculators for Indian professionals — Tax, SIP, Salary Hike & EMI">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+    --bg:#050508;--bg-el:#0c0c12;--surface:rgba(255,255,255,0.03);--surface-h:rgba(255,255,255,0.06);
+    --border:rgba(255,255,255,0.08);--border-h:rgba(255,255,255,0.15);
+    --text:#eef0f4;--text-s:#8b92a5;--accent:#6c63ff;--accent-l:#8b83ff;--accent-g:rgba(108,99,255,0.4);
+    --cyan:#00d4ff;--green:#00e88f;--warm:#ff6b6b;
+    --font:'Space Grotesk',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+[data-theme="light"]{
+    --bg:#f4f5f7;--bg-el:#fff;--surface:rgba(0,0,0,0.03);--surface-h:rgba(0,0,0,0.06);
+    --border:rgba(0,0,0,0.1);--border-h:rgba(0,0,0,0.18);--text:#1a1a2e;--text-s:#5a607a;
+    --accent-g:rgba(108,99,255,0.2);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;transition:background .3s,color .3s}
+::selection{background:var(--accent);color:#fff}
+#root{min-height:100vh}
+
+/* Shared */
+.container{max-width:1100px;margin:0 auto;padding:24px clamp(16px,4vw,40px)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;transition:border-color .3s}
+.card:hover{border-color:var(--border-h)}
+.card-title{font-size:1.05rem;font-weight:600;margin-bottom:20px}
+.label{display:block;font-size:.75rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;margin-top:16px}
+.label:first-of-type{margin-top:0}
+.input-wrap{display:flex;align-items:center;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .3s}
+[data-theme="light"] .input-wrap{background:rgba(0,0,0,0.03)}
+.input-wrap:focus-within{border-color:var(--accent)}
+.input-prefix{padding:0 12px;color:var(--text-s);font-size:.95rem;font-family:var(--mono);user-select:none}
+.input-suffix{padding:0 12px;color:var(--text-s);font-size:.85rem;font-family:var(--mono)}
+.calc-input{flex:1;padding:14px 14px 14px 0;background:transparent;border:none;color:var(--text);font-size:1rem;font-family:var(--mono);outline:none;width:100%}
+.calc-input::placeholder{color:var(--text-s);opacity:.5}
+.calc-input.no-prefix{padding-left:14px}
+.calc-btn{width:100%;padding:15px;margin-top:24px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font);box-shadow:0 4px 24px var(--accent-g);transition:transform .2s,box-shadow .2s}
+.calc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px var(--accent-g)}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center}
+.summary-card.full{grid-column:1/-1}
+.s-label{display:block;font-size:.7rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.s-value{font-weight:700;font-family:var(--mono);font-size:1.4rem}
+.s-value.big{font-size:2rem}
+.b-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.b-row+.b-row{border-top:1px solid rgba(255,255,255,0.03)}
+[data-theme="light"] .b-row+.b-row{border-top-color:rgba(0,0,0,0.05)}
+.b-label{color:var(--text-s);font-size:.88rem}
+.b-val{font-family:var(--mono);font-size:.92rem;font-weight:500}
+.toggle-wrap{display:flex;gap:8px}
+.toggle-btn{flex:1;padding:12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;color:var(--text-s);font-size:.9rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s}
+[data-theme="light"] .toggle-btn{background:rgba(0,0,0,0.03)}
+.toggle-btn.active{background:rgba(108,99,255,.12);border-color:var(--accent);color:var(--accent-l)}
+.main-grid{display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:768px){.main-grid{grid-template-columns:380px 1fr}}
+.result-col{display:flex;flex-direction:column;gap:20px}
+
+/* Tabs */
+.hub-tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:5px;margin-bottom:32px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.hub-tab{flex:1;min-width:0;padding:12px 8px;background:transparent;border:none;border-radius:10px;color:var(--text-s);font-size:.82rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s;white-space:nowrap;text-align:center}
+.hub-tab.active{background:rgba(108,99,255,.15);color:var(--accent-l);font-weight:600}
+.hub-tab:hover:not(.active){background:rgba(255,255,255,0.03)}
+.hub-tab .tab-icon{display:block;font-size:1.3rem;margin-bottom:4px}
+
+/* Header */
+.hub-header{display:flex;justify-content:space-between;align-items:center;padding:20px 0 12px;flex-wrap:wrap;gap:12px}
+.back-link{color:var(--text-s);text-decoration:none;font-size:.85rem;transition:color .3s}
+.back-link:hover{color:var(--accent)}
+.theme-btn{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);transition:all .3s;font-size:1.1rem}
+.theme-btn:hover{border-color:var(--accent)}
+.hub-title{text-align:center;margin-bottom:32px}
+.hub-title h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;margin-bottom:6px}
+.hub-title p{color:var(--text-s);font-size:.9rem}
+
+/* Slider */
+input[type="range"]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;margin-top:8px;cursor:pointer}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);cursor:pointer;box-shadow:0 0 10px var(--accent-g)}
+
+/* Amort */
+.amort-toggle{cursor:pointer;user-select:none;display:flex;justify-content:space-between;align-items:center}
+.amort-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.amort-body.open{max-height:9999px}
+.amort-scroll{max-height:400px;overflow-y:auto;margin-top:12px}
+.amort-scroll::-webkit-scrollbar{width:6px}
+.amort-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead{position:sticky;top:0;z-index:1}
+th{padding:8px 10px;text-align:right;font-weight:600;font-size:.68rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.08em;background:var(--bg-el);border-bottom:1px solid var(--border)}
+th:first-child{text-align:center}
+td{padding:7px 10px;text-align:right;font-family:var(--mono);font-size:.78rem;border-bottom:1px solid rgba(255,255,255,0.03);color:var(--text-s)}
+td:first-child{text-align:center;color:var(--text);font-weight:500}
+tr:hover td{background:rgba(108,99,255,0.03)}
+
+/* Chart bar */
+.chart-bars{display:flex;align-items:flex-end;gap:3px;height:160px;padding:0 4px;border-bottom:1px solid var(--border)}
+.chart-bar-w{flex:1;min-width:0;display:flex;flex-direction:column;align-items:stretch;height:100%;justify-content:flex-end;position:relative}
+.chart-bar{border-radius:3px 3px 0 0}
+.chart-labels{display:flex;gap:3px;padding:6px 4px 0}
+.chart-labels span{flex:1;text-align:center;font-size:.55rem;color:var(--text-s);font-family:var(--mono)}
+.chart-legend{display:flex;gap:16px;justify-content:center;margin-top:12px;font-size:.78rem;color:var(--text-s)}
+.legend-dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+/* Donut */
+.donut-wrap{display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;padding:8px 0}
+.donut-canvas{position:relative;width:160px;height:160px;flex-shrink:0}
+.donut-canvas canvas{width:100%;height:100%}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+
+/* Slab table */
+.slab-header{display:grid;grid-template-columns:2fr 1fr 1fr;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:8px}
+.slab-hcol{font-size:.7rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.08em}
+.slab-row{display:grid;grid-template-columns:2fr 1fr 1fr;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.slab-col{font-size:.88rem;font-family:var(--mono)}
+
+/* Note */
+.note{font-size:.72rem;color:var(--text-s);margin-top:16px;line-height:1.6;padding:12px;background:rgba(108,99,255,.05);border-radius:10px;border:1px solid rgba(108,99,255,.1)}
+
+/* Presets */
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.preset-btn{padding:7px 16px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--text-s);font-size:.78rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s}
+.preset-btn:hover,.preset-btn.active{background:rgba(108,99,255,.1);border-color:var(--accent);color:var(--accent-l)}
+
+@media(max-width:480px){
+    .hub-tabs{gap:4px;padding:4px}
+    .hub-tab{padding:10px 6px;font-size:.75rem}
+    .summary-grid{grid-template-columns:1fr 1fr}
+    .summary-card.full{grid-column:1/-1}
+    .slab-header,.slab-row{grid-template-columns:1.5fr 1fr 1fr}
+}
+    </style>
+</head>
+<body>
+    <div id="root" class="gate-mode"></div>
+    <script type="text/babel">
+
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+function fmtINR(n) {
+    if (n == null || isNaN(n)) return '₹0';
+    n = Math.round(n);
+    const neg = n < 0; n = Math.abs(n);
+    const s = n.toString();
+    if (s.length <= 3) return (neg?'-':'') + '₹' + s;
+    const last3 = s.slice(-3);
+    let rem = s.slice(0,-3);
+    const parts = [];
+    while (rem.length > 2) { parts.unshift(rem.slice(-2)); rem = rem.slice(0,-2); }
+    if (rem) parts.unshift(rem);
+    return (neg?'-':'') + '₹' + parts.join(',') + ',' + last3;
+}
+function fmtShort(n) {
+    n = Math.round(n);
+    if (n >= 10000000) return '₹' + (n/10000000).toFixed(2) + ' Cr';
+    if (n >= 100000) return '₹' + (n/100000).toFixed(2) + ' L';
+    return fmtINR(n);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SHARED COMPONENTS
+// ═══════════════════════════════════════════════════════════
+function SummaryCard({ label, value, color, big }) {
+    return (
+        <div className={'summary-card' + (big?' full':'')}>
+            <span className="s-label">{label}</span>
+            <span className={'s-value' + (big?' big':'')} style={{color}}>{value}</span>
+        </div>
+    );
+}
+
+function InputField({ label, prefix, suffix, value, onChange, placeholder, step, min, max, noPrefix }) {
+    return (<>
+        <label className="label">{label}</label>
+        <div className="input-wrap">
+            {prefix && <span className="input-prefix">{prefix}</span>}
+            <input type="number" value={value} onChange={e=>onChange(e.target.value)}
+                placeholder={placeholder} step={step} min={min} max={max}
+                className={'calc-input'+(noPrefix?' no-prefix':'')}
+                onKeyDown={e=>{ if(e.key==='Enter') e.target.closest('.card')?.querySelector('.calc-btn')?.click(); }}
+                aria-label={label} />
+            {suffix && <span className="input-suffix">{suffix}</span>}
+        </div>
+    </>);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAX CALCULATOR
+// ═══════════════════════════════════════════════════════════
+const NEW_SLABS = [
+    {min:0,max:400000,rate:0},{min:400000,max:800000,rate:5},{min:800000,max:1200000,rate:10},
+    {min:1200000,max:1600000,rate:15},{min:1600000,max:2000000,rate:20},{min:2000000,max:2400000,rate:25},
+    {min:2400000,max:Infinity,rate:30}
+];
+const OLD_SLABS = [
+    {min:0,max:250000,rate:0},{min:250000,max:500000,rate:5},{min:500000,max:1000000,rate:20},
+    {min:1000000,max:Infinity,rate:30}
+];
+function calcTax(income, slabs) {
+    let tax=0; const bd=[];
+    for (const s of slabs) {
+        if (income<=s.min) break;
+        const taxable=Math.min(income,s.max)-s.min;
+        const t=(taxable*s.rate)/100; tax+=t;
+        if(taxable>0) bd.push({range:`₹${fmtINR(s.min).slice(1)} - ${s.max===Infinity?'Above':'₹'+fmtINR(s.max).slice(1)}`,rate:s.rate,taxable,tax:t});
+    }
+    return {tax,breakdown:bd};
+}
+
+function TaxCalc() {
+    const [income,setIncome]=useState('');
+    const [regime,setRegime]=useState('new');
+    const [d80c,setD80c]=useState('');
+    const [hra,setHra]=useState('');
+    const [other,setOther]=useState('');
+    const [result,setResult]=useState(null);
+
+    const calc = () => {
+        const gross=parseFloat(income)||0; if(gross<=0) return;
+        const slabs=regime==='new'?NEW_SLABS:OLD_SLABS;
+        const std=regime==='new'?75000:50000;
+        let taxableIncome=gross-std, totalDed=std;
+        if(regime==='old'){
+            const a=Math.min(parseFloat(d80c)||0,150000), b=parseFloat(hra)||0, c=parseFloat(other)||0;
+            taxableIncome-=(a+b+c); totalDed+=a+b+c;
+        }
+        taxableIncome=Math.max(taxableIncome,0);
+        let {tax,breakdown}=calcTax(taxableIncome,slabs);
+        let rebate=0;
+        if(regime==='new'&&taxableIncome<=1200000) rebate=Math.min(tax,60000);
+        else if(regime==='old'&&taxableIncome<=500000) rebate=Math.min(tax,12500);
+        tax=Math.max(tax-rebate,0);
+        let sr=0;
+        if(taxableIncome>50000000) sr=37; else if(taxableIncome>20000000) sr=25;
+        else if(taxableIncome>10000000) sr=15; else if(taxableIncome>5000000) sr=10;
+        const surcharge=Math.round(tax*sr/100);
+        const cess=Math.round((tax+surcharge)*0.04);
+        const total=Math.round(tax+surcharge+cess);
+        setResult({gross,taxableIncome,totalDed,breakdown,rebate,tax:Math.round(tax),surcharge,sr,cess,total,
+            eff:gross>0?((total/gross)*100).toFixed(1):'0',monthly:Math.round(total/12),takeHome:Math.round((gross-total)/12)});
+    };
+
+    return (<div className="main-grid">
+        <div><div className="card">
+            <h3 className="card-title">🇮🇳 Income Details</h3>
+            <InputField label="Annual Gross Income" prefix="₹" value={income} onChange={setIncome} placeholder="e.g. 1500000" />
+            <label className="label">Tax Regime</label>
+            <div className="toggle-wrap">
+                {['new','old'].map(r=><button key={r} className={'toggle-btn'+(regime===r?' active':'')} onClick={()=>setRegime(r)}>{r==='new'?'New Regime':'Old Regime'}</button>)}
+            </div>
+            {regime==='old'&&<div style={{marginTop:8,paddingTop:16,borderTop:'1px solid var(--border)'}}>
+                <h4 style={{fontSize:'.9rem',fontWeight:600,color:'var(--accent-l)',marginBottom:4}}>Deductions (Old Regime)</h4>
+                <InputField label="Section 80C (max ₹1.5L)" prefix="₹" value={d80c} onChange={setD80c} placeholder="0" />
+                <InputField label="HRA Exemption" prefix="₹" value={hra} onChange={setHra} placeholder="0" />
+                <InputField label="Other (80D, 80E, etc.)" prefix="₹" value={other} onChange={setOther} placeholder="0" />
+            </div>}
+            <button className="calc-btn" onClick={calc}>Calculate Tax</button>
+        </div></div>
+        {result&&<div className="result-col">
+            <div className="summary-grid">
+                <SummaryCard label="Total Tax" value={fmtINR(result.total)} color="var(--warm)" big />
+                <SummaryCard label="Effective Rate" value={result.eff+'%'} color="var(--accent-l)" />
+                <SummaryCard label="Monthly Tax" value={fmtINR(result.monthly)} color="var(--cyan)" />
+                <SummaryCard label="Monthly Take-Home" value={fmtINR(result.takeHome)} color="var(--green)" />
+            </div>
+            <div className="card">
+                <h3 className="card-title">Tax Breakdown</h3>
+                <div className="b-row"><span className="b-label">Gross Income</span><span className="b-val">{fmtINR(result.gross)}</span></div>
+                <div className="b-row"><span className="b-label">Total Deductions</span><span className="b-val" style={{color:'var(--green)'}}>- {fmtINR(result.totalDed)}</span></div>
+                <div className="b-row" style={{borderTop:'1px solid var(--border)',paddingTop:12,marginTop:8}}>
+                    <span className="b-label" style={{fontWeight:600}}>Taxable Income</span><span className="b-val" style={{fontWeight:600}}>{fmtINR(result.taxableIncome)}</span>
+                </div>
+            </div>
+            <div className="card">
+                <h3 className="card-title">Slab-wise Calculation</h3>
+                <div className="slab-header"><span className="slab-hcol">Range</span><span className="slab-hcol" style={{textAlign:'center'}}>Rate</span><span className="slab-hcol" style={{textAlign:'right'}}>Tax</span></div>
+                {result.breakdown.map((b,i)=><div key={i} className="slab-row"><span className="slab-col">{b.range}</span><span className="slab-col" style={{textAlign:'center',color:'var(--accent-l)'}}>{b.rate}%</span><span className="slab-col" style={{textAlign:'right'}}>{fmtINR(b.tax)}</span></div>)}
+                {result.rebate>0&&<div className="b-row"><span className="b-label">Section 87A Rebate</span><span className="b-val" style={{color:'var(--green)'}}>- {fmtINR(result.rebate)}</span></div>}
+                {result.surcharge>0&&<div className="b-row"><span className="b-label">Surcharge ({result.sr}%)</span><span className="b-val">+ {fmtINR(result.surcharge)}</span></div>}
+                <div className="b-row"><span className="b-label">Cess (4%)</span><span className="b-val">+ {fmtINR(result.cess)}</span></div>
+                <div className="b-row" style={{borderTop:'1px solid var(--accent)',paddingTop:12,marginTop:8}}>
+                    <span className="b-label" style={{fontWeight:700,fontSize:'1.05rem'}}>Total Tax</span>
+                    <span className="b-val" style={{fontWeight:700,color:'var(--warm)',fontSize:'1.05rem'}}>{fmtINR(result.total)}</span>
+                </div>
+            </div>
+        </div>}
+    </div>);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIP CALCULATOR
+// ═══════════════════════════════════════════════════════════
+function SipCalc() {
+    const [mode,setMode]=useState('sip');
+    const [amt,setAmt]=useState('');
+    const [rate,setRate]=useState('');
+    const [years,setYears]=useState('');
+    const [result,setResult]=useState(null);
+
+    const calc = () => {
+        const a=parseFloat(amt)||0, r=parseFloat(rate)||0, y=parseInt(years)||0;
+        if(a<=0||y<=0) return;
+        let invested,total,yearly=[];
+        if(mode==='sip'){
+            const mr=r/12/100, m=y*12; invested=a*m;
+            total=r===0?invested:a*((Math.pow(1+mr,m)-1)/mr)*(1+mr);
+            for(let i=1;i<=y;i++){const mm=i*12;const v=r===0?a*mm:a*((Math.pow(1+mr,mm)-1)/mr)*(1+mr);yearly.push({year:i,invested:a*mm,total:v});}
+        } else {
+            invested=a; total=r===0?a:a*Math.pow(1+r/100,y);
+            for(let i=1;i<=y;i++){const v=r===0?a:a*Math.pow(1+r/100,i);yearly.push({year:i,invested:a,total:v});}
+        }
+        setResult({invested,total,returns:total-invested,yearly});
+    };
+
+    return (<div className="main-grid">
+        <div><div className="card">
+            <h3 className="card-title">📈 {mode==='sip'?'SIP':'Lumpsum'} Calculator</h3>
+            <div className="toggle-wrap" style={{marginBottom:16}}>
+                <button className={'toggle-btn'+(mode==='sip'?' active':'')} onClick={()=>{setMode('sip');setResult(null);}}>SIP</button>
+                <button className={'toggle-btn'+(mode==='lumpsum'?' active':'')} onClick={()=>{setMode('lumpsum');setResult(null);}}>Lumpsum</button>
+            </div>
+            <InputField label={mode==='sip'?'Monthly Investment':'One-time Investment'} prefix="₹" value={amt} onChange={setAmt} placeholder={mode==='sip'?'e.g. 10000':'e.g. 500000'} />
+            <InputField label="Expected Annual Return" value={rate} onChange={setRate} placeholder="e.g. 12" suffix="% p.a." noPrefix />
+            <InputField label="Investment Period" value={years} onChange={setYears} placeholder="e.g. 10" suffix="Years" noPrefix />
+            <button className="calc-btn" onClick={calc}>Calculate Returns</button>
+        </div></div>
+        {result&&<div className="result-col">
+            <div className="summary-grid">
+                <SummaryCard label="Maturity Value" value={fmtINR(result.total)} color="var(--green)" big />
+                <SummaryCard label="Invested" value={fmtINR(result.invested)} color="var(--cyan)" />
+                <SummaryCard label="Returns" value={fmtINR(result.returns)} color="var(--accent-l)" />
+            </div>
+            <div className="card">
+                <h3 className="card-title">Breakdown</h3>
+                <div className="b-row"><span className="b-label">Total Invested</span><span className="b-val" style={{color:'var(--cyan)'}}>{fmtINR(result.invested)}</span></div>
+                <div className="b-row"><span className="b-label">Wealth Gained</span><span className="b-val" style={{color:'var(--accent-l)'}}>{fmtINR(result.returns)}</span></div>
+                <div className="b-row" style={{borderTop:'1px solid var(--border)',paddingTop:12,marginTop:4}}>
+                    <span className="b-label" style={{fontWeight:600}}>Maturity</span><span className="b-val" style={{fontWeight:700,color:'var(--green)'}}>{fmtINR(result.total)}</span>
+                </div>
+                <div className="b-row"><span className="b-label">Absolute Return</span><span className="b-val" style={{color:'var(--green)'}}>{result.invested>0?((result.returns/result.invested)*100).toFixed(1):'0'}%</span></div>
+            </div>
+            {result.yearly.length>0&&<div className="card">
+                <h3 className="card-title">Year-wise Growth</h3>
+                <GrowthChart data={result.yearly} />
+            </div>}
+        </div>}
+    </div>);
+}
+
+function GrowthChart({data}) {
+    const maxVal=Math.max(...data.map(d=>d.total),1);
+    const sampled=data.length>20?data.filter((_,i)=>i%(Math.ceil(data.length/20))===0||i===data.length-1):data;
+    return (<>
+        <div className="chart-bars">
+            {sampled.map((d,i)=>{const ih=(d.invested/maxVal)*100;const rh=((d.total-d.invested)/maxVal)*100;
+                return <div key={i} className="chart-bar-w">
+                    <div className="chart-bar" style={{height:Math.max(rh,.5)+'%',background:'var(--accent)'}}></div>
+                    <div className="chart-bar" style={{height:Math.max(ih,.5)+'%',background:'var(--cyan)',borderRadius:0}}></div>
+                </div>;})}
+        </div>
+        <div className="chart-labels">{sampled.map((d,i)=><span key={i}>{d.year}</span>)}</div>
+        <div className="chart-legend">
+            <span><span className="legend-dot" style={{background:'var(--cyan)'}}></span>Invested</span>
+            <span><span className="legend-dot" style={{background:'var(--accent)'}}></span>Returns</span>
+        </div>
+    </>);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SALARY HIKE CALCULATOR
+// ═══════════════════════════════════════════════════════════
+function breakdownCTC(ctc) {
+    const basic=Math.round(ctc*0.40), hra=Math.round(basic*0.50);
+    const pfBasic=Math.min(basic,15000*12), epf=Math.round(pfBasic*0.12);
+    const grat=Math.round(basic*0.0481), special=Math.max(0,ctc-basic-hra-epf-grat);
+    return [{n:'Basic Salary',v:basic},{n:'HRA',v:hra},{n:'Special Allowance',v:special},{n:'Employer PF (12%)',v:epf},{n:'Gratuity (4.81%)',v:grat},{n:'Total CTC',v:ctc}];
+}
+
+// Estimate annual tax under New Regime (FY 2025-26)
+function estimateTaxNewRegime(gross) {
+    const std=75000;
+    let taxable=Math.max(gross-std,0);
+    const slabs=[{l:0,u:400000,r:0},{l:400000,u:800000,r:5},{l:800000,u:1200000,r:10},{l:1200000,u:1600000,r:15},{l:1600000,u:2000000,r:20},{l:2000000,u:2400000,r:25},{l:2400000,u:Infinity,r:30}];
+    let tax=0;
+    for(const s of slabs){if(taxable<=s.l)break;tax+=(Math.min(taxable,s.u)-s.l)*s.r/100;}
+    if(taxable<=1200000) tax=Math.max(tax-Math.min(tax,60000),0);
+    const cess=Math.round(tax*0.04);
+    return Math.round(tax+cess);
+}
+
+function SalaryCalc() {
+    const [currentCTC,setCurrentCTC]=useState('');
+    const [mode,setMode]=useState('hike');
+    const [hikeP,setHikeP]=useState('');
+    const [newCTC,setNewCTC]=useState('');
+    const [result,setResult]=useState(null);
+
+    const calc = () => {
+        const cur=parseFloat(currentCTC)||0; if(cur<=0) return;
+        let nv,hp;
+        if(mode==='hike'){hp=parseFloat(hikeP)||0;nv=Math.round(cur*(1+hp/100));}
+        else{nv=parseFloat(newCTC)||0;if(nv<=0)return;hp=((nv-cur)/cur)*100;}
+        const abs=nv-cur, mi=Math.round(abs/12);
+        const oldTax=estimateTaxNewRegime(cur), newTax=estimateTaxNewRegime(nv);
+        const oldPostTax=cur-oldTax, newPostTax=nv-newTax;
+        const postTaxHike=newPostTax-oldPostTax;
+        const postTaxHikeP=oldPostTax>0?((postTaxHike/oldPostTax)*100):0;
+        setResult({hp,abs,mi,nv,
+            oldBd:breakdownCTC(cur),newBd:breakdownCTC(nv),
+            oldM:Math.round(cur/12),newM:Math.round(nv/12),
+            oldTax,newTax,oldPostTax,newPostTax,postTaxHike,postTaxHikeP,
+            oldPostTaxM:Math.round(oldPostTax/12),newPostTaxM:Math.round(newPostTax/12),
+            postTaxMI:Math.round(postTaxHike/12)
+        });
+    };
+
+    return (<div className="main-grid">
+        <div><div className="card">
+            <h3 className="card-title">💰 Salary Hike</h3>
+            <InputField label="Current CTC (Annual)" prefix="₹" value={currentCTC} onChange={setCurrentCTC} placeholder="e.g. 1200000" />
+            <div className="toggle-wrap" style={{marginTop:16}}>
+                <button className={'toggle-btn'+(mode==='hike'?' active':'')} onClick={()=>setMode('hike')}>Enter Hike %</button>
+                <button className={'toggle-btn'+(mode==='new'?' active':'')} onClick={()=>setMode('new')}>Enter New CTC</button>
+            </div>
+            {mode==='hike'?<InputField label="Hike Percentage" value={hikeP} onChange={setHikeP} placeholder="e.g. 30" suffix="%" noPrefix />
+                :<InputField label="New CTC (Annual)" prefix="₹" value={newCTC} onChange={setNewCTC} placeholder="e.g. 1560000" />}
+            <button className="calc-btn" onClick={calc}>Calculate</button>
+        </div></div>
+        {result&&<div className="result-col">
+            <div className="summary-grid">
+                <SummaryCard label="Pre-Tax Hike" value={result.hp.toFixed(1)+'%'} color="var(--accent-l)" big />
+                <SummaryCard label="Absolute Hike" value={fmtINR(result.abs)} color="var(--green)" />
+                <SummaryCard label="Monthly Increase" value={fmtINR(result.mi)+'/mo'} color="var(--cyan)" />
+            </div>
+            <div className="card" style={{background:'linear-gradient(135deg,rgba(0,232,143,0.04),rgba(0,212,255,0.03))'}}>
+                <h3 className="card-title">🧾 Post-Tax Impact (New Regime FY 2025-26)</h3>
+                <div className="summary-grid" style={{marginBottom:0}}>
+                    <SummaryCard label="Post-Tax Hike" value={result.postTaxHikeP.toFixed(1)+'%'} color="var(--green)" big />
+                    <SummaryCard label="Old Tax (Annual)" value={fmtINR(result.oldTax)} color="var(--warm)" />
+                    <SummaryCard label="New Tax (Annual)" value={fmtINR(result.newTax)} color="var(--warm)" />
+                    <SummaryCard label="Old In-Hand/mo" value={fmtINR(result.oldPostTaxM)} color="var(--text-s)" />
+                    <SummaryCard label="New In-Hand/mo" value={fmtINR(result.newPostTaxM)} color="var(--green)" />
+                    <SummaryCard label="Real Monthly Gain" value={fmtINR(result.postTaxMI)+'/mo'} color="var(--cyan)" />
+                </div>
+            </div>
+            <div className="card">
+                <h3 className="card-title">📊 Pre vs Post Tax Comparison</h3>
+                <div className="b-row"><span className="b-label">Pre-Tax Hike</span><span className="b-val" style={{color:'var(--accent-l)'}}>{result.hp.toFixed(1)}% ({fmtINR(result.abs)})</span></div>
+                <div className="b-row"><span className="b-label">Additional Tax</span><span className="b-val" style={{color:'var(--warm)'}}>+ {fmtINR(result.newTax-result.oldTax)}</span></div>
+                <div className="b-row" style={{borderTop:'1px solid var(--border)',paddingTop:12,marginTop:4}}>
+                    <span className="b-label" style={{fontWeight:600}}>Post-Tax Hike</span>
+                    <span className="b-val" style={{fontWeight:700,color:'var(--green)'}}>{result.postTaxHikeP.toFixed(1)}% ({fmtINR(result.postTaxHike)})</span>
+                </div>
+                <div className="b-row"><span className="b-label">Old Annual In-Hand</span><span className="b-val">{fmtINR(result.oldPostTax)}</span></div>
+                <div className="b-row"><span className="b-label">New Annual In-Hand</span><span className="b-val" style={{color:'var(--green)'}}>{fmtINR(result.newPostTax)}</span></div>
+            </div>
+            <div className="card">
+                <h3 className="card-title">📋 CTC Component Comparison</h3>
+                <table><thead><tr><th style={{textAlign:'left'}}>Component</th><th>Old (₹)</th><th>New (₹)</th></tr></thead>
+                <tbody>{result.oldBd.map((o,i)=><tr key={i}><td style={{textAlign:'left'}}>{o.n}</td><td>{fmtINR(o.v)}</td><td style={{color:'var(--green)'}}>{fmtINR(result.newBd[i].v)}</td></tr>)}</tbody></table>
+            </div>
+            <div className="note">⚠️ Tax estimated under New Regime (FY 2025-26) with ₹75K standard deduction & Section 87A rebate. Actual tax may vary based on deductions, surcharge, and employer structure. CTC breakdown: Basic=40%, HRA=50% of Basic, PF capped at ₹15k/mo, Gratuity=4.81% of Basic.</div>
+        </div>}
+    </div>);
+}
+
+// ═══════════════════════════════════════════════════════════
+// EMI CALCULATOR
+// ═══════════════════════════════════════════════════════════
+const EMI_PRESETS = {
+    home:{amount:5000000,rate:8.5,tenure:20},
+    car:{amount:800000,rate:9.5,tenure:5},
+    personal:{amount:300000,rate:14,tenure:3}
+};
+
+function EmiCalc() {
+    const [preset,setPreset]=useState('home');
+    const [loanAmt,setLoanAmt]=useState('5000000');
+    const [intRate,setIntRate]=useState('8.5');
+    const [tenure,setTenure]=useState('20');
+    const [unit,setUnit]=useState('years');
+    const [result,setResult]=useState(null);
+    const [amortOpen,setAmortOpen]=useState(false);
+    const canvasRef=useRef(null);
+
+    const applyPreset = (p) => {
+        setPreset(p); const d=EMI_PRESETS[p];
+        setLoanAmt(String(d.amount)); setIntRate(String(d.rate)); setTenure(String(d.tenure)); setUnit('years');
+    };
+
+    const calc = useCallback(() => {
+        const P=parseFloat(loanAmt)||0, ar=parseFloat(intRate)||0;
+        let tv=parseInt(tenure)||0; if(!P||!ar||!tv||P<=0||ar<=0||tv<=0) return;
+        const n=unit==='years'?tv*12:tv, r=ar/12/100;
+        const emi=r===0?P/n:P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+        const totalAmt=emi*n, totalInt=totalAmt-P;
+        const schedule=[];
+        let bal=P;
+        for(let i=1;i<=n;i++){const ip=bal*r;const pp=emi-ip;bal=Math.max(bal-pp,0);schedule.push({m:i,emi,pp,ip,bal});}
+        setResult({emi,P,totalInt,totalAmt,pct:((totalInt/totalAmt)*100).toFixed(1),schedule});
+    },[loanAmt,intRate,tenure,unit]);
+
+    useEffect(()=>{calc();},[]);
+
+    useEffect(()=>{
+        if(!result||!canvasRef.current) return;
+        const canvas=canvasRef.current, ctx=canvas.getContext('2d');
+        const W=canvas.width,H=canvas.height; ctx.clearRect(0,0,W,H);
+        const total=result.P+result.totalInt;
+        const pAngle=(result.P/total)*2*Math.PI;
+        const cx=W/2,cy=H/2,oR=W*0.44,iR=W*0.28,gap=0.025;
+        const isLight=document.documentElement.getAttribute('data-theme')==='light';
+        const bgC=isLight?'#f4f5f7':'#050508';
+        ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,oR,-Math.PI/2+gap,-Math.PI/2+pAngle-gap);ctx.arc(cx,cy,iR,-Math.PI/2+pAngle-gap,-Math.PI/2+gap,true);ctx.closePath();ctx.fillStyle='#00d4ff';ctx.fill();
+        ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,oR,-Math.PI/2+pAngle+gap,-Math.PI/2+2*Math.PI-gap);ctx.arc(cx,cy,iR,-Math.PI/2+2*Math.PI-gap,-Math.PI/2+pAngle+gap,true);ctx.closePath();ctx.fillStyle='#ff6b6b';ctx.fill();
+        ctx.beginPath();ctx.arc(cx,cy,iR-2,0,2*Math.PI);ctx.fillStyle=bgC;ctx.fill();
+    },[result]);
+
+    return (<div>
+        <div className="presets" style={{justifyContent:'center',marginBottom:24}}>
+            {[['home','🏠 Home'],['car','🚗 Car'],['personal','💳 Personal']].map(([k,l])=>
+                <button key={k} className={'preset-btn'+(preset===k?' active':'')} onClick={()=>{applyPreset(k);setTimeout(calc,50);}}>{l}</button>)}
+        </div>
+        <div className="main-grid">
+        <div><div className="card">
+            <h3 className="card-title">🏦 Loan Details</h3>
+            <InputField label="Loan Amount" prefix="₹" value={loanAmt} onChange={setLoanAmt} placeholder="5000000" />
+            <InputField label="Interest Rate (p.a.)" value={intRate} onChange={setIntRate} placeholder="8.5" suffix="%" noPrefix />
+            <label className="label">Tenure</label>
+            <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                <div className="input-wrap" style={{flex:1}}>
+                    <input type="number" value={tenure} onChange={e=>setTenure(e.target.value)} className="calc-input no-prefix" aria-label="Tenure" />
+                </div>
+                <div className="toggle-wrap" style={{gap:0}}>
+                    <button className={'toggle-btn'+(unit==='years'?' active':'')} style={{borderRadius:'10px 0 0 10px'}} onClick={()=>{setUnit('years');}}>Yr</button>
+                    <button className={'toggle-btn'+(unit==='months'?' active':'')} style={{borderRadius:'0 10px 10px 0',borderLeft:'none'}} onClick={()=>{setUnit('months');}}>Mo</button>
+                </div>
+            </div>
+            <button className="calc-btn" onClick={calc}>Calculate EMI</button>
+        </div></div>
+        {result&&<div className="result-col">
+            <div className="summary-grid">
+                <SummaryCard label="Monthly EMI" value={fmtINR(result.emi)} color="var(--accent-l)" big />
+                <SummaryCard label="Principal" value={fmtShort(result.P)} color="var(--cyan)" />
+                <SummaryCard label="Total Interest" value={fmtShort(result.totalInt)} color="var(--warm)" />
+                <SummaryCard label="Total Amount" value={fmtShort(result.totalAmt)} color="var(--green)" />
+            </div>
+            <div className="card">
+                <h3 className="card-title">Principal vs Interest</h3>
+                <div className="donut-wrap">
+                    <div className="donut-canvas"><canvas ref={canvasRef} width="320" height="320"></canvas>
+                        <div className="donut-center"><span style={{fontSize:'.6rem',color:'var(--text-s)',textTransform:'uppercase',letterSpacing:'.08em'}}>Interest %</span><span style={{fontSize:'1rem',fontWeight:700,fontFamily:'var(--mono)'}}>{result.pct}%</span></div>
+                    </div>
+                    <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                        <div style={{display:'flex',alignItems:'center',gap:10,fontSize:'.85rem'}}><span className="legend-dot" style={{background:'var(--cyan)'}}></span>Principal <span style={{marginLeft:'auto',fontFamily:'var(--mono)',fontWeight:500}}>{fmtShort(result.P)}</span></div>
+                        <div style={{display:'flex',alignItems:'center',gap:10,fontSize:'.85rem'}}><span className="legend-dot" style={{background:'var(--warm)'}}></span>Interest <span style={{marginLeft:'auto',fontFamily:'var(--mono)',fontWeight:500}}>{fmtShort(result.totalInt)}</span></div>
+                    </div>
+                </div>
+            </div>
+            <div className="card">
+                <div className="amort-toggle" onClick={()=>setAmortOpen(!amortOpen)}>
+                    <h3 className="card-title" style={{marginBottom:0}}>Amortization Schedule</h3>
+                    <span style={{transform:amortOpen?'rotate(180deg)':'',transition:'transform .3s',fontSize:'.9rem',color:'var(--text-s)'}}>▼</span>
+                </div>
+                <div className={'amort-body'+(amortOpen?' open':'')}>
+                    <div className="amort-scroll">
+                        <table><thead><tr><th>Mo</th><th>EMI</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+                        <tbody>{result.schedule.map(r=><tr key={r.m}><td>{r.m}</td><td>{fmtINR(r.emi)}</td><td style={{color:'var(--cyan)'}}>{fmtINR(r.pp)}</td><td style={{color:'var(--warm)'}}>{fmtINR(r.ip)}</td><td>{fmtINR(r.bal)}</td></tr>)}</tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>}
+    </div></div>);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOOLS HUB (Main App)
+// ═══════════════════════════════════════════════════════════
+const TOOLS = [
+    { id:'tax', icon:'🇮🇳', label:'Tax', component: TaxCalc },
+    { id:'sip', icon:'📈', label:'SIP', component: SipCalc },
+    { id:'salary', icon:'💰', label:'Salary Hike', component: SalaryCalc },
+    { id:'emi', icon:'🏦', label:'EMI', component: EmiCalc },
+];
+
+function ToolsHub() {
+    const [activeTab, setActiveTab] = useState('tax');
+    const [theme, setTheme] = useState(() => localStorage.getItem('tools-theme') || 'dark');
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : '');
+        localStorage.setItem('tools-theme', theme);
+    }, [theme]);
+
+    // Check URL hash for direct tool access
+    useEffect(() => {
+        const hash = window.location.hash.slice(1);
+        if (TOOLS.find(t => t.id === hash)) setActiveTab(hash);
+    }, []);
+
+    const ActiveComponent = TOOLS.find(t => t.id === activeTab)?.component || TaxCalc;
+
+    return (
+        <div className="container">
+            <div className="hub-header">
+                <a href="index.html" className="back-link">← Back to Portfolio</a>
+                <button className="theme-btn" onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} aria-label="Toggle theme">
+                    {theme === 'dark' ? '🌙' : '☀️'}
+                </button>
+            </div>
+            <div className="hub-title">
+                <h1>⚡ Utilities</h1>
+                <p>Free financial calculators for Indian professionals</p>
+            </div>
+            <div className="hub-tabs" role="tablist">
+                {TOOLS.map(t => (
+                    <button key={t.id} role="tab" aria-selected={activeTab===t.id}
+                        className={'hub-tab' + (activeTab === t.id ? ' active' : '')}
+                        onClick={() => { setActiveTab(t.id); window.location.hash = t.id; }}>
+                        <span className="tab-icon">{t.icon}</span>
+                        {t.label}
+                    </button>
+                ))}
+            </div>
+            <ActiveComponent />
+            <p style={{textAlign:'center',color:'var(--text-s)',fontSize:'.78rem',padding:'40px 0 20px'}}>
+                Built for personal use · Dhruv Agrawal
+            </p>
+        </div>
+    );
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOOTSTRAP
+// ═══════════════════════════════════════════════════════════
+ReactDOM.createRoot(document.getElementById('root')).render(<ToolsHub />);
+    </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Tax Calculator</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #050508; --surface: rgba(255,255,255,0.03); --border: rgba(255,255,255,0.08);
+            --text: #eef0f4; --text-sec: #8b92a5; --accent: #6c63ff; --accent-light: #8b83ff;
+            --green: #00e88f; --warm: #ff6b6b; --cyan: #00d4ff;
+            --font: 'Space Grotesk', -apple-system, sans-serif; --mono: 'JetBrains Mono', monospace;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+        #gate, #app { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="gate"></div>
+    <div id="app" style="display:none"></div>
+    <script type="text/babel">
+
+// ── Access Gate (SHA-256 hashed — code not visible in source) ──
+// To change the access code, run: echo -n "yournewcode" | shasum -a 256
+const ACCESS_HASH = "85c01887fcd5687a82eb000952ead807bccba652d6b5d8c07d453a52b7ba3ee3";
+
+async function hashCode(str) {
+    const data = new TextEncoder().encode(str);
+    const buf = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function Gate() {
+    const [code, setCode] = React.useState("");
+    const [error, setError] = React.useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const hashed = await hashCode(code);
+        if (hashed === ACCESS_HASH) {
+            document.getElementById("gate").style.display = "none";
+            document.getElementById("app").style.display = "flex";
+            ReactDOM.createRoot(document.getElementById("app")).render(<TaxCalculator />);
+        } else {
+            setError(true);
+            setTimeout(() => setError(false), 2000);
+        }
+    };
+
+    return (
+        <div style={gateStyles.wrapper}>
+            <div style={gateStyles.card}>
+                <div style={gateStyles.icon}>🔒</div>
+                <h2 style={gateStyles.title}>Private Access</h2>
+                <p style={gateStyles.sub}>Enter access code to continue</p>
+                <form onSubmit={handleSubmit} style={gateStyles.form}>
+                    <input
+                        type="password"
+                        value={code}
+                        onChange={(e) => setCode(e.target.value)}
+                        placeholder="Access code"
+                        style={{...gateStyles.input, borderColor: error ? "var(--warm)" : "var(--border)"}}
+                        autoFocus
+                        aria-label="Access code"
+                    />
+                    {error && <p style={gateStyles.error}>Invalid code. Try again.</p>}
+                    <button type="submit" style={gateStyles.btn}>Unlock</button>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+const gateStyles = {
+    wrapper: { width: "100%", maxWidth: 420, textAlign: "center" },
+    card: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 20, padding: "48px 36px" },
+    icon: { fontSize: 48, marginBottom: 16 },
+    title: { fontSize: "1.5rem", fontWeight: 700, marginBottom: 8 },
+    sub: { color: "var(--text-sec)", fontSize: "0.9rem", marginBottom: 28 },
+    form: { display: "flex", flexDirection: "column", gap: 12 },
+    input: {
+        width: "100%", padding: "14px 18px", background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)",
+        borderRadius: 10, color: "var(--text)", fontSize: "1rem", fontFamily: "var(--mono)", outline: "none",
+        transition: "border-color 0.3s"
+    },
+    error: { color: "var(--warm)", fontSize: "0.85rem" },
+    btn: {
+        padding: "14px", background: "var(--accent)", color: "#fff", border: "none", borderRadius: 10,
+        fontSize: "1rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font)",
+        transition: "transform 0.2s, box-shadow 0.2s"
+    }
+};
+
+ReactDOM.createRoot(document.getElementById("gate")).render(<Gate />);
+
+// ── Indian Tax Slabs (FY 2025-26 New Regime) ──
+const NEW_REGIME_SLABS = [
+    { min: 0, max: 400000, rate: 0 },
+    { min: 400000, max: 800000, rate: 5 },
+    { min: 800000, max: 1200000, rate: 10 },
+    { min: 1200000, max: 1600000, rate: 15 },
+    { min: 1600000, max: 2000000, rate: 20 },
+    { min: 2000000, max: 2400000, rate: 25 },
+    { min: 2400000, max: Infinity, rate: 30 },
+];
+
+const OLD_REGIME_SLABS = [
+    { min: 0, max: 250000, rate: 0 },
+    { min: 250000, max: 500000, rate: 5 },
+    { min: 500000, max: 1000000, rate: 20 },
+    { min: 1000000, max: Infinity, rate: 30 },
+];
+
+function calculateTax(income, slabs) {
+    let tax = 0;
+    const breakdown = [];
+    for (const slab of slabs) {
+        if (income <= slab.min) break;
+        const taxable = Math.min(income, slab.max) - slab.min;
+        const slabTax = (taxable * slab.rate) / 100;
+        tax += slabTax;
+        if (taxable > 0) {
+            breakdown.push({
+                range: `₹${fmt(slab.min)} - ${slab.max === Infinity ? "Above" : "₹" + fmt(slab.max)}`,
+                rate: slab.rate,
+                taxable,
+                tax: slabTax,
+            });
+        }
+    }
+    return { tax, breakdown };
+}
+
+function fmt(n) {
+    return n.toLocaleString("en-IN");
+}
+
+function fmtCurrency(n) {
+    return "₹" + n.toLocaleString("en-IN", { maximumFractionDigits: 0 });
+}
+
+// ── Main Calculator Component ──
+function TaxCalculator() {
+    const [income, setIncome] = React.useState("");
+    const [regime, setRegime] = React.useState("new");
+    const [deductions80C, setDeductions80C] = React.useState("");
+    const [hra, setHra] = React.useState("");
+    const [otherDeductions, setOtherDeductions] = React.useState("");
+    const [result, setResult] = React.useState(null);
+
+    const handleCalculate = () => {
+        const gross = parseFloat(income) || 0;
+        if (gross <= 0) return;
+
+        const slabs = regime === "new" ? NEW_REGIME_SLABS : OLD_REGIME_SLABS;
+        let taxableIncome = gross;
+
+        // Standard deduction
+        const stdDeduction = regime === "new" ? 75000 : 50000;
+        taxableIncome -= stdDeduction;
+
+        // Old regime deductions
+        let totalDeductions = stdDeduction;
+        if (regime === "old") {
+            const d80c = Math.min(parseFloat(deductions80C) || 0, 150000);
+            const dHra = parseFloat(hra) || 0;
+            const dOther = parseFloat(otherDeductions) || 0;
+            taxableIncome -= (d80c + dHra + dOther);
+            totalDeductions += d80c + dHra + dOther;
+        }
+
+        taxableIncome = Math.max(taxableIncome, 0);
+
+        // Section 87A rebate: New regime - income up to 12L (taxable up to ~12L), Old regime - up to 5L
+        let { tax, breakdown } = calculateTax(taxableIncome, slabs);
+        let rebate87A = 0;
+        if (regime === "new" && taxableIncome <= 1200000) {
+            rebate87A = Math.min(tax, 60000);
+        } else if (regime === "old" && taxableIncome <= 500000) {
+            rebate87A = Math.min(tax, 12500);
+        }
+        tax -= rebate87A;
+        tax = Math.max(tax, 0);
+
+        // Surcharge
+        let surchargeRate = 0;
+        if (taxableIncome > 50000000) surchargeRate = 37;
+        else if (taxableIncome > 20000000) surchargeRate = 25;
+        else if (taxableIncome > 10000000) surchargeRate = 15;
+        else if (taxableIncome > 5000000) surchargeRate = 10;
+        const surcharge = (tax * surchargeRate) / 100;
+
+        // Health & Education Cess 4%
+        const cess = (tax + surcharge) * 0.04;
+        const totalTax = Math.round(tax + surcharge + cess);
+
+        setResult({
+            gross, taxableIncome, stdDeduction, totalDeductions,
+            breakdown, rebate87A, tax: Math.round(tax),
+            surcharge: Math.round(surcharge), surchargeRate,
+            cess: Math.round(cess), totalTax,
+            effectiveRate: gross > 0 ? ((totalTax / gross) * 100).toFixed(1) : "0",
+            monthlyTax: Math.round(totalTax / 12),
+            takeHome: Math.round((gross - totalTax) / 12),
+        });
+    };
+
+    return (
+        <div style={s.container}>
+            <header style={s.header}>
+                <a href="index.html" style={s.backLink}>← Back to Portfolio</a>
+                <h1 style={s.title}>🇮🇳 Indian Tax Calculator</h1>
+                <p style={s.subtitle}>FY 2025-26 (AY 2026-27) · New & Old Regime</p>
+            </header>
+
+            <div style={s.grid}>
+                <div style={s.inputPanel}>
+                    <div style={s.card}>
+                        <h3 style={s.cardTitle}>Income Details</h3>
+
+                        <label style={s.label}>Annual Gross Income</label>
+                        <div style={s.inputWrap}>
+                            <span style={s.inputPrefix}>₹</span>
+                            <input type="number" value={income} onChange={e => setIncome(e.target.value)}
+                                placeholder="e.g. 1500000" style={s.input} aria-label="Annual gross income" />
+                        </div>
+
+                        <label style={s.label}>Tax Regime</label>
+                        <div style={s.toggleWrap}>
+                            {["new", "old"].map(r => (
+                                <button key={r} onClick={() => setRegime(r)}
+                                    style={{...s.toggleBtn, ...(regime === r ? s.toggleActive : {})}}>
+                                    {r === "new" ? "New Regime" : "Old Regime"}
+                                </button>
+                            ))}
+                        </div>
+
+                        {regime === "old" && (
+                            <div style={s.deductionsBlock}>
+                                <h4 style={s.deductionsTitle}>Deductions (Old Regime)</h4>
+                                <label style={s.label}>Section 80C (max ₹1.5L)</label>
+                                <div style={s.inputWrap}>
+                                    <span style={s.inputPrefix}>₹</span>
+                                    <input type="number" value={deductions80C} onChange={e => setDeductions80C(e.target.value)}
+                                        placeholder="0" style={s.input} aria-label="Section 80C deductions" />
+                                </div>
+                                <label style={s.label}>HRA Exemption</label>
+                                <div style={s.inputWrap}>
+                                    <span style={s.inputPrefix}>₹</span>
+                                    <input type="number" value={hra} onChange={e => setHra(e.target.value)}
+                                        placeholder="0" style={s.input} aria-label="HRA exemption" />
+                                </div>
+                                <label style={s.label}>Other Deductions (80D, 80E, etc.)</label>
+                                <div style={s.inputWrap}>
+                                    <span style={s.inputPrefix}>₹</span>
+                                    <input type="number" value={otherDeductions} onChange={e => setOtherDeductions(e.target.value)}
+                                        placeholder="0" style={s.input} aria-label="Other deductions" />
+                                </div>
+                            </div>
+                        )}
+
+                        <button onClick={handleCalculate} style={s.calcBtn}>Calculate Tax</button>
+                    </div>
+                </div>
+
+                {result && <ResultPanel result={result} regime={regime} />}
+            </div>
+        </div>
+    );
+}
+
+// ── Result Panel ──
+function ResultPanel({ result, regime }) {
+    const r = result;
+    return (
+        <div style={s.resultPanel}>
+            {/* Summary Cards */}
+            <div style={s.summaryGrid}>
+                <SummaryCard label="Total Tax" value={fmtCurrency(r.totalTax)} color="var(--warm)" big />
+                <SummaryCard label="Effective Rate" value={r.effectiveRate + "%"} color="var(--accent-light)" />
+                <SummaryCard label="Monthly Tax" value={fmtCurrency(r.monthlyTax)} color="var(--cyan)" />
+                <SummaryCard label="Monthly Take-Home" value={fmtCurrency(r.takeHome)} color="var(--green)" />
+            </div>
+
+            {/* Breakdown */}
+            <div style={s.card}>
+                <h3 style={s.cardTitle}>Tax Breakdown ({regime === "new" ? "New" : "Old"} Regime)</h3>
+                <div style={s.breakdownRow}>
+                    <span style={s.bLabel}>Gross Income</span>
+                    <span style={s.bValue}>{fmtCurrency(r.gross)}</span>
+                </div>
+                <div style={s.breakdownRow}>
+                    <span style={s.bLabel}>Total Deductions</span>
+                    <span style={{...s.bValue, color: "var(--green)"}}>- {fmtCurrency(r.totalDeductions)}</span>
+                </div>
+                <div style={{...s.breakdownRow, borderTop: "1px solid var(--border)", paddingTop: 12, marginTop: 8}}>
+                    <span style={{...s.bLabel, fontWeight: 600}}>Taxable Income</span>
+                    <span style={{...s.bValue, fontWeight: 600}}>{fmtCurrency(r.taxableIncome)}</span>
+                </div>
+            </div>
+
+            {/* Slab-wise */}
+            <div style={s.card}>
+                <h3 style={s.cardTitle}>Slab-wise Calculation</h3>
+                <div style={s.slabHeader}>
+                    <span style={s.slabHCol}>Income Range</span>
+                    <span style={{...s.slabHCol, textAlign: "center"}}>Rate</span>
+                    <span style={{...s.slabHCol, textAlign: "right"}}>Tax</span>
+                </div>
+                {r.breakdown.map((b, i) => (
+                    <div key={i} style={s.slabRow}>
+                        <span style={s.slabCol}>{b.range}</span>
+                        <span style={{...s.slabCol, textAlign: "center", color: "var(--accent-light)"}}>{b.rate}%</span>
+                        <span style={{...s.slabCol, textAlign: "right"}}>{fmtCurrency(b.tax)}</span>
+                    </div>
+                ))}
+                <div style={{...s.breakdownRow, borderTop: "1px solid var(--border)", paddingTop: 12, marginTop: 8}}>
+                    <span style={s.bLabel}>Tax before rebate</span>
+                    <span style={s.bValue}>{fmtCurrency(r.tax + r.rebate87A)}</span>
+                </div>
+                {r.rebate87A > 0 && (
+                    <div style={s.breakdownRow}>
+                        <span style={s.bLabel}>Section 87A Rebate</span>
+                        <span style={{...s.bValue, color: "var(--green)"}}>- {fmtCurrency(r.rebate87A)}</span>
+                    </div>
+                )}
+                <div style={s.breakdownRow}>
+                    <span style={s.bLabel}>Tax after rebate</span>
+                    <span style={s.bValue}>{fmtCurrency(r.tax)}</span>
+                </div>
+                {r.surcharge > 0 && (
+                    <div style={s.breakdownRow}>
+                        <span style={s.bLabel}>Surcharge ({r.surchargeRate}%)</span>
+                        <span style={s.bValue}>+ {fmtCurrency(r.surcharge)}</span>
+                    </div>
+                )}
+                <div style={s.breakdownRow}>
+                    <span style={s.bLabel}>Health & Education Cess (4%)</span>
+                    <span style={s.bValue}>+ {fmtCurrency(r.cess)}</span>
+                </div>
+                <div style={{...s.breakdownRow, borderTop: "1px solid var(--accent)", paddingTop: 12, marginTop: 8}}>
+                    <span style={{...s.bLabel, fontWeight: 700, color: "var(--text)", fontSize: "1.1rem"}}>Total Tax Payable</span>
+                    <span style={{...s.bValue, fontWeight: 700, color: "var(--warm)", fontSize: "1.1rem"}}>{fmtCurrency(r.totalTax)}</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function SummaryCard({ label, value, color, big }) {
+    return (
+        <div style={{...s.summaryCard, ...(big ? {gridColumn: "1 / -1"} : {})}}>
+            <span style={s.summaryLabel}>{label}</span>
+            <span style={{...s.summaryValue, color, fontSize: big ? "2rem" : "1.5rem"}}>{value}</span>
+        </div>
+    );
+}
+
+// ── Styles ──
+const s = {
+    container: { width: "100%", maxWidth: 1100, margin: "0 auto", padding: "24px" },
+    header: { textAlign: "center", marginBottom: 40, paddingTop: 20 },
+    backLink: { color: "var(--text-sec)", textDecoration: "none", fontSize: "0.85rem", display: "inline-block", marginBottom: 20, transition: "color 0.3s" },
+    title: { fontSize: "clamp(1.8rem, 4vw, 2.5rem)", fontWeight: 700, marginBottom: 8 },
+    subtitle: { color: "var(--text-sec)", fontSize: "0.95rem" },
+    grid: { display: "grid", gridTemplateColumns: "1fr", gap: 24 },
+    inputPanel: {},
+    resultPanel: { display: "flex", flexDirection: "column", gap: 20 },
+    card: {
+        background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16,
+        padding: "28px", transition: "border-color 0.3s"
+    },
+    cardTitle: { fontSize: "1.1rem", fontWeight: 600, marginBottom: 20, color: "var(--text)" },
+    label: { display: "block", fontSize: "0.8rem", color: "var(--text-sec)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8, marginTop: 16 },
+    inputWrap: {
+        display: "flex", alignItems: "center", background: "rgba(255,255,255,0.04)",
+        border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden", transition: "border-color 0.3s"
+    },
+    inputPrefix: { padding: "0 12px", color: "var(--text-sec)", fontSize: "0.95rem", fontFamily: "var(--mono)" },
+    input: {
+        flex: 1, padding: "14px 14px 14px 0", background: "transparent", border: "none",
+        color: "var(--text)", fontSize: "1rem", fontFamily: "var(--mono)", outline: "none", width: "100%"
+    },
+    toggleWrap: { display: "flex", gap: 8 },
+    toggleBtn: {
+        flex: 1, padding: "12px", background: "rgba(255,255,255,0.04)", border: "1px solid var(--border)",
+        borderRadius: 10, color: "var(--text-sec)", fontSize: "0.9rem", fontWeight: 500,
+        cursor: "pointer", fontFamily: "var(--font)", transition: "all 0.3s"
+    },
+    toggleActive: {
+        background: "rgba(108,99,255,0.12)", borderColor: "var(--accent)", color: "var(--accent-light)"
+    },
+    deductionsBlock: { marginTop: 8, padding: "16px 0", borderTop: "1px solid var(--border)" },
+    deductionsTitle: { fontSize: "0.9rem", fontWeight: 600, color: "var(--accent-light)", marginBottom: 4 },
+    calcBtn: {
+        width: "100%", padding: "16px", marginTop: 24, background: "var(--accent)", color: "#fff",
+        border: "none", borderRadius: 12, fontSize: "1rem", fontWeight: 600, cursor: "pointer",
+        fontFamily: "var(--font)", boxShadow: "0 4px 24px rgba(108,99,255,0.4)", transition: "transform 0.2s, box-shadow 0.2s"
+    },
+    summaryGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 },
+    summaryCard: {
+        background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14,
+        padding: "20px", textAlign: "center"
+    },
+    summaryLabel: { display: "block", fontSize: "0.75rem", color: "var(--text-sec)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 },
+    summaryValue: { fontWeight: 700, fontFamily: "var(--mono)" },
+    breakdownRow: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0" },
+    bLabel: { color: "var(--text-sec)", fontSize: "0.9rem" },
+    bValue: { fontFamily: "var(--mono)", fontSize: "0.95rem", fontWeight: 500 },
+    slabHeader: { display: "grid", gridTemplateColumns: "2fr 1fr 1fr", padding: "8px 0", borderBottom: "1px solid var(--border)", marginBottom: 8 },
+    slabHCol: { fontSize: "0.75rem", color: "var(--text-sec)", textTransform: "uppercase", letterSpacing: "0.08em" },
+    slabRow: { display: "grid", gridTemplateColumns: "2fr 1fr 1fr", padding: "8px 0", borderBottom: "1px solid rgba(255,255,255,0.03)" },
+    slabCol: { fontSize: "0.9rem", fontFamily: "var(--mono)" },
+};
+
+// Responsive: switch to single column on mobile handled by grid default
+if (window.innerWidth >= 768) {
+    s.grid.gridTemplateColumns = "380px 1fr";
+}
+    </script>
+</body>
+</html>

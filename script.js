@@ -605,12 +605,16 @@
     // ── Theme Toggle ──
     const themeToggle = document.querySelector('.theme-toggle');
     if (themeToggle) {
+        const themes = ['dark', 'light', 'salesforce', 'ocean'];
         const saved = localStorage.getItem('theme');
-        if (saved) document.documentElement.setAttribute('data-theme', saved);
+        if (saved && themes.includes(saved)) {
+            document.documentElement.setAttribute('data-theme', saved);
+        }
 
         themeToggle.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'light' ? 'dark' : 'light';
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const idx = themes.indexOf(current);
+            const next = themes[(idx + 1) % themes.length];
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
         });

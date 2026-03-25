@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="SIP and Lumpsum Investment Calculator for Indian investors">
+    <title>SIP &amp; Investment Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#050508;--surface:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.08);
+--text:#eef0f4;--text-sec:#8b92a5;--accent:#6c63ff;--accent-light:#8b83ff;
+--green:#00e88f;--warm:#ff6b6b;--cyan:#00d4ff;
+--font:'Space Grotesk',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+:root.light{
+--bg:#f4f5f7;--surface:rgba(0,0,0,0.03);--border:rgba(0,0,0,0.1);
+--text:#1a1a2e;--text-sec:#5a5f72;--accent:#6c63ff;--accent-light:#5a52e0;
+--green:#00b86b;--warm:#e04545;--cyan:#0099cc;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+.container{width:100%;max-width:1100px;margin:0 auto;padding:24px}
+.header{text-align:center;margin-bottom:36px;padding-top:20px}
+.header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.back-link{color:var(--text-sec);text-decoration:none;font-size:.85rem;transition:color .3s}
+.back-link:hover{color:var(--accent)}
+.theme-toggle{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);cursor:pointer;font-size:1rem;line-height:1;transition:border-color .3s}
+.theme-toggle:hover{border-color:var(--accent)}
+.title{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;margin-bottom:8px}
+.subtitle{color:var(--text-sec);font-size:.95rem}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:28px;max-width:340px;margin-left:auto;margin-right:auto}
+.tab-btn{flex:1;padding:12px 16px;background:0 0;border:none;border-radius:10px;color:var(--text-sec);font-size:.9rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s}
+.tab-btn.active{background:rgba(108,99,255,.15);color:var(--accent-light);font-weight:600}
+.grid{display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:768px){.grid{grid-template-columns:380px 1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;transition:border-color .3s}
+.card-title{font-size:1.1rem;font-weight:600;margin-bottom:20px}
+.label{display:block;font-size:.8rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;margin-top:16px}
+.label:first-of-type{margin-top:0}
+.input-wrap{display:flex;align-items:center;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .3s}
+.light .input-wrap{background:rgba(0,0,0,.03)}
+.input-wrap:focus-within{border-color:var(--accent)}
+.input-prefix{padding:0 12px;color:var(--text-sec);font-size:.95rem;font-family:var(--mono)}
+.input-suffix{padding:0 12px;color:var(--text-sec);font-size:.85rem;font-family:var(--mono)}
+.input{flex:1;padding:14px 14px 14px 0;background:0 0;border:none;color:var(--text);font-size:1rem;font-family:var(--mono);outline:none;width:100%}
+.input::placeholder{color:var(--text-sec);opacity:.5}
+.input-no-prefix{padding-left:14px}
+.calc-btn{width:100%;padding:16px;margin-top:24px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font);box-shadow:0 4px 24px rgba(108,99,255,.4);transition:transform .2s,box-shadow .2s}
+.calc-btn:hover{transform:translateY(-1px);box-shadow:0 6px 32px rgba(108,99,255,.5)}
+.calc-btn:active{transform:translateY(0)}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center}
+.summary-card.full{grid-column:1/-1}
+.summary-label{display:block;font-size:.75rem;color:var(--text-sec);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.summary-value{font-weight:700;font-family:var(--mono);font-size:1.5rem}
+.summary-value.big{font-size:2rem}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
+.breakdown-row+.breakdown-row{border-top:1px solid rgba(255,255,255,.03)}
+.light .breakdown-row+.breakdown-row{border-top:1px solid rgba(0,0,0,.05)}
+.b-label{color:var(--text-sec);font-size:.9rem}
+.b-value{font-family:var(--mono);font-size:.95rem;font-weight:500}
+.chart-container{margin-top:16px}
+.chart-bar-group{display:flex;align-items:flex-end;gap:3px;height:180px;padding:0 4px;border-bottom:1px solid var(--border)}
+.chart-bar-wrap{flex:1;min-width:0;display:flex;flex-direction:column;align-items:stretch;height:100%;justify-content:flex-end;position:relative}
+.chart-bar{border-radius:3px 3px 0 0;transition:opacity .2s}
+.chart-bar:hover{opacity:.85}
+.bar-tooltip{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:.7rem;font-family:var(--mono);color:var(--text);white-space:nowrap;z-index:10;pointer-events:none;margin-bottom:4px}
+.chart-bar-wrap:hover .bar-tooltip{display:block}
+.chart-labels{display:flex;gap:3px;padding:6px 4px 0}
+.chart-labels span{flex:1;text-align:center;font-size:.6rem;color:var(--text-sec);font-family:var(--mono)}
+.chart-legend{display:flex;gap:20px;justify-content:center;margin-top:14px;font-size:.8rem;color:var(--text-sec)}
+.legend-dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.result-panel{display:flex;flex-direction:column;gap:20px}
+.footer{text-align:center;padding:40px 0 20px;color:var(--text-sec);font-size:.8rem}
+@media(max-width:480px){.summary-grid{grid-template-columns:1fr}.summary-card.full{grid-column:auto}.container{padding:16px}.card{padding:20px}.summary-value.big{font-size:1.5rem}}
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="header-top">
+            <a href="index.html" class="back-link">&larr; Back to Portfolio</a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">&#127769;</button>
+        </div>
+        <h1 class="title">&#128200; SIP &amp; Investment Calculator</h1>
+        <p class="subtitle">Plan your mutual fund investments &middot; Indian Rupee (&#8377;)</p>
+    </header>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="sip" id="tabSip">SIP</button>
+        <button class="tab-btn" data-tab="lumpsum" id="tabLumpsum">Lumpsum</button>
+    </div>
+    <div class="grid">
+        <div>
+            <div class="card">
+                <h3 class="card-title" id="formTitle">SIP Calculator</h3>
+                <label class="label" id="amountLabel">Monthly Investment</label>
+                <div class="input-wrap">
+                    <span class="input-prefix">&#8377;</span>
+                    <input type="number" id="amount" placeholder="e.g. 10000" class="input" min="100">
+                </div>
+                <label class="label">Expected Annual Return</label>
+                <div class="input-wrap">
+                    <input type="number" id="returnRate" placeholder="e.g. 12" class="input input-no-prefix" min="1" max="50" step="0.1">
+                    <span class="input-suffix">% p.a.</span>
+                </div>
+                <label class="label">Investment Period</label>
+                <div class="input-wrap">
+                    <input type="number" id="period" placeholder="e.g. 10" class="input input-no-prefix" min="1" max="50">
+                    <span class="input-suffix">Years</span>
+                </div>
+                <button class="calc-btn" id="calcBtn">Calculate Returns</button>
+            </div>
+        </div>
+        <div class="result-panel" id="resultPanel" style="display:none">
+            <div class="summary-grid">
+                <div class="summary-card full">
+                    <span class="summary-label">Total Value at Maturity</span>
+                    <span class="summary-value big" id="totalValue" style="color:var(--green)">-</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">Amount Invested</span>
+                    <span class="summary-value" id="totalInvested" style="color:var(--cyan)">-</span>
+                </div>
+                <div class="summary-card">
+                    <span class="summary-label">Estimated Returns</span>
+                    <span class="summary-value" id="totalReturns" style="color:var(--accent-light)">-</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Investment Breakdown</h3>
+                <div class="breakdown-row">
+                    <span class="b-label">Total Invested</span>
+                    <span class="b-value" id="breakdownInvested" style="color:var(--cyan)">-</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="b-label">Wealth Gained</span>
+                    <span class="b-value" id="breakdownReturns" style="color:var(--accent-light)">-</span>
+                </div>
+                <div class="breakdown-row" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+                    <span class="b-label" style="font-weight:600;color:var(--text)">Maturity Amount</span>
+                    <span class="b-value" id="breakdownTotal" style="font-weight:700;color:var(--green);font-size:1.05rem">-</span>
+                </div>
+                <div class="breakdown-row">
+                    <span class="b-label">Absolute Return</span>
+                    <span class="b-value" id="breakdownAbsReturn" style="color:var(--green)">-</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Year-wise Growth</h3>
+                <div class="chart-container">
+                    <div class="chart-bar-group" id="chartBars"></div>
+                    <div class="chart-labels" id="chartLabels"></div>
+                    <div class="chart-legend">
+                        <span><span class="legend-dot" style="background:var(--cyan)"></span>Invested</span>
+                        <span><span class="legend-dot" style="background:var(--accent)"></span>Returns</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>Returns are estimated and not guaranteed. Mutual fund investments are subject to market risks.</p>
+    </div>
+</div>
+<script>
+(function(){
+"use strict";
+
+// ── DOM refs ──
+var $ = function(id){ return document.getElementById(id); };
+var tabSip = $("tabSip"), tabLumpsum = $("tabLumpsum");
+var formTitle = $("formTitle"), amountLabel = $("amountLabel");
+var amountInput = $("amount"), returnInput = $("returnRate"), periodInput = $("period");
+var calcBtn = $("calcBtn"), resultPanel = $("resultPanel");
+var mode = "sip";
+
+// ── Indian number formatting ──
+function fmtINR(n) {
+    n = Math.round(n);
+    var s = n.toString();
+    var afterPoint = "";
+    if (s.indexOf(".") > 0) {
+        afterPoint = s.substring(s.indexOf("."), s.length);
+        s = s.substring(0, s.indexOf("."));
+    }
+    var lastThree = s.substring(s.length - 3);
+    var otherNumbers = s.substring(0, s.length - 3);
+    if (otherNumbers !== "") lastThree = "," + lastThree;
+    return "\u20B9" + otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
+}
+
+function fmtLakhsCrores(n) {
+    n = Math.round(n);
+    if (n >= 10000000) return "\u20B9" + (n / 10000000).toFixed(2) + " Cr";
+    if (n >= 100000) return "\u20B9" + (n / 100000).toFixed(2) + " L";
+    return fmtINR(n);
+}
+
+// ── SIP calculation ──
+function calcSIP(monthly, annualRate, years) {
+    var monthlyRate = annualRate / 12 / 100;
+    var months = years * 12;
+    var invested = monthly * months;
+    if (annualRate === 0) return { invested: invested, total: invested, returns: 0, yearly: [] };
+    var total = monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+    var yearly = [];
+    for (var y = 1; y <= years; y++) {
+        var m = y * 12;
+        var val = monthly * ((Math.pow(1 + monthlyRate, m) - 1) / monthlyRate) * (1 + monthlyRate);
+        yearly.push({ year: y, invested: monthly * m, total: val, returns: val - monthly * m });
+    }
+    return { invested: invested, total: total, returns: total - invested, yearly: yearly };
+}
+
+// ── Lumpsum calculation ──
+function calcLumpsum(principal, annualRate, years) {
+    var invested = principal;
+    if (annualRate === 0) return { invested: invested, total: invested, returns: 0, yearly: [] };
+    var total = principal * Math.pow(1 + annualRate / 100, years);
+    var yearly = [];
+    for (var y = 1; y <= years; y++) {
+        var val = principal * Math.pow(1 + annualRate / 100, y);
+        yearly.push({ year: y, invested: principal, total: val, returns: val - principal });
+    }
+    return { invested: invested, total: total, returns: total - invested, yearly: yearly };
+}
+
+// ── Tab switching ──
+function setTab(t) {
+    mode = t;
+    tabSip.classList.toggle("active", t === "sip");
+    tabLumpsum.classList.toggle("active", t === "lumpsum");
+    formTitle.textContent = t === "sip" ? "SIP Calculator" : "Lumpsum Calculator";
+    amountLabel.textContent = t === "sip" ? "Monthly Investment" : "One-time Investment";
+    amountInput.placeholder = t === "sip" ? "e.g. 10000" : "e.g. 500000";
+    amountInput.value = "";
+    resultPanel.style.display = "none";
+}
+tabSip.addEventListener("click", function(){ setTab("sip"); });
+tabLumpsum.addEventListener("click", function(){ setTab("lumpsum"); });
+
+// ── Calculate ──
+calcBtn.addEventListener("click", function(){
+    var amt = parseFloat(amountInput.value) || 0;
+    var rate = parseFloat(returnInput.value) || 0;
+    var years = parseInt(periodInput.value) || 0;
+    if (amt <= 0 || years <= 0) return;
+
+    var result = mode === "sip" ? calcSIP(amt, rate, years) : calcLumpsum(amt, rate, years);
+    renderResult(result);
+});
+
+// Allow Enter key to trigger calculation
+[amountInput, returnInput, periodInput].forEach(function(el){
+    el.addEventListener("keydown", function(e){
+        if (e.key === "Enter") calcBtn.click();
+    });
+});
+
+// ── Render results ──
+function renderResult(r) {
+    resultPanel.style.display = "flex";
+    $("totalValue").textContent = fmtINR(r.total);
+    $("totalInvested").textContent = fmtINR(r.invested);
+    $("totalReturns").textContent = fmtINR(r.returns);
+    $("breakdownInvested").textContent = fmtINR(r.invested);
+    $("breakdownReturns").textContent = fmtINR(r.returns);
+    $("breakdownTotal").textContent = fmtINR(r.total);
+    var absReturn = r.invested > 0 ? ((r.returns / r.invested) * 100).toFixed(1) + "%" : "0%";
+    $("breakdownAbsReturn").textContent = absReturn;
+    renderChart(r.yearly);
+    // Scroll to results on mobile
+    if (window.innerWidth < 768) {
+        resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+}
+
+// ── Chart rendering ──
+function renderChart(yearly) {
+    var barsEl = $("chartBars");
+    var labelsEl = $("chartLabels");
+    barsEl.innerHTML = "";
+    labelsEl.innerHTML = "";
+    if (!yearly.length) return;
+
+    var maxVal = 0;
+    for (var i = 0; i < yearly.length; i++) {
+        if (yearly[i].total > maxVal) maxVal = yearly[i].total;
+    }
+    if (maxVal === 0) maxVal = 1;
+
+    // Show max ~20 bars, sample if more years
+    var data = yearly;
+    if (yearly.length > 20) {
+        data = [];
+        var step = Math.ceil(yearly.length / 20);
+        for (var j = 0; j < yearly.length; j += step) data.push(yearly[j]);
+        if (data[data.length - 1].year !== yearly[yearly.length - 1].year) data.push(yearly[yearly.length - 1]);
+    }
+
+    for (var k = 0; k < data.length; k++) {
+        var d = data[k];
+        var investedH = (d.invested / maxVal) * 100;
+        var returnsH = (d.returns / maxVal) * 100;
+
+        var wrap = document.createElement("div");
+        wrap.className = "chart-bar-wrap";
+
+        var tooltip = document.createElement("div");
+        tooltip.className = "bar-tooltip";
+        tooltip.innerHTML = "Yr " + d.year + "<br>Inv: " + fmtLakhsCrores(d.invested) + "<br>Val: " + fmtLakhsCrores(d.total);
+        wrap.appendChild(tooltip);
+
+        var barReturns = document.createElement("div");
+        barReturns.className = "chart-bar";
+        barReturns.style.height = Math.max(returnsH, 0.5) + "%";
+        barReturns.style.background = "var(--accent)";
+        wrap.appendChild(barReturns);
+
+        var barInvested = document.createElement("div");
+        barInvested.className = "chart-bar";
+        barInvested.style.height = Math.max(investedH, 0.5) + "%";
+        barInvested.style.background = "var(--cyan)";
+        barInvested.style.borderRadius = "0";
+        wrap.appendChild(barInvested);
+
+        barsEl.appendChild(wrap);
+
+        var lbl = document.createElement("span");
+        lbl.textContent = d.year;
+        labelsEl.appendChild(lbl);
+    }
+}
+
+// ── Theme toggle ──
+var themeBtn = $("themeToggle");
+function applyTheme(light) {
+    document.documentElement.classList.toggle("light", light);
+    document.body.classList.toggle("light", light);
+    themeBtn.textContent = light ? "\u2600\uFE0F" : "\uD83C\uDF19";
+    try { localStorage.setItem("sip-calc-theme", light ? "light" : "dark"); } catch(e){}
+}
+themeBtn.addEventListener("click", function(){
+    applyTheme(!document.documentElement.classList.contains("light"));
+});
+// Restore saved theme
+try {
+    var saved = localStorage.getItem("sip-calc-theme");
+    if (saved === "light") applyTheme(true);
+} catch(e){}
+
+})();
+</script>
+</body>
+</html>

@@ -14,6 +14,10 @@
     <meta name="google-site-verification" content="Vq-t6Bo-RiQTqJQGMoofFzcRRsWcFLXWnHr4cZt8O1o" />
     <link rel="canonical" href="https://dhruvagrawal-16.github.io/">
     
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0a0a1a" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f0f2f8" media="(prefers-color-scheme: light)">
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dhruvagrawal-16.github.io/">
@@ -57,7 +61,8 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="style.css">
     
     <!-- GSAP + ScrollTrigger -->
@@ -113,13 +118,13 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
     </button>
 
-    <!-- AI Built Badge -->
-    <div class="ai-badge" aria-hidden="true">
+    <!-- Agentforce Badge (hidden link to tax calculator) -->
+    <a href="tools.html" class="ai-badge" style="text-decoration:none;color:inherit;" title="Built with Agentforce">
         <div class="ai-badge-inner">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-            <span>Built with AI</span>
+            <span>Built with Agentforce</span>
         </div>
-    </div>
+    </a>
 
     <a href="#main" class="skip-link">Skip to main content</a>
 
@@ -163,6 +168,11 @@
                     <span class="cmd-item-text">Tools</span>
                     <span class="cmd-item-hint">Daily workflow</span>
                 </a>
+                <a href="#certifications" class="cmd-item" data-keywords="certifications badges salesforce trailhead credentials">
+                    <span class="cmd-item-icon">🏅</span>
+                    <span class="cmd-item-text">Certifications</span>
+                    <span class="cmd-item-hint">Salesforce credentials</span>
+                </a>
                 <a href="#funfacts" class="cmd-item" data-keywords="fun facts personal hobbies">
                     <span class="cmd-item-icon">🎯</span>
                     <span class="cmd-item-text">Fun Facts</span>
@@ -183,6 +193,11 @@
                     <span class="cmd-item-text">Download Resume</span>
                     <span class="cmd-item-hint">PDF download</span>
                 </a>
+                <a href="tools.html" class="cmd-item" data-keywords="tools utilities calculator tax sip emi salary hike investment">
+                    <span class="cmd-item-icon">⚡</span>
+                    <span class="cmd-item-text">Utilities</span>
+                    <span class="cmd-item-hint">Financial calculators</span>
+                </a>
             </div>
             <div class="cmd-footer">
                 <span><kbd>↑↓</kbd> Navigate</span>
@@ -202,13 +217,16 @@
             <a href="#work" data-text="Work">Work</a>
             <a href="#about" data-text="About">About</a>
             <a href="#skills" data-text="Skills">Skills</a>
+            <a href="tools.html" data-text="Utilities">Utilities</a>
             <a href="#blog" data-text="Blog">Blog</a>
             <a href="#contact" data-text="Contact">Contact</a>
         </div>
         <div class="nav-actions">
-            <button class="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+            <button class="theme-toggle" aria-label="Cycle theme" title="Cycle theme: Dark → Light → Salesforce → Ocean">
                 <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
                 <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                <svg class="icon-cloud" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+                <svg class="icon-wave" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c1.5-3 3-4.5 4.5-4.5S9 9 10.5 9 13.5 6 15 6s3 1.5 4.5 4.5"/><path d="M2 17c1.5-3 3-4.5 4.5-4.5S9 14 10.5 14 13.5 11 15 11s3 1.5 4.5 4.5"/></svg>
             </button>
             <div class="nav-status">
                 <span class="status-dot"></span>
@@ -232,7 +250,7 @@
             <a href="#work">Work</a>
             <a href="#about">About</a>
             <a href="#skills">Skills</a>
-            <a href="#tools">Tools</a>
+            <a href="tools.html">Utilities</a>
             <a href="#blog">Blog</a>
             <a href="#contact">Contact</a>
             <a href="DhruvAgrawal_Resume.pdf" download>Resume ↓</a>
@@ -250,7 +268,7 @@
                 
                 <div class="hero-photo-wrap reveal-up" style="--delay: 0.1s">
                     <div class="photo-ring" aria-hidden="true"></div>
-                    <img src="ProfilePhoto_Dhruv_Agrawal.jpg" alt="Dhruv Agrawal - Senior Salesforce Developer" class="hero-photo" width="200" height="200">
+                    <img src="ProfilePhoto_Dhruv_Agrawal.jpg" alt="Dhruv Agrawal - Senior Salesforce Developer" class="hero-photo" width="200" height="200" fetchpriority="high">
                     <div class="photo-glow" aria-hidden="true"></div>
                     <!-- Salesforce Cloud Orbs -->
                     <div class="sf-orbs" aria-hidden="true">
@@ -407,6 +425,61 @@
                         <span class="stat-num" data-count="2">0</span>
                         <span class="stat-suffix">M+</span>
                         <span class="stat-label">Records Migrated</span>
+                    </div>
+                </div>
+
+                <!-- Trailhead Widget -->
+                <div class="trailhead-widget reveal-up" style="--delay: 0.4s">
+                    <div class="th-widget-inner">
+                        <div class="th-live-dot" aria-hidden="true"></div>
+                        <div class="th-header">
+                            <div class="th-brand">
+                                <svg class="th-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M24 4L6 18v22h12V28h12v12h12V18L24 4z" fill="url(#th-grad)" opacity="0.9"/>
+                                    <path d="M24 4L6 18l18-6 18 6L24 4z" fill="url(#th-grad2)" opacity="0.7"/>
+                                    <defs>
+                                        <linearGradient id="th-grad" x1="6" y1="4" x2="42" y2="40" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0%" stop-color="#00A1E0"/>
+                                            <stop offset="100%" stop-color="#032D60"/>
+                                        </linearGradient>
+                                        <linearGradient id="th-grad2" x1="6" y1="4" x2="42" y2="18" gradientUnits="userSpaceOnUse">
+                                            <stop offset="0%" stop-color="#00D4FF"/>
+                                            <stop offset="100%" stop-color="#00A1E0"/>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div>
+                                    <span class="th-platform">Salesforce Trailhead</span>
+                                    <span class="th-rank-badge">🏔️ Ranger</span>
+                                </div>
+                            </div>
+                            <a href="https://www.salesforce.com/trailblazer/dhruv16" target="_blank" rel="noopener noreferrer" class="th-link">
+                                View Profile <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
+                        <div class="th-stats">
+                            <div class="th-stat">
+                                <span class="th-stat-val">50K+</span>
+                                <span class="th-stat-label">Points</span>
+                            </div>
+                            <div class="th-divider" aria-hidden="true"></div>
+                            <div class="th-stat">
+                                <span class="th-stat-val">100+</span>
+                                <span class="th-stat-label">Badges</span>
+                            </div>
+                            <div class="th-divider" aria-hidden="true"></div>
+                            <div class="th-stat">
+                                <span class="th-stat-val">20+</span>
+                                <span class="th-stat-label">Trails</span>
+                            </div>
+                        </div>
+                        <div class="th-footer">
+                            <span class="th-updated">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                Last updated: June 2025
+                            </span>
+                            <span class="th-shimmer-bar" aria-hidden="true"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -677,6 +750,90 @@
             </div>
         </section>
 
+        <!-- ═══════════════════════════════════════ CERTIFICATIONS ═══════════════════════════════════════ -->
+        <section id="certifications" class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Credentials</div>
+                <h2 class="section-heading reveal-up">Salesforce Certification Wall</h2>
+                <div class="cert-wall">
+                    <div class="cert-badge reveal-up" style="--delay:0.05s" data-cert="admin">
+                        <div class="cert-badge-inner">
+                            <div class="cert-glow"></div>
+                            <div class="cert-hex">
+                                <svg viewBox="0 0 100 100" class="cert-icon">
+                                    <circle cx="50" cy="38" r="14" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M30 72c0-11 9-20 20-20s20 9 20 20" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M50 10l8 5v10l-8 5-8-5V15z" fill="currentColor" opacity="0.3"/>
+                                </svg>
+                            </div>
+                            <div class="cert-info">
+                                <span class="cert-name">Salesforce Administrator</span>
+                                <span class="cert-year">2021</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cert-badge reveal-up" style="--delay:0.15s" data-cert="dev">
+                        <div class="cert-badge-inner">
+                            <div class="cert-glow"></div>
+                            <div class="cert-hex">
+                                <svg viewBox="0 0 100 100" class="cert-icon">
+                                    <polyline points="35,35 25,50 35,65" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                                    <polyline points="65,35 75,50 65,65" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                                    <line x1="55" y1="30" x2="45" y2="70" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="cert-info">
+                                <span class="cert-name">Platform Developer I</span>
+                                <span class="cert-year">2022</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cert-badge reveal-up" style="--delay:0.25s" data-cert="ai">
+                        <div class="cert-badge-inner">
+                            <div class="cert-glow"></div>
+                            <div class="cert-hex">
+                                <svg viewBox="0 0 100 100" class="cert-icon">
+                                    <circle cx="50" cy="45" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="30" cy="60" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                                    <circle cx="70" cy="60" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                                    <line x1="42" y1="51" x2="34" y2="56" stroke="currentColor" stroke-width="1.5"/>
+                                    <line x1="58" y1="51" x2="66" y2="56" stroke="currentColor" stroke-width="1.5"/>
+                                    <circle cx="50" cy="30" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                                    <line x1="50" y1="34" x2="50" y2="35" stroke="currentColor" stroke-width="1.5"/>
+                                </svg>
+                            </div>
+                            <div class="cert-info">
+                                <span class="cert-name">AI Associate</span>
+                                <span class="cert-year">2025</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cert-badge reveal-up" style="--delay:0.35s" data-cert="agent">
+                        <div class="cert-badge-inner">
+                            <div class="cert-glow"></div>
+                            <div class="cert-hex">
+                                <svg viewBox="0 0 100 100" class="cert-icon">
+                                    <path d="M50 25L65 40V55L50 70L35 55V40Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="50" cy="47" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                                    <path d="M46 47l3 3 5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <div class="cert-info">
+                                <span class="cert-name">Agentforce Specialist</span>
+                                <span class="cert-year">2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="cert-wall-cta reveal-up" style="--delay:0.4s">
+                    <a href="https://www.salesforce.com/trailblazer/dhruv16" target="_blank" rel="noopener" class="btn-ghost magnetic" style="display:inline-flex;gap:8px;align-items:center;">
+                        <span>View Trailhead Profile</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+                    </a>
+                </p>
+            </div>
+        </section>
+
         <!-- ═══════════════════════════════════════ TOOLS ═══════════════════════════════════════ -->
         <section id="tools" class="section">
             <div class="container">
@@ -935,6 +1092,33 @@
             </div>
         </section>
 
+        <!-- ═══════════════════════════════════════ RESUME ═══════════════════════════════════════ -->
+        <section id="resume" class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Resume</div>
+                <h2 class="section-heading reveal-up">My Resume</h2>
+                <div class="resume-viewer reveal-up" style="--delay: 0.1s">
+                    <iframe
+                        src="DhruvAgrawal_Resume.pdf"
+                        class="resume-iframe"
+                        title="Dhruv Agrawal Resume"
+                        aria-label="Embedded PDF resume viewer">
+                        <p class="resume-fallback">
+                            Your browser doesn't support inline PDFs.
+                            <a href="DhruvAgrawal_Resume.pdf" download>Download the resume</a> instead.
+                        </p>
+                    </iframe>
+                </div>
+                <div class="resume-actions reveal-up" style="--delay: 0.2s">
+                    <a href="DhruvAgrawal_Resume.pdf" class="btn-primary magnetic" download>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                        <span>Download Resume</span>
+                        <div class="btn-shimmer"></div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
         <!-- ═══════════════════════════════════════ CONTACT ═══════════════════════════════════════ -->
         <section id="contact" class="section contact-section">
             <div class="container">
@@ -1008,5 +1192,11 @@
 
     <script src="script.js"></script>
     <script src="gsap-animations.js"></script>
+    <noscript>
+        <style>.cinematic-intro, #particles, #cursorTrail, .cursor-dot, .cursor-ring, .floating-code, .noise { display: none !important; }</style>
+        <div style="position:fixed;bottom:0;left:0;right:0;background:#6366f1;color:#fff;text-align:center;padding:10px;font-family:system-ui,sans-serif;font-size:14px;z-index:9999;">
+            This site works best with JavaScript enabled for animations and interactive features.
+        </div>
+    </noscript>
 </body>
 </html>
