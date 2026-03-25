@@ -7,7 +7,7 @@
     <!-- Primary Meta Tags -->
     <title>Dhruv Agrawal - Senior Salesforce Developer | Salesforce Consultant | EPAM Systems | IIT Bhilai</title>
     <meta name="title" content="Dhruv Agrawal - Senior Salesforce Developer | Salesforce Consultant | EPAM Systems | IIT Bhilai">
-    <meta name="description" content="Dhruv Agrawal is a Senior Salesforce Developer & Consultant with 5+ years experience at EPAM Systems and LTIMindtree. Specialized in Apex, Lightning Web Components, Sales Cloud, Service Cloud, and enterprise integrations. IIT Bhilai graduate.">
+    <meta name="description" content="Dhruv Agrawal is a Senior Salesforce Developer & Consultant with 5.5+ years experience at EPAM Systems and LTIMindtree. Specialized in Apex, Lightning Web Components, Sales Cloud, Service Cloud, and enterprise integrations. IIT Bhilai graduate.">
     <meta name="keywords" content="Dhruv Agrawal, Salesforce Developer, Salesforce Consultant, EPAM Systems, LTIMindtree, IIT Bhilai, Apex Developer, Lightning Web Components, Sales Cloud, Service Cloud, Amazon KFB, Salesforce Certified">
     <meta name="author" content="Dhruv Agrawal">
     <meta name="robots" content="index, follow">
@@ -18,7 +18,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dhruvagrawal-16.github.io/">
     <meta property="og:title" content="Dhruv Agrawal - Senior Salesforce Developer & Consultant | EPAM Systems">
-    <meta property="og:description" content="Senior Salesforce Developer with 5+ years experience. Specialized in Apex, LWC, Sales Cloud, Service Cloud. Currently at EPAM Systems working on Amazon KFB.">
+    <meta property="og:description" content="Senior Salesforce Developer with 5.5+ years experience. Specialized in Apex, LWC, Sales Cloud, Service Cloud. Currently at EPAM Systems working on Amazon KFB.">
     <meta property="og:image" content="https://dhruvagrawal-16.github.io/ProfilePhoto_Dhruv_Agrawal.jpg">
     <meta property="og:site_name" content="Dhruv Agrawal Portfolio">
     
@@ -26,7 +26,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://dhruvagrawal-16.github.io/">
     <meta name="twitter:title" content="Dhruv Agrawal - Senior Salesforce Developer & Consultant">
-    <meta name="twitter:description" content="Senior Salesforce Developer with 5+ years experience. Specialized in Apex, LWC, Sales Cloud, Service Cloud.">
+    <meta name="twitter:description" content="Senior Salesforce Developer with 5.5+ years experience. Specialized in Apex, LWC, Sales Cloud, Service Cloud.">
     <meta name="twitter:image" content="https://dhruvagrawal-16.github.io/ProfilePhoto_Dhruv_Agrawal.jpg">
     
     <!-- Structured Data - JSON-LD -->
@@ -38,611 +38,965 @@
       "url": "https://dhruvagrawal-16.github.io/",
       "image": "https://dhruvagrawal-16.github.io/ProfilePhoto_Dhruv_Agrawal.jpg",
       "jobTitle": "Senior Salesforce Developer",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "EPAM Systems"
-      },
-      "alumniOf": {
-        "@type": "EducationalOrganization",
-        "name": "Indian Institute of Technology Bhilai"
-      },
-      "email": "dhruvagrawal16598@gmail.com",
-      "telephone": "+918462979875",
+      "worksFor": { "@type": "Organization", "name": "EPAM Systems" },
+      "alumniOf": { "@type": "EducationalOrganization", "name": "Indian Institute of Technology Bhilai" },
       "sameAs": [
         "https://www.linkedin.com/in/dhruv-agrawal-275aba136",
         "https://github.com/dhruvagrawal-16",
         "https://www.salesforce.com/trailblazer/dhruv16"
       ],
-      "knowsAbout": [
-        "Salesforce",
-        "Apex",
-        "Lightning Web Components",
-        "Sales Cloud",
-        "Service Cloud",
-        "Experience Cloud",
-        "Field Service Lightning",
-        "REST API",
-        "MuleSoft",
-        "DocuSign",
-        "Azure AI"
-      ],
+      "knowsAbout": ["Salesforce","Apex","Lightning Web Components","Sales Cloud","Service Cloud","Experience Cloud","Field Service Lightning","REST API","MuleSoft","DocuSign","Azure AI"],
       "hasCredential": [
-        {
-          "@type": "EducationalOccupationalCredential",
-          "name": "Salesforce Certified Administrator"
-        },
-        {
-          "@type": "EducationalOccupationalCredential",
-          "name": "Salesforce Platform Developer I"
-        },
-        {
-          "@type": "EducationalOccupationalCredential",
-          "name": "Salesforce AI Associate"
-        },
-        {
-          "@type": "EducationalOccupationalCredential",
-          "name": "Salesforce Agentforce Specialist"
-        }
+        {"@type":"EducationalOccupationalCredential","name":"Salesforce Certified Administrator"},
+        {"@type":"EducationalOccupationalCredential","name":"Salesforce Platform Developer I"},
+        {"@type":"EducationalOccupationalCredential","name":"Salesforce AI Associate"},
+        {"@type":"EducationalOccupationalCredential","name":"Agentforce Specialist"}
       ]
     }
     </script>
     
-    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    
-    <a href="#main" class="skip-link">Skip to main content</a>
-    
-    <nav class="nav">
-        <div class="nav-logo">DA</div>
-        <div class="nav-links">
-            <a href="#projects">Work</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+    <!-- Cinematic Intro -->
+    <div class="cinematic-intro" id="cinematicIntro" aria-hidden="true">
+        <canvas id="introCanvas"></canvas>
+        <div class="intro-content">
+            <div class="intro-greeting">Hello, I'm</div>
+            <div class="intro-name">
+                <span class="intro-char">D</span><span class="intro-char">h</span><span class="intro-char">r</span><span class="intro-char">u</span><span class="intro-char">v</span>
+            </div>
+            <div class="intro-tagline">Salesforce Developer &middot; IIT Bhilai</div>
+            <div class="intro-loader-bar"><div class="intro-loader-fill"></div></div>
         </div>
-        <a href="DhruvAgrawal_Resume.pdf" class="nav-cta" download>Resume ↓</a>
-        <div class="nav-progress"></div>
-    </nav>
-    
-    <div class="scroll-container">
-        <!-- Hero -->
-        <section id="main" class="scene hero-scene">
-            <div class="scene-content">
-                <div class="iit-badge">🎓 Indian Institute of Technology, Bhilai</div>
-                <img src="ProfilePhoto_Dhruv_Agrawal.jpg" alt="Dhruv Agrawal - Senior Salesforce Developer" class="hero-photo">
-                <h1 class="hero-name" data-text="Dhruv Agrawal">Dhruv Agrawal</h1>
-                <p class="hero-tagline">Senior Salesforce Developer | Salesforce Consultant</p>
-                <div class="hero-meta">
-                    <span>EPAM Systems</span>
-                    <span>•</span>
-                    <span>Amazon Key for Business</span>
-                    <span>•</span>
-                    <span>5+ Years Experience</span>
-                </div>
-                <div class="hero-cta">
-                    <a href="#projects" class="btn-primary">View My Work</a>
-                    <a href="#contact" class="btn-secondary">Get In Touch</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- About -->
-        <section id="about" class="scene">
-            <div class="scene-content">
-                <h2 class="section-title">About Me</h2>
-                <div class="about-grid">
-                    <div class="about-story">
-                        <p class="large-text">Salesforce Certified professional with 5+ years of hands-on experience in Salesforce development and consulting.</p>
-                        <p>I specialize in custom development, configuration, integration, and process automation to deliver scalable and efficient Salesforce solutions. My expertise spans Apex, Lightning Web Components (LWC), Sales Cloud, Service Cloud, Experience Cloud, and Field Service Lightning.</p>
-                        <p>Currently working at EPAM Systems on Amazon's Key for Business project, implementing Sales Cloud and Experience Cloud solutions for enterprise-scale operations.</p>
-                    </div>
-                    <div class="about-highlights">
-                        <div class="highlight">
-                            <h3>Current Role</h3>
-                            <p>Senior Salesforce Developer at EPAM Systems, working on Amazon Key for Business</p>
-                        </div>
-                        <div class="highlight">
-                            <h3>Education</h3>
-                            <p>B.Tech in Computer Science from IIT Bhilai (CGPA: 8.0/10)</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="certs">
-                    <div class="cert-badge">
-                        <span class="cert-icon">✓</span>
-                        <span>Platform Developer I</span>
-                    </div>
-                    <div class="cert-badge">
-                        <span class="cert-icon">✓</span>
-                        <span>Salesforce Admin</span>
-                    </div>
-                    <div class="cert-badge">
-                        <span class="cert-icon">✓</span>
-                        <span>AI Associate</span>
-                    </div>
-                    <div class="cert-badge">
-                        <span class="cert-icon">✓</span>
-                        <span>Agentforce Specialist</span>
-                    </div>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="5">5+</span>
-                        <span class="stat-label">Years Experience</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="5">5+</span>
-                        <span class="stat-label">Implementations</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="3">3</span>
-                        <span class="stat-label">Certifications</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects -->
-        <section id="projects" class="scene">
-            <div class="scene-content">
-                <h2 class="section-title">Featured Projects</h2>
-                <div class="projects-grid">
-                    <div class="project-card featured">
-                        <span class="project-tag">Current</span>
-                        <div class="project-number">01</div>
-                        <div class="project-header">
-                            <h3>Amazon Key for Business</h3>
-                            <span class="project-date">May 2025 - Present</span>
-                        </div>
-                        <p>Salesforce Sales Cloud and Experience Cloud implementation for Amazon's KFB product lifecycle. Managing complete sales pipeline and property processing workflows.</p>
-                        <div class="project-metrics">
-                            <div class="metric">
-                                <span class="metric-value">50%</span>
-                                <span class="metric-label">Faster Processing</span>
-                            </div>
-                            <div class="metric">
-                                <span class="metric-value">40%</span>
-                                <span class="metric-label">Load Time Reduction</span>
-                            </div>
-                        </div>
-                        <div class="project-tags">
-                            <span>Sales Cloud</span>
-                            <span>Experience Cloud</span>
-                            <span>LWC</span>
-                            <span>DocuSign</span>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-number">02</div>
-                        <div class="project-header">
-                            <h3>GenAI Chatbot - Service Cloud</h3>
-                            <span class="project-date">Jan 2024 - Feb 2025</span>
-                        </div>
-                        <p>AI-powered chatbot integrated into Service Cloud Case Record Page for Honeywell. Built responsive UI using LWC and integrated Azure AI via Apex REST callouts.</p>
-                        <div class="project-metrics">
-                            <div class="metric">
-                                <span class="metric-value">30%</span>
-                                <span class="metric-label">Faster Resolution</span>
-                            </div>
-                        </div>
-                        <div class="project-tags">
-                            <span>Service Cloud</span>
-                            <span>Azure AI</span>
-                            <span>LWC</span>
-                            <span>REST API</span>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-number">03</div>
-                        <div class="project-header">
-                            <h3>Field Service Lightning Enhancement</h3>
-                            <span class="project-date">Apr 2023 - Dec 2023</span>
-                        </div>
-                        <p>Enhanced Salesforce Field Service Lightning for enterprise service operations. Designed Flows and custom LWC components, optimized Batch Apex and Triggers.</p>
-                        <div class="project-metrics">
-                            <div class="metric">
-                                <span class="metric-value">50%</span>
-                                <span class="metric-label">Processing Improvement</span>
-                            </div>
-                        </div>
-                        <div class="project-tags">
-                            <span>Field Service</span>
-                            <span>Flows</span>
-                            <span>Batch Apex</span>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-number">04</div>
-                        <div class="project-header">
-                            <h3>ERP Data Migration</h3>
-                            <span class="project-date">Jan 2022 - Mar 2023</span>
-                        </div>
-                        <p>Salesforce-based data cleanup application for ERP integration. Migrated 2M+ records using Data Loader and Batch Apex with deduplication.</p>
-                        <div class="project-metrics">
-                            <div class="metric">
-                                <span class="metric-value">40%</span>
-                                <span class="metric-label">Data Quality Improvement</span>
-                            </div>
-                        </div>
-                        <div class="project-tags">
-                            <span>Data Loader</span>
-                            <span>Batch Apex</span>
-                            <span>REST API</span>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <div class="project-number">05</div>
-                        <div class="project-header">
-                            <h3>MDM Hub - MuleSoft Integration</h3>
-                            <span class="project-date">Oct 2020 - Dec 2021</span>
-                        </div>
-                        <p>Implemented Salesforce MDM Hub as single source of truth for client data. Built MuleSoft integration flows for enterprise data synchronization.</p>
-                        <div class="project-tags">
-                            <span>MDM</span>
-                            <span>MuleSoft</span>
-                            <span>Platform Events</span>
-                            <span>Aura</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Project Timeline -->
-                <div class="project-timeline">
-                    <h3>Career Timeline</h3>
-                    <div class="timeline-track">
-                        <div class="timeline-line"></div>
-                        <div class="timeline-points">
-                            <div class="timeline-point" data-year="2020">
-                                <div class="point-dot"></div>
-                                <div class="point-label">2020</div>
-                                <div class="point-info">Joined LTIMindtree</div>
-                            </div>
-                            <div class="timeline-point" data-year="2021">
-                                <div class="point-dot"></div>
-                                <div class="point-label">2021</div>
-                                <div class="point-info">MDM Hub & MuleSoft</div>
-                            </div>
-                            <div class="timeline-point" data-year="2022">
-                                <div class="point-dot"></div>
-                                <div class="point-label">2022</div>
-                                <div class="point-info">ERP Data Migration</div>
-                            </div>
-                            <div class="timeline-point" data-year="2023">
-                                <div class="point-dot"></div>
-                                <div class="point-label">2023</div>
-                                <div class="point-info">Field Service Lightning</div>
-                            </div>
-                            <div class="timeline-point" data-year="2024">
-                                <div class="point-dot"></div>
-                                <div class="point-label">2024</div>
-                                <div class="point-info">GenAI Chatbot</div>
-                            </div>
-                            <div class="timeline-point active" data-year="2025">
-                                <div class="point-dot"></div>
-                                <div class="point-label">2025</div>
-                                <div class="point-info">EPAM - Amazon KFB</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Experience -->
-        <section id="experience" class="scene">
-            <div class="scene-content">
-                <h2 class="section-title">Experience</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-year">May 2025 - Present</div>
-                        <div class="timeline-content">
-                            <h3>Senior Salesforce Developer</h3>
-                            <h4>EPAM Systems • Amazon Key for Business</h4>
-                            <p>Working on Salesforce Sales Cloud and Experience Cloud implementation for Amazon's KFB product lifecycle.</p>
-                            <ul class="responsibilities">
-                                <li>Sales Cloud customization for complete sales pipeline management</li>
-                                <li>Experience Cloud portal development for property processing</li>
-                                <li>DocuSign integration for digital contract execution</li>
-                                <li>LWC optimization reducing page load time by 40%</li>
-                            </ul>
-                            <div class="tags">
-                                <span>Sales Cloud</span>
-                                <span>Experience Cloud</span>
-                                <span>LWC</span>
-                                <span>DocuSign</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-year">Aug 2020 - Feb 2025</div>
-                        <div class="timeline-content">
-                            <h3>Senior Salesforce Developer</h3>
-                            <h4>LTIMindtree</h4>
-                            <p>Led full SDLC implementation from discovery to deployment for Fortune 500 clients including Honeywell.</p>
-                            <ul class="responsibilities">
-                                <li>Developed AI-powered chatbot with Azure AI integration</li>
-                                <li>Enhanced Field Service Lightning applications</li>
-                                <li>Built MuleSoft integrations for MDM Hub</li>
-                                <li>Migrated 2M+ records with data cleanup processes</li>
-                            </ul>
-                            <div class="tags">
-                                <span>Apex</span>
-                                <span>LWC</span>
-                                <span>MuleSoft</span>
-                                <span>Field Service</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Skills -->
-        <section id="skills" class="scene">
-            <div class="scene-content">
-                <h2 class="section-title">Technical Skills</h2>
-                <div class="skills-container">
-                    <div class="skill-category">
-                        <h3>Salesforce Clouds</h3>
-                        <div class="skill-list">
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Sales Cloud</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="95"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Service Cloud</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="90"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Experience Cloud</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="85"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Field Service Lightning</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="80"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Development</h3>
-                        <div class="skill-list">
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Apex</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="95"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Lightning Web Components</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="90"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>SOQL/SOSL</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="92"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Flows & Process Builder</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="88"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Integration</h3>
-                        <div class="skill-list">
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>REST API</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="90"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>MuleSoft</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="75"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>DocuSign</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="80"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Azure AI</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="70"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <h3>DevOps & Tools</h3>
-                        <div class="skill-list">
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Salesforce DX (SFDX)</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="88"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Git/GitHub</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="90"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Jenkins/CI-CD</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="80"></div>
-                                </div>
-                            </div>
-                            <div class="skill-item">
-                                <div class="skill-header">
-                                    <span>Data Loader</span>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-progress" data-progress="92"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Currently Learning Section -->
-                <div class="learning-section">
-                    <h3>🚀 Currently Pursuing</h3>
-                    <div class="learning-grid">
-                        <div class="learning-item">
-                            <span class="learning-icon">📜</span>
-                            <span>Platform Developer II</span>
-                        </div>
-                        <div class="learning-item">
-                            <span class="learning-icon">🏗️</span>
-                            <span>Application Architect</span>
-                        </div>
-                        <div class="learning-item">
-                            <span class="learning-icon">🤖</span>
-                            <span>Agentforce</span>
-                        </div>
-                        <div class="learning-item">
-                            <span class="learning-icon">📊</span>
-                            <span>Data Cloud</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Education -->
-        <section class="scene">
-            <div class="scene-content">
-                <h2 class="section-title">Education & Certifications</h2>
-                <div class="education-grid">
-                    <div class="education-card iit-highlight">
-                        <div class="iit-badge-small">Premier Institute</div>
-                        <div class="edu-year">2016 - 2020</div>
-                        <h3>🏛️ IIT Bhilai</h3>
-                        <p class="degree">B.Tech Computer Science</p>
-                        <p class="grade">CGPA: 8.0/10</p>
-                    </div>
-                    <div class="education-card">
-                        <div class="edu-year">Salesforce Certifications</div>
-                        <h3>☁️ Certified</h3>
-                        <p class="degree">Platform Developer I (2022)</p>
-                        <p class="degree">Administrator (2021)</p>
-                        <p class="degree">AI Associate (2025)</p>
-                        <p class="degree">Agentforce Specialist</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact -->
-        <section id="contact" class="scene contact-scene">
-            <div class="scene-content">
-                <h2 class="section-title">Get In Touch</h2>
-                <p class="contact-text">Open to discussing Salesforce opportunities and collaborations.</p>
-                <div class="contact-methods">
-                    <a href="mailto:dhruvagrawal16598@gmail.com" class="contact-card">
-                        <div class="contact-icon">✉️</div>
-                        <div class="contact-info">
-                            <h4>Email</h4>
-                            <p>dhruvagrawal16598@gmail.com</p>
-                        </div>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                    <a href="https://www.linkedin.com/in/dhruv-agrawal-275aba136" class="contact-card" target="_blank" rel="noopener">
-                        <div class="contact-icon">💼</div>
-                        <div class="contact-info">
-                            <h4>LinkedIn</h4>
-                            <p>Connect with me</p>
-                        </div>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                    <a href="tel:+918462979875" class="contact-card">
-                        <div class="contact-icon">📞</div>
-                        <div class="contact-info">
-                            <h4>Phone</h4>
-                            <p>+91 8462979875</p>
-                        </div>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                    <a href="https://www.salesforce.com/trailblazer/dhruv16" class="contact-card" target="_blank" rel="noopener">
-                        <div class="contact-icon">☁️</div>
-                        <div class="contact-info">
-                            <h4>Trailhead</h4>
-                            <p>Salesforce Profile</p>
-                        </div>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M5 12h14M12 5l7 7-7 7"/>
-                        </svg>
-                    </a>
-                </div>
-                <a href="DhruvAgrawal_Resume.pdf" class="btn-download" download>
-                    <span>Download Resume</span>
-                </a>
-            </div>
-        </section>
     </div>
 
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-ring" aria-hidden="true"></div>
+    
+    <!-- Cursor Trail -->
+    <canvas id="cursorTrail" aria-hidden="true"></canvas>
+    
+    <!-- Noise Overlay -->
+    <div class="noise" aria-hidden="true"></div>
+    
+    <!-- Particle Canvas -->
+    <canvas id="particles" aria-hidden="true"></canvas>
+    
+    <!-- Mesh Gradient Background -->
+    <div class="mesh-bg" aria-hidden="true">
+        <div class="mesh-blob mesh-1"></div>
+        <div class="mesh-blob mesh-2"></div>
+        <div class="mesh-blob mesh-3"></div>
+    </div>
+
+    <!-- Floating Code Snippets -->
+    <div class="floating-code" aria-hidden="true">
+        <div class="code-snippet cs-1"><code>const apex = await deploy();</code></div>
+        <div class="code-snippet cs-2"><code>@AuraEnabled(cacheable=true)</code></div>
+        <div class="code-snippet cs-3"><code>SELECT Id FROM Account</code></div>
+        <div class="code-snippet cs-4"><code>lightning-record-form</code></div>
+        <div class="code-snippet cs-5"><code>trigger.new.forEach()</code></div>
+        <div class="code-snippet cs-6"><code>Platform.emit(event)</code></div>
+    </div>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" aria-label="Back to top" title="Back to top">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </button>
+
+    <!-- AI Built Badge -->
+    <div class="ai-badge" aria-hidden="true">
+        <div class="ai-badge-inner">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span>Built with AI</span>
+        </div>
+    </div>
+
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <!-- Command Palette -->
+    <div class="cmd-palette" id="cmdPalette" role="dialog" aria-label="Command palette" aria-hidden="true">
+        <div class="cmd-overlay"></div>
+        <div class="cmd-modal">
+            <div class="cmd-input-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input type="text" class="cmd-input" id="cmdInput" placeholder="Type to navigate..." autocomplete="off" aria-label="Search navigation">
+                <kbd>ESC</kbd>
+            </div>
+            <div class="cmd-results" id="cmdResults">
+                <a href="#main" class="cmd-item" data-keywords="home hero top">
+                    <span class="cmd-item-icon">🏠</span>
+                    <span class="cmd-item-text">Home</span>
+                    <span class="cmd-item-hint">Hero section</span>
+                </a>
+                <a href="#about" class="cmd-item" data-keywords="about me bio story">
+                    <span class="cmd-item-icon">👤</span>
+                    <span class="cmd-item-text">About</span>
+                    <span class="cmd-item-hint">Background & story</span>
+                </a>
+                <a href="#work" class="cmd-item" data-keywords="work projects portfolio">
+                    <span class="cmd-item-icon">💼</span>
+                    <span class="cmd-item-text">Work</span>
+                    <span class="cmd-item-hint">Featured projects</span>
+                </a>
+                <a href="#experience" class="cmd-item" data-keywords="experience career jobs timeline">
+                    <span class="cmd-item-icon">📋</span>
+                    <span class="cmd-item-text">Experience</span>
+                    <span class="cmd-item-hint">Career journey</span>
+                </a>
+                <a href="#skills" class="cmd-item" data-keywords="skills tech stack tools">
+                    <span class="cmd-item-icon">⚡</span>
+                    <span class="cmd-item-text">Skills</span>
+                    <span class="cmd-item-hint">Technical arsenal</span>
+                </a>
+                <a href="#tools" class="cmd-item" data-keywords="tools daily workflow ide">
+                    <span class="cmd-item-icon">🛠️</span>
+                    <span class="cmd-item-text">Tools</span>
+                    <span class="cmd-item-hint">Daily workflow</span>
+                </a>
+                <a href="#funfacts" class="cmd-item" data-keywords="fun facts personal hobbies">
+                    <span class="cmd-item-icon">🎯</span>
+                    <span class="cmd-item-text">Fun Facts</span>
+                    <span class="cmd-item-hint">Beyond the code</span>
+                </a>
+                <a href="#blog" class="cmd-item" data-keywords="blog articles writing posts">
+                    <span class="cmd-item-icon">📝</span>
+                    <span class="cmd-item-text">Blog</span>
+                    <span class="cmd-item-hint">Articles & insights</span>
+                </a>
+                <a href="#contact" class="cmd-item" data-keywords="contact email phone linkedin">
+                    <span class="cmd-item-icon">📬</span>
+                    <span class="cmd-item-text">Contact</span>
+                    <span class="cmd-item-hint">Get in touch</span>
+                </a>
+                <a href="DhruvAgrawal_Resume.pdf" class="cmd-item" data-keywords="resume cv download pdf" download>
+                    <span class="cmd-item-icon">📄</span>
+                    <span class="cmd-item-text">Download Resume</span>
+                    <span class="cmd-item-hint">PDF download</span>
+                </a>
+            </div>
+            <div class="cmd-footer">
+                <span><kbd>↑↓</kbd> Navigate</span>
+                <span><kbd>↵</kbd> Open</span>
+                <span><kbd>ESC</kbd> Close</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <a href="#main" class="nav-logo" aria-label="Dhruv Agrawal - Home">
+            <span class="logo-text">DA</span>
+            <span class="logo-dot"></span>
+        </a>
+        <div class="nav-links">
+            <a href="#work" data-text="Work">Work</a>
+            <a href="#about" data-text="About">About</a>
+            <a href="#skills" data-text="Skills">Skills</a>
+            <a href="#blog" data-text="Blog">Blog</a>
+            <a href="#contact" data-text="Contact">Contact</a>
+        </div>
+        <div class="nav-actions">
+            <button class="theme-toggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+                <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            </button>
+            <div class="nav-status">
+                <span class="status-dot"></span>
+                <span class="status-text">Available for hire</span>
+            </div>
+            <a href="DhruvAgrawal_Resume.pdf" class="nav-cta" download>
+                <span>Resume</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+            </a>
+        </div>
+        <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="cmd-hint" aria-hidden="true"><kbd>⌘</kbd><kbd>K</kbd></div>
+        <div class="nav-progress" aria-hidden="true"></div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" role="dialog" aria-label="Mobile navigation">
+        <div class="mobile-menu-links">
+            <a href="#work">Work</a>
+            <a href="#about">About</a>
+            <a href="#skills">Skills</a>
+            <a href="#tools">Tools</a>
+            <a href="#blog">Blog</a>
+            <a href="#contact">Contact</a>
+            <a href="DhruvAgrawal_Resume.pdf" download>Resume ↓</a>
+        </div>
+    </div>
+
+    <main>
+        <!-- ═══════════════════════════════════════ HERO ═══════════════════════════════════════ -->
+        <section id="main" class="hero">
+            <div class="hero-content">
+                <div class="hero-badge reveal-up">
+                    <span class="badge-dot"></span>
+                    IIT Bhilai &middot; B.Tech Computer Science
+                </div>
+                
+                <div class="hero-photo-wrap reveal-up" style="--delay: 0.1s">
+                    <div class="photo-ring" aria-hidden="true"></div>
+                    <img src="ProfilePhoto_Dhruv_Agrawal.jpg" alt="Dhruv Agrawal - Senior Salesforce Developer" class="hero-photo" width="200" height="200">
+                    <div class="photo-glow" aria-hidden="true"></div>
+                    <!-- Salesforce Cloud Orbs -->
+                    <div class="sf-orbs" aria-hidden="true">
+                        <div class="sf-orb sf-orb-1" title="Sales Cloud">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19.35 10.04A7.49 7.49 0 0012 4a7.48 7.48 0 00-6.33 3.47A5.99 5.99 0 001 13a6 6 0 006 6h12a5 5 0 001.35-9.96z"/></svg>
+                        </div>
+                        <div class="sf-orb sf-orb-2" title="Apex">
+                            <span class="sf-orb-text">&lt;/&gt;</span>
+                        </div>
+                        <div class="sf-orb sf-orb-3" title="Lightning">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <h1 class="hero-title reveal-up" style="--delay: 0.2s">
+                    <span class="title-line" data-scramble>Dhruv</span>
+                    <span class="title-line" data-scramble>Agrawal</span>
+                </h1>
+
+                <div class="hero-role reveal-up" style="--delay: 0.35s">
+                    <span class="role-tag">Senior Salesforce Developer</span>
+                    <span class="role-divider">/</span>
+                    <span class="role-tag">Consultant</span>
+                </div>
+
+                <div class="hero-meta reveal-up" style="--delay: 0.45s">
+                    <span class="meta-item"><span class="meta-icon">◆</span> EPAM Systems</span>
+                    <span class="meta-item"><span class="meta-icon">◆</span> Amazon KFB</span>
+                    <span class="meta-item"><span class="meta-icon">◆</span> 5.5+ Years</span>
+                </div>
+
+                <div class="hero-cta reveal-up" style="--delay: 0.55s">
+                    <a href="#work" class="btn-primary magnetic">
+                        <span>View My Work</span>
+                        <div class="btn-shimmer"></div>
+                    </a>
+                    <a href="#contact" class="btn-ghost magnetic">
+                        <span>Get In Touch</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-scroll-hint" aria-hidden="true">
+                <div class="scroll-line"></div>
+                <span>Scroll</span>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ TECH MARQUEE ═══════════════════════════════════════ -->
+        <div class="marquee-section" aria-hidden="true">
+            <div class="marquee-track">
+                <div class="marquee-content">
+                    <span>Apex</span><span class="marquee-dot">◆</span>
+                    <span>LWC</span><span class="marquee-dot">◆</span>
+                    <span>Sales Cloud</span><span class="marquee-dot">◆</span>
+                    <span>Service Cloud</span><span class="marquee-dot">◆</span>
+                    <span>Experience Cloud</span><span class="marquee-dot">◆</span>
+                    <span>REST API</span><span class="marquee-dot">◆</span>
+                    <span>MuleSoft</span><span class="marquee-dot">◆</span>
+                    <span>DocuSign</span><span class="marquee-dot">◆</span>
+                    <span>Azure AI</span><span class="marquee-dot">◆</span>
+                    <span>SOQL</span><span class="marquee-dot">◆</span>
+                    <span>Flows</span><span class="marquee-dot">◆</span>
+                    <span>Field Service</span><span class="marquee-dot">◆</span>
+                    <span>Data Cloud</span><span class="marquee-dot">◆</span>
+                    <span>Agentforce</span><span class="marquee-dot">◆</span>
+                </div>
+                <div class="marquee-content">
+                    <span>Apex</span><span class="marquee-dot">◆</span>
+                    <span>LWC</span><span class="marquee-dot">◆</span>
+                    <span>Sales Cloud</span><span class="marquee-dot">◆</span>
+                    <span>Service Cloud</span><span class="marquee-dot">◆</span>
+                    <span>Experience Cloud</span><span class="marquee-dot">◆</span>
+                    <span>REST API</span><span class="marquee-dot">◆</span>
+                    <span>MuleSoft</span><span class="marquee-dot">◆</span>
+                    <span>DocuSign</span><span class="marquee-dot">◆</span>
+                    <span>Azure AI</span><span class="marquee-dot">◆</span>
+                    <span>SOQL</span><span class="marquee-dot">◆</span>
+                    <span>Flows</span><span class="marquee-dot">◆</span>
+                    <span>Field Service</span><span class="marquee-dot">◆</span>
+                    <span>Data Cloud</span><span class="marquee-dot">◆</span>
+                    <span>Agentforce</span><span class="marquee-dot">◆</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════ ABOUT ═══════════════════════════════════════ -->
+        <section id="about" class="section">
+            <div class="container">
+                <div class="section-label reveal-up">About</div>
+                <div class="about-layout">
+                    <div class="about-text">
+                        <h2 class="about-headline reveal-up">
+                            I build <em>scalable</em> Salesforce solutions that drive <em>real business impact</em>.
+                        </h2>
+                        <div class="about-body reveal-up" style="--delay: 0.1s">
+                            <p>Salesforce Certified professional with 5.5+ years of hands-on experience in Salesforce development, consulting, and end-to-end solution architecture. I specialize in custom development, configuration, integration, and process automation.</p>
+                            <p>My expertise spans Apex, Lightning Web Components, Sales Cloud, Service Cloud, Experience Cloud, and Field Service Lightning. Strong track record of leading implementations for Fortune 500 clients including Amazon and Honeywell. Currently at EPAM Systems on Amazon's Key for Business project.</p>
+                        </div>
+                    </div>
+                    <div class="about-cards">
+                        <div class="info-card reveal-up" style="--delay: 0.15s">
+                            <div class="card-accent"></div>
+                            <span class="card-label">Current</span>
+                            <h3>EPAM Systems</h3>
+                            <p>Senior Salesforce Developer working on Amazon Key for Business</p>
+                        </div>
+                        <div class="info-card reveal-up" style="--delay: 0.2s">
+                            <div class="card-accent"></div>
+                            <span class="card-label">Education</span>
+                            <h3>IIT Bhilai</h3>
+                            <p>B.Tech Computer Science &middot; CGPA: 8.0/10</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="certs-row reveal-up" style="--delay: 0.25s">
+                    <div class="cert-chip">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        Platform Developer I
+                    </div>
+                    <div class="cert-chip">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        Salesforce Admin
+                    </div>
+                    <div class="cert-chip">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        AI Associate
+                    </div>
+                    <div class="cert-chip">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                        Agentforce Specialist
+                    </div>
+                </div>
+
+                <div class="stats-row reveal-up" style="--delay: 0.3s">
+                    <div class="stat">
+                        <span class="stat-num" data-count="5">0</span>
+                        <span class="stat-suffix">.5+</span>
+                        <span class="stat-label">Years Experience</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-num" data-count="5">0</span>
+                        <span class="stat-suffix">+</span>
+                        <span class="stat-label">Implementations</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-num" data-count="4">0</span>
+                        <span class="stat-suffix"></span>
+                        <span class="stat-label">Certifications</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-num" data-count="2">0</span>
+                        <span class="stat-suffix">M+</span>
+                        <span class="stat-label">Records Migrated</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ WORK ═══════════════════════════════════════ -->
+        <section id="work" class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Featured Work</div>
+                <h2 class="section-heading reveal-up">Projects that moved the needle.</h2>
+
+                <div class="projects-stack">
+                    <!-- Project 1 -->
+                    <article class="project-card-v2 featured reveal-up" style="--delay: 0.1s">
+                        <div class="pcard-inner gradient-border">
+                            <div class="pcard-number">01</div>
+                            <div class="pcard-badge">Current</div>
+                            <div class="pcard-content">
+                                <div class="pcard-header">
+                                    <h3>Amazon Key for Business</h3>
+                                    <time>March 2025 — Present</time>
+                                </div>
+                                <p>Salesforce Sales Cloud and Experience Cloud implementation for Amazon's KFB product lifecycle. Managing complete sales pipeline and property processing workflows.</p>
+                                <div class="pcard-metrics">
+                                    <div class="pmetric">
+                                        <span class="pmetric-val">50%</span>
+                                        <span class="pmetric-label">Faster Processing</span>
+                                    </div>
+                                    <div class="pmetric">
+                                        <span class="pmetric-val">40%</span>
+                                        <span class="pmetric-label">Load Time Reduction</span>
+                                    </div>
+                                </div>
+                                <div class="pcard-tags">
+                                    <span>Sales Cloud</span><span>Experience Cloud</span><span>LWC</span><span>DocuSign</span>
+                                </div>
+                                <button class="case-study-btn magnetic" data-project="1">View Case Study →</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Project 2 -->
+                    <article class="project-card-v2 reveal-up" style="--delay: 0.15s">
+                        <div class="pcard-inner gradient-border">
+                            <div class="pcard-number">02</div>
+                            <div class="pcard-content">
+                                <div class="pcard-header">
+                                    <h3>GenAI Chatbot — Service Cloud</h3>
+                                    <time>Jan 2024 — Feb 2025</time>
+                                </div>
+                                <p>AI-powered chatbot integrated into Service Cloud Case Record Page for Honeywell. Built responsive UI using LWC and integrated Azure AI via Apex REST callouts.</p>
+                                <div class="pcard-metrics">
+                                    <div class="pmetric">
+                                        <span class="pmetric-val">30%</span>
+                                        <span class="pmetric-label">Faster Resolution</span>
+                                    </div>
+                                </div>
+                                <div class="pcard-tags">
+                                    <span>Service Cloud</span><span>Azure AI</span><span>LWC</span><span>REST API</span>
+                                </div>
+                                <button class="case-study-btn magnetic" data-project="2">View Case Study →</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Project 3 -->
+                    <article class="project-card-v2 reveal-up" style="--delay: 0.2s">
+                        <div class="pcard-inner gradient-border">
+                            <div class="pcard-number">03</div>
+                            <div class="pcard-content">
+                                <div class="pcard-header">
+                                    <h3>Field Service Lightning Enhancement</h3>
+                                    <time>Apr 2023 — Dec 2023</time>
+                                </div>
+                                <p>Enhanced Salesforce Field Service Lightning for enterprise service operations. Designed Flows and custom LWC components, optimized Batch Apex and Triggers.</p>
+                                <div class="pcard-metrics">
+                                    <div class="pmetric">
+                                        <span class="pmetric-val">50%</span>
+                                        <span class="pmetric-label">Processing Improvement</span>
+                                    </div>
+                                </div>
+                                <div class="pcard-tags">
+                                    <span>Field Service</span><span>Flows</span><span>Batch Apex</span>
+                                </div>
+                                <button class="case-study-btn magnetic" data-project="3">View Case Study →</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Project 4 -->
+                    <article class="project-card-v2 reveal-up" style="--delay: 0.25s">
+                        <div class="pcard-inner gradient-border">
+                            <div class="pcard-number">04</div>
+                            <div class="pcard-content">
+                                <div class="pcard-header">
+                                    <h3>ERP Data Migration</h3>
+                                    <time>Jan 2022 — Mar 2023</time>
+                                </div>
+                                <p>Salesforce-based data cleanup application for ERP integration. Migrated 2M+ records using Data Loader and Batch Apex with deduplication.</p>
+                                <div class="pcard-metrics">
+                                    <div class="pmetric">
+                                        <span class="pmetric-val">40%</span>
+                                        <span class="pmetric-label">Data Quality Improvement</span>
+                                    </div>
+                                </div>
+                                <div class="pcard-tags">
+                                    <span>Data Loader</span><span>Batch Apex</span><span>REST API</span>
+                                </div>
+                                <button class="case-study-btn magnetic" data-project="4">View Case Study →</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Project 5 -->
+                    <article class="project-card-v2 reveal-up" style="--delay: 0.3s">
+                        <div class="pcard-inner gradient-border">
+                            <div class="pcard-number">05</div>
+                            <div class="pcard-content">
+                                <div class="pcard-header">
+                                    <h3>MDM Hub — MuleSoft Integration</h3>
+                                    <time>Oct 2020 — Dec 2021</time>
+                                </div>
+                                <p>Implemented Salesforce MDM Hub as single source of truth for client data. Built MuleSoft integration flows for enterprise data synchronization.</p>
+                                <div class="pcard-tags">
+                                    <span>MDM</span><span>MuleSoft</span><span>Platform Events</span><span>Aura</span>
+                                </div>
+                                <button class="case-study-btn magnetic" data-project="5">View Case Study →</button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ EXPERIENCE ═══════════════════════════════════════ -->
+        <section id="experience" class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Experience</div>
+                <h2 class="section-heading reveal-up">Career Journey</h2>
+
+                <div class="exp-timeline">
+                    <div class="exp-line" aria-hidden="true"><div class="exp-line-fill"></div></div>
+                    
+                    <div class="exp-item reveal-up" style="--delay: 0.1s">
+                        <div class="exp-dot"><div class="exp-dot-inner"></div></div>
+                        <div class="exp-date">March 2025 — Present</div>
+                        <div class="exp-card">
+                            <h3>Senior Salesforce Developer</h3>
+                            <h4>EPAM Systems &middot; Amazon Key for Business</h4>
+                            <p>Working on Salesforce Sales Cloud and Experience Cloud implementation for Amazon's KFB product lifecycle.</p>
+                            <ul>
+                                <li>Sales Cloud customization managing complete sales pipeline for KFB products</li>
+                                <li>Experience Cloud portal achieving 50% faster property processing</li>
+                                <li>DocuSign integration enabling 100% digital contract execution</li>
+                                <li>Optimized LWC components and SOQL queries reducing page load time by 40%</li>
+                                <li>Integrated Salesforce with Amazon internal systems using REST APIs</li>
+                                <li>Built custom reports and dashboards for actionable sales analytics</li>
+                            </ul>
+                            <div class="exp-tags">
+                                <span>Sales Cloud</span><span>Experience Cloud</span><span>LWC</span><span>DocuSign</span><span>REST APIs</span><span>SFDX</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exp-item reveal-up" style="--delay: 0.2s">
+                        <div class="exp-dot"><div class="exp-dot-inner"></div></div>
+                        <div class="exp-date">Aug 2020 — Feb 2025</div>
+                        <div class="exp-card">
+                            <h3>Senior Salesforce Developer</h3>
+                            <h4>LTIMindtree &middot; 4 years 7 months</h4>
+                            <p>Led full SDLC implementation from discovery to deployment for Fortune 500 clients including Honeywell.</p>
+                            <ul>
+                                <li>AI-powered chatbot with Azure AI achieving 30% faster case resolution</li>
+                                <li>Field Service Lightning enhancement improving technician productivity by 25%</li>
+                                <li>MuleSoft integration flows for MDM Hub as single source of truth</li>
+                                <li>Migrated 2M+ records with deduplication and data cleanup</li>
+                                <li>Built real-time REST APIs reducing data inconsistencies by 40%</li>
+                            </ul>
+                            <div class="exp-tags">
+                                <span>Apex</span><span>LWC</span><span>MuleSoft</span><span>Field Service</span><span>Azure AI</span><span>REST API</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ SKILLS ═══════════════════════════════════════ -->
+        <section id="skills" class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Skills</div>
+                <h2 class="section-heading reveal-up">Technical Arsenal</h2>
+
+                <div class="skills-grid">
+                    <div class="skill-group reveal-up" style="--delay: 0.1s">
+                        <h3 class="skill-group-title">Salesforce Clouds</h3>
+                        <div class="skill-bars">
+                            <div class="sbar"><span class="sbar-name">Sales Cloud</span><div class="sbar-track"><div class="sbar-fill" data-width="95"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">Service Cloud</span><div class="sbar-track"><div class="sbar-fill" data-width="90"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">Experience Cloud</span><div class="sbar-track"><div class="sbar-fill" data-width="85"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">Field Service Lightning</span><div class="sbar-track"><div class="sbar-fill" data-width="80"></div></div></div>
+                        </div>
+                    </div>
+                    <div class="skill-group reveal-up" style="--delay: 0.15s">
+                        <h3 class="skill-group-title">Development</h3>
+                        <div class="skill-bars">
+                            <div class="sbar"><span class="sbar-name">Apex</span><div class="sbar-track"><div class="sbar-fill" data-width="95"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">Lightning Web Components</span><div class="sbar-track"><div class="sbar-fill" data-width="90"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">SOQL / SOSL</span><div class="sbar-track"><div class="sbar-fill" data-width="92"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">Flows & Process Builder</span><div class="sbar-track"><div class="sbar-fill" data-width="88"></div></div></div>
+                        </div>
+                    </div>
+                    <div class="skill-group reveal-up" style="--delay: 0.2s">
+                        <h3 class="skill-group-title">Integration</h3>
+                        <div class="skill-bars">
+                            <div class="sbar"><span class="sbar-name">REST API</span><div class="sbar-track"><div class="sbar-fill" data-width="90"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">MuleSoft</span><div class="sbar-track"><div class="sbar-fill" data-width="75"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">DocuSign</span><div class="sbar-track"><div class="sbar-fill" data-width="80"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">Azure AI</span><div class="sbar-track"><div class="sbar-fill" data-width="70"></div></div></div>
+                        </div>
+                    </div>
+                    <div class="skill-group reveal-up" style="--delay: 0.25s">
+                        <h3 class="skill-group-title">DevOps & Tools</h3>
+                        <div class="skill-bars">
+                            <div class="sbar"><span class="sbar-name">Salesforce DX</span><div class="sbar-track"><div class="sbar-fill" data-width="88"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">Git / GitHub</span><div class="sbar-track"><div class="sbar-fill" data-width="90"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">Jenkins / CI-CD / Gearset</span><div class="sbar-track"><div class="sbar-fill" data-width="82"></div></div></div>
+                            <div class="sbar"><span class="sbar-name">Data Loader / Migration</span><div class="sbar-track"><div class="sbar-fill" data-width="92"></div></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="learning-banner reveal-up" style="--delay: 0.3s">
+                    <h3>Currently Pursuing</h3>
+                    <div class="learning-chips">
+                        <span class="lchip"><span class="lchip-icon">📜</span> Platform Developer II</span>
+                        <span class="lchip"><span class="lchip-icon">💻</span> JavaScript Developer I</span>
+                        <span class="lchip"><span class="lchip-icon">🤖</span> Agentforce</span>
+                        <span class="lchip"><span class="lchip-icon">📊</span> Data Cloud</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ EDUCATION ═══════════════════════════════════════ -->
+        <section class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Education</div>
+                <h2 class="section-heading reveal-up">Education & Certifications</h2>
+                <div class="edu-grid">
+                    <div class="edu-card edu-highlight reveal-up" style="--delay: 0.1s">
+                        <div class="edu-card-glow" aria-hidden="true"></div>
+                        <span class="edu-badge">Premier Institute</span>
+                        <time>2016 — 2020</time>
+                        <h3>IIT Bhilai</h3>
+                        <p>B.Tech Computer Science</p>
+                        <p class="edu-grade">CGPA: 8.0 / 10</p>
+                    </div>
+                    <div class="edu-card reveal-up" style="--delay: 0.15s">
+                        <time>Salesforce Certifications</time>
+                        <h3>Certified Professional</h3>
+                        <p>Platform Developer I (2022)</p>
+                        <p>Administrator (2021)</p>
+                        <p>Agentforce Specialist (2025)</p>
+                        <p>AI Associate (2025)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ TOOLS ═══════════════════════════════════════ -->
+        <section id="tools" class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Toolbox</div>
+                <h2 class="section-heading reveal-up">Tools I use daily.</h2>
+                <div class="tools-grid">
+                    <div class="tool-item reveal-up" style="--delay:0.05s" data-tooltip="Primary IDE for Salesforce development">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+                        <span class="tool-name">VS Code</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.1s" data-tooltip="Salesforce CLI & development toolkit">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+                        <span class="tool-name">Salesforce DX</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.15s" data-tooltip="Version control & collaboration">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 3v6M12 15v6"/><path d="M5.63 5.63l4.24 4.24M14.13 14.13l4.24 4.24"/></svg></div>
+                        <span class="tool-name">Git / GitHub</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.2s" data-tooltip="API testing & debugging">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+                        <span class="tool-name">Postman</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.25s" data-tooltip="CI/CD pipeline automation">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                        <span class="tool-name">Jenkins</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.3s" data-tooltip="Bulk data operations">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+                        <span class="tool-name">Data Loader</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.35s" data-tooltip="Integration platform">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></div>
+                        <span class="tool-name">MuleSoft</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.4s" data-tooltip="Project management & tracking">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+                        <span class="tool-name">Jira</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.45s" data-tooltip="Salesforce deployment & release management">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></div>
+                        <span class="tool-name">Gearset</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.5s" data-tooltip="Version control & code hosting">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 22V18C16 16.9 16.5 15.9 15.5 15C18.3 14.7 21 13.6 21 9C21 7.7 20.5 6.5 19.7 5.5C19.9 4.8 19.9 3.8 19.5 3C19.5 3 18.5 2.7 16 4.3C14.1 3.8 12 3.8 10 4.3C7.5 2.7 6.5 3 6.5 3C6.1 3.8 6.1 4.8 6.3 5.5C5.5 6.5 5 7.7 5 9C5 13.6 7.7 14.7 10.5 15C9.5 15.9 9 16.9 9 18V22"/></svg></div>
+                        <span class="tool-name">Bitbucket</span>
+                    </div>
+                    <div class="tool-item reveal-up" style="--delay:0.55s" data-tooltip="AI-powered coding assistant">
+                        <div class="tool-icon-wrap"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+                        <span class="tool-name">Amazon Q</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ FUN FACTS ═══════════════════════════════════════ -->
+        <section id="funfacts" class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Beyond Code</div>
+                <h2 class="section-heading reveal-up">Fun facts about me.</h2>
+                <div class="funfacts-grid">
+                    <div class="ff-card reveal-up glow-card" style="--delay:0.05s">
+                        <div class="ff-emoji">☕</div>
+                        <h3>Coffee Powered</h3>
+                        <p>Estimated 2000+ cups of coffee consumed while debugging Apex triggers.</p>
+                    </div>
+                    <div class="ff-card reveal-up glow-card" style="--delay:0.1s">
+                        <div class="ff-emoji">🎓</div>
+                        <h3>IIT Bhilai Pioneer</h3>
+                        <p>Part of the founding batch at IIT Bhilai — helped shape the culture from day one.</p>
+                    </div>
+                    <div class="ff-card reveal-up glow-card" style="--delay:0.15s">
+                        <div class="ff-emoji">🌍</div>
+                        <h3>Global Impact</h3>
+                        <p>Solutions I've built are used across 3+ countries by Fortune 500 companies.</p>
+                    </div>
+                    <div class="ff-card reveal-up glow-card" style="--delay:0.2s">
+                        <div class="ff-emoji">🎮</div>
+                        <h3>Gamer at Heart</h3>
+                        <p>When not coding, you'll find me strategizing in competitive games.</p>
+                    </div>
+                    <div class="ff-card reveal-up glow-card" style="--delay:0.25s">
+                        <div class="ff-emoji">📚</div>
+                        <h3>Lifelong Learner</h3>
+                        <p>Currently pursuing 2 more Salesforce certifications while working full-time.</p>
+                    </div>
+                    <div class="ff-card reveal-up glow-card" style="--delay:0.3s">
+                        <div class="ff-emoji">🚀</div>
+                        <h3>Early Adopter</h3>
+                        <p>Always first to explore new Salesforce features — Agentforce, Data Cloud, you name it.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ BLOG ═══════════════════════════════════════ -->
+        <section id="blog" class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Insights</div>
+                <h2 class="section-heading reveal-up">Articles & Thoughts</h2>
+                <div class="blog-grid">
+                    <article class="blog-card glow-card reveal-up" style="--delay:0.05s">
+                        <div class="blog-card-top">
+                            <span class="blog-tag">Salesforce</span>
+                            <time>Coming Soon</time>
+                        </div>
+                        <h3>Optimizing LWC Performance at Scale</h3>
+                        <p>Deep dive into techniques that reduced page load times by 40% on the Amazon KFB project.</p>
+                        <div class="blog-footer">
+                            <span class="blog-read">Read Article →</span>
+                        </div>
+                    </article>
+                    <article class="blog-card glow-card reveal-up" style="--delay:0.1s">
+                        <div class="blog-card-top">
+                            <span class="blog-tag">AI</span>
+                            <time>Coming Soon</time>
+                        </div>
+                        <h3>Building AI Chatbots with Azure AI + Service Cloud</h3>
+                        <p>How we integrated generative AI into Salesforce to achieve 30% faster case resolution.</p>
+                        <div class="blog-footer">
+                            <span class="blog-read">Read Article →</span>
+                        </div>
+                    </article>
+                    <article class="blog-card glow-card reveal-up" style="--delay:0.15s">
+                        <div class="blog-card-top">
+                            <span class="blog-tag">Integration</span>
+                            <time>Coming Soon</time>
+                        </div>
+                        <h3>MuleSoft + Salesforce: Building an MDM Hub</h3>
+                        <p>Lessons learned from building a master data management hub as a single source of truth.</p>
+                        <div class="blog-footer">
+                            <span class="blog-read">Read Article →</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ SHOWCASE ═══════════════════════════════════════ -->
+        <section class="section showcase-section" id="showcase">
+            <div class="container">
+                <div class="section-label reveal-up">Showcase</div>
+                <h2 class="section-heading reveal-up">What AI + Human creativity looks like.</h2>
+            </div>
+            <div class="hscroll-outer">
+                <div class="hscroll-wrap" id="hscrollWrap">
+                    <div class="hscroll-track" id="hscrollTrack">
+                    <div class="hscroll-card gradient-border">
+                        <div class="hsc-number">01</div>
+                        <h3>Custom Cursor</h3>
+                        <p>Magnetic dot + trailing ring with blend mode effects. Reacts to interactive elements.</p>
+                    </div>
+                    <div class="hscroll-card gradient-border">
+                        <div class="hsc-number">02</div>
+                        <h3>Particle Constellation</h3>
+                        <p>Interactive canvas particles that scatter on mouse proximity and form connection lines.</p>
+                    </div>
+                    <div class="hscroll-card gradient-border">
+                        <div class="hsc-number">03</div>
+                        <h3>Text Scramble</h3>
+                        <p>Matrix-style character scramble reveal on the hero title using random character cycling.</p>
+                    </div>
+                    <div class="hscroll-card gradient-border">
+                        <div class="hsc-number">04</div>
+                        <h3>Command Palette</h3>
+                        <p>VS Code-style ⌘K navigation with fuzzy search, keyboard nav, and instant section jumping.</p>
+                    </div>
+                    <div class="hscroll-card gradient-border">
+                        <div class="hsc-number">05</div>
+                        <h3>3D Card Tilt</h3>
+                        <p>Perspective-based mouse tracking on project cards with dynamic shadow and glow effects.</p>
+                    </div>
+                    <div class="hscroll-card gradient-border">
+                        <div class="hsc-number">06</div>
+                        <h3>Theme Engine</h3>
+                        <p>Dark/light mode with CSS custom properties, localStorage persistence, and smooth transitions.</p>
+                    </div>
+                    <div class="hscroll-card gradient-border">
+                        <div class="hsc-number">07</div>
+                        <h3>Cinematic Intro</h3>
+                        <p>Full-screen particle explosion with staggered character animation and morphing loader.</p>
+                    </div>
+                    <div class="hscroll-card gradient-border">
+                        <div class="hsc-number">08</div>
+                        <h3>Cursor Trail</h3>
+                        <p>Canvas-based fading particle trail that follows mouse movement with physics-based decay.</p>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="container" style="margin-top: 32px; text-align: center;">
+                <p class="hscroll-hint reveal-up" style="color: var(--text-secondary); font-size: 0.9rem;">Scroll to explore the features →</p>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ TESTIMONIALS ═══════════════════════════════════════ -->
+        <section class="section">
+            <div class="container">
+                <div class="section-label reveal-up">Testimonials</div>
+                <h2 class="section-heading reveal-up">What people say.</h2>
+                <div class="testimonials-carousel">
+                    <div class="testimonial-track" id="testimonialTrack">
+                        <div class="testimonial-slide">
+                            <div class="tcard glow-card">
+                                <div class="tcard-quote">"</div>
+                                <p class="tcard-text">Dhruv consistently delivers high-quality Salesforce solutions. His deep understanding of Apex and LWC, combined with his ability to translate complex business requirements into elegant technical solutions, makes him an invaluable team member.</p>
+                                <div class="tcard-author">
+                                    <div class="tcard-avatar">PM</div>
+                                    <div>
+                                        <h4>Project Manager</h4>
+                                        <p>EPAM Systems</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-slide">
+                            <div class="tcard glow-card">
+                                <div class="tcard-quote">"</div>
+                                <p class="tcard-text">Working with Dhruv on the GenAI Chatbot project was exceptional. He brought innovative ideas to the table and his integration of Azure AI with Service Cloud was seamless. The 30% improvement in case resolution time speaks for itself.</p>
+                                <div class="tcard-author">
+                                    <div class="tcard-avatar">TL</div>
+                                    <div>
+                                        <h4>Tech Lead</h4>
+                                        <p>LTIMindtree — Honeywell</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-slide">
+                            <div class="tcard glow-card">
+                                <div class="tcard-quote">"</div>
+                                <p class="tcard-text">Dhruv's expertise in data migration and MuleSoft integration was critical to our MDM Hub project. He handled 2M+ records with precision and built robust integration flows that continue to serve as our data backbone.</p>
+                                <div class="tcard-author">
+                                    <div class="tcard-avatar">SM</div>
+                                    <div>
+                                        <h4>Solution Manager</h4>
+                                        <p>LTIMindtree</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-nav reveal-up">
+                        <button class="tnav-btn" aria-label="Previous testimonial" id="tPrev">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        </button>
+                        <div class="tnav-dots" id="tDots">
+                            <span class="tnav-dot active"></span>
+                            <span class="tnav-dot"></span>
+                            <span class="tnav-dot"></span>
+                        </div>
+                        <button class="tnav-btn" aria-label="Next testimonial" id="tNext">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════ CONTACT ═══════════════════════════════════════ -->
+        <section id="contact" class="section contact-section">
+            <div class="container">
+                <div class="section-label reveal-up">Contact</div>
+                <h2 class="contact-heading reveal-up">Let's build something <em>great</em> together.</h2>
+                <p class="contact-sub reveal-up" style="--delay: 0.1s">Open to discussing Salesforce opportunities and collaborations.</p>
+
+                <div class="contact-grid reveal-up" style="--delay: 0.15s">
+                    <a href="mailto:dhruvagrawal16598@gmail.com" class="contact-card-v2 magnetic">
+                        <span class="cc-icon">✉️</span>
+                        <span class="cc-label">Email</span>
+                        <span class="cc-value">dhruvagrawal16598@gmail.com</span>
+                        <span class="cc-arrow">→</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/dhruv-agrawal-275aba136" class="contact-card-v2 magnetic" target="_blank" rel="noopener">
+                        <span class="cc-icon">💼</span>
+                        <span class="cc-label">LinkedIn</span>
+                        <span class="cc-value">Connect with me</span>
+                        <span class="cc-arrow">→</span>
+                    </a>
+                    <a href="tel:+918462979875" class="contact-card-v2 magnetic">
+                        <span class="cc-icon">📞</span>
+                        <span class="cc-label">Phone</span>
+                        <span class="cc-value">+91 8462979875</span>
+                        <span class="cc-arrow">→</span>
+                    </a>
+                    <a href="https://www.salesforce.com/trailblazer/dhruv16" class="contact-card-v2 magnetic" target="_blank" rel="noopener">
+                        <span class="cc-icon">☁️</span>
+                        <span class="cc-label">Trailhead</span>
+                        <span class="cc-value">Salesforce Profile</span>
+                        <span class="cc-arrow">→</span>
+                    </a>
+                </div>
+
+                <div class="reveal-up" style="--delay: 0.25s; text-align: center; margin-top: 60px;">
+                    <a href="DhruvAgrawal_Resume.pdf" class="btn-primary magnetic" download>
+                        <span>Download Resume</span>
+                        <div class="btn-shimmer"></div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Case Study Modal -->
+        <div class="case-modal" id="caseModal" role="dialog" aria-hidden="true" aria-label="Project case study">
+            <div class="case-overlay"></div>
+            <div class="case-content">
+                <button class="case-close" aria-label="Close case study">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+                <div class="case-body" id="caseBody">
+                    <!-- Dynamically filled -->
+                </div>
+            </div>
+        </div>
+    </main>
+
     <footer class="footer">
-        <div class="footer-content">
+        <div class="container footer-inner">
             <div class="footer-left">
                 <p>© 2025 Dhruv Agrawal</p>
-                <p>Senior Salesforce Developer • IIT Bhilai</p>
+                <p>Senior Salesforce Developer &middot; IIT Bhilai</p>
             </div>
             <div class="footer-right">
                 <a href="https://www.linkedin.com/in/dhruv-agrawal-275aba136" target="_blank" rel="noopener">LinkedIn</a>
@@ -653,5 +1007,6 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="gsap-animations.js"></script>
 </body>
 </html>
