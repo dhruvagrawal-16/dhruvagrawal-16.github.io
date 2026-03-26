@@ -1190,6 +1190,44 @@
         </div>
     </footer>
 
+    <!-- Ask Dhruv AI Chatbot -->
+    <button class="chat-bubble" id="chatBubble" aria-label="Open AI chat assistant" title="Ask Dhruv AI">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <span class="chat-bubble-dot" aria-hidden="true"></span>
+        <span class="chat-bubble-label">Ask Dhruv</span>
+    </button>
+
+    <div class="chat-window" id="chatWindow" role="dialog" aria-label="Ask Dhruv AI assistant" aria-hidden="true">
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <div class="chat-avatar">DA</div>
+                <div>
+                    <span class="chat-title">Ask Dhruv</span>
+                    <span class="chat-status"><span class="chat-status-dot"></span>AI-powered</span>
+                </div>
+            </div>
+            <button class="chat-close" id="chatClose" aria-label="Close chat">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-chips" id="chatChips">
+            <button class="chat-chip" data-msg="Who is Dhruv?">👤 Who is Dhruv?</button>
+            <button class="chat-chip" data-msg="What are Dhruv's top skills?">⚡ Skills</button>
+            <button class="chat-chip" data-msg="Tell me about Dhruv's Salesforce projects">💼 Projects</button>
+            <button class="chat-chip" data-msg="What certifications does Dhruv have?">🏅 Certifications</button>
+            <button class="chat-chip" data-msg="How can I contact Dhruv?">📬 Contact</button>
+            <button class="chat-chip" data-msg="Review my resume and give tips">📄 Resume tips</button>
+        </div>
+        <div class="chat-input-row">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask me anything..." autocomplete="off" aria-label="Type your message">
+            <button class="chat-send" id="chatSend" aria-label="Send message">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+        </div>
+        <div class="chat-footer">Powered by Gemini · <a href="https://dhruvagrawal-16.github.io" target="_blank">dhruvagrawal.dev</a></div>
+    </div>
+
     <script src="script.js"></script>
     <script src="gsap-animations.js"></script>
     <noscript>

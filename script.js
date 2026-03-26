@@ -805,4 +805,146 @@
         });
     }
 
+    // ── Ask Dhruv AI Chatbot ──
+    const CHATBOT_URL = 'https://ask-dhruv.dhruvagrawal.workers.dev';
+
+    const chatBubble = document.getElementById('chatBubble');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatClose = document.getElementById('chatClose');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatChips = document.getElementById('chatChips');
+
+    if (chatBubble && chatWindow) {
+        let chatOpen = false;
+        let chatFirstOpen = true;
+        let chatSending = false;
+        const chatHistory = [];
+
+        // Simple markdown: **bold**, `code`, newlines
+        function renderMarkdown(text) {
+            return text
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/`(.+?)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            chatWindow.classList.toggle('open', chatOpen);
+            chatWindow.setAttribute('aria-hidden', !chatOpen);
+
+            if (chatOpen) {
+                const dot = chatBubble.querySelector('.chat-bubble-dot');
+                if (dot) dot.style.display = 'none';
+
+                if (chatFirstOpen) {
+                    chatFirstOpen = false;
+                    appendMsg('bot', "Hey! 👋 I'm Dhruv's AI assistant. Ask me anything about his experience, skills, or projects.\n\nI can also help with general Salesforce questions and resume tips!");
+                }
+                setTimeout(() => chatInput.focus(), 100);
+            }
+        }
+
+        function appendMsg(role, text) {
+            const div = document.createElement('div');
+            div.className = 'chat-msg ' + role;
+            if (role === 'bot') {
+                div.innerHTML = renderMarkdown(text);
+            } else {
+                div.textContent = text;
+            }
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTyping() {
+            const el = document.createElement('div');
+            el.className = 'chat-typing';
+            el.id = 'chatTyping';
+            el.innerHTML = '<span></span><span></span><span></span>';
+            chatMessages.appendChild(el);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTyping() {
+            const el = document.getElementById('chatTyping');
+            if (el) el.remove();
+        }
+
+        function setSending(val) {
+            chatSending = val;
+            chatSend.style.opacity = val ? '0.5' : '1';
+            chatSend.style.pointerEvents = val ? 'none' : '';
+            chatInput.disabled = val;
+        }
+
+        async function sendMessage(text) {
+            if (!text.trim() || chatSending) return;
+            appendMsg('user', text);
+            chatInput.value = '';
+            setSending(true);
+            showTyping();
+
+            // Build Gemini-format history
+            const geminiHistory = chatHistory.map(h => ({
+                role: h.role === 'user' ? 'user' : 'model',
+                parts: [{ text: h.content }]
+            }));
+
+            chatHistory.push({ role: 'user', content: text });
+
+            try {
+                const res = await fetch(CHATBOT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text, history: geminiHistory })
+                });
+
+                hideTyping();
+
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    throw new Error(errData.error || 'API error');
+                }
+
+                const data = await res.json();
+                const reply = data.reply || "Sorry, I couldn't process that. Try again!";
+                appendMsg('bot', reply);
+                chatHistory.push({ role: 'assistant', content: reply });
+            } catch (err) {
+                hideTyping();
+                const msg = err.message.includes('Rate limit')
+                    ? "⏳ Too many messages. Please wait a minute and try again."
+                    : "Sorry, I couldn't process that. Try again!";
+                appendMsg('bot', msg);
+            }
+
+            setSending(false);
+            chatInput.focus();
+        }
+
+        chatBubble.addEventListener('click', toggleChat);
+        chatClose.addEventListener('click', toggleChat);
+
+        chatSend.addEventListener('click', () => sendMessage(chatInput.value));
+        chatInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) sendMessage(chatInput.value);
+        });
+
+        // Quick-ask chips
+        if (chatChips) {
+            chatChips.querySelectorAll('.chat-chip').forEach(chip => {
+                chip.addEventListener('click', () => sendMessage(chip.dataset.msg));
+            });
+        }
+
+        // Close with Escape
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && chatOpen) toggleChat();
+        });
+    }
+
 })();
