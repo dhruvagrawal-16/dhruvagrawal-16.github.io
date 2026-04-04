@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>GMAT Practice — Dhruv Agrawal</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+    --bg:#050508;--bg-el:#0c0c12;--surface:rgba(255,255,255,0.03);--surface-h:rgba(255,255,255,0.06);
+    --border:rgba(255,255,255,0.08);--border-h:rgba(255,255,255,0.15);
+    --text:#eef0f4;--text-s:#8b92a5;--accent:#6c63ff;--accent-l:#8b83ff;--accent-g:rgba(108,99,255,0.4);
+    --cyan:#00d4ff;--green:#00e88f;--warm:#ff6b6b;
+    --font:'Space Grotesk',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+[data-theme="light"]{
+    --bg:#f4f5f7;--bg-el:#fff;--surface:rgba(0,0,0,0.03);--surface-h:rgba(0,0,0,0.06);
+    --border:rgba(0,0,0,0.1);--border-h:rgba(0,0,0,0.18);--text:#1a1a2e;--text-s:#5a607a;
+    --accent-g:rgba(108,99,255,0.2);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;transition:background .3s,color .3s}
+::selection{background:var(--accent);color:#fff}
+#root{min-height:100vh}
+
+/* Shared */
+.container{max-width:1100px;margin:0 auto;padding:24px clamp(16px,4vw,40px)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;transition:border-color .3s}
+.card:hover{border-color:var(--border-h)}
+.card-title{font-size:1.05rem;font-weight:600;margin-bottom:20px}
+
+/* Header */
+.hub-header{display:flex;justify-content:space-between;align-items:center;padding:20px 0 12px;flex-wrap:wrap;gap:12px}
+.back-link{color:var(--text-s);text-decoration:none;font-size:.85rem;transition:color .3s}
+.back-link:hover{color:var(--accent)}
+.theme-btn{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);transition:all .3s;font-size:1.1rem}
+.theme-btn:hover{border-color:var(--accent)}
+.hub-title{text-align:center;margin-bottom:32px}
+.hub-title h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;margin-bottom:6px}
+.hub-title p{color:var(--text-s);font-size:.9rem}
+
+/* Buttons */
+.calc-btn{width:100%;padding:15px;margin-top:24px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font);box-shadow:0 4px 24px var(--accent-g);transition:transform .2s,box-shadow .2s}
+.calc-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px var(--accent-g)}
+.calc-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.toggle-wrap{display:flex;gap:8px}
+.toggle-btn{flex:1;padding:12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;color:var(--text-s);font-size:.9rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s}
+[data-theme="light"] .toggle-btn{background:rgba(0,0,0,0.03)}
+.toggle-btn.active{background:rgba(108,99,255,.12);border-color:var(--accent);color:var(--accent-l)}
+
+/* Summary cards */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center}
+.summary-card.full{grid-column:1/-1}
+.s-label{display:block;font-size:.7rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.s-value{font-weight:700;font-family:var(--mono);font-size:1.4rem}
+.s-value.big{font-size:2rem}
+
+/* Breakdown rows */
+.b-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+.b-row+.b-row{border-top:1px solid rgba(255,255,255,0.03)}
+[data-theme="light"] .b-row+.b-row{border-top-color:rgba(0,0,0,0.05)}
+.b-label{color:var(--text-s);font-size:.88rem}
+.b-val{font-family:var(--mono);font-size:.92rem;font-weight:500}
+
+/* Inputs */
+.label{display:block;font-size:.75rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;margin-top:16px}
+.label:first-of-type{margin-top:0}
+.input-wrap{display:flex;align-items:center;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .3s}
+[data-theme="light"] .input-wrap{background:rgba(0,0,0,0.03)}
+.input-wrap:focus-within{border-color:var(--accent)}
+
+/* Note */
+.note{font-size:.72rem;color:var(--text-s);margin-top:16px;line-height:1.6;padding:12px;background:rgba(108,99,255,.05);border-radius:10px;border:1px solid rgba(108,99,255,.1)}
+
+/* Presets */
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.preset-btn{padding:7px 16px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--text-s);font-size:.78rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s}
+.preset-btn:hover,.preset-btn.active{background:rgba(108,99,255,.1);border-color:var(--accent);color:var(--accent-l)}
+
+@media(max-width:480px){
+    .summary-grid{grid-template-columns:1fr 1fr}
+    .summary-card.full{grid-column:1/-1}
+}
+
+/* Section Cards */
+.section-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:24px}
+.section-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.section-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 32px var(--accent-g)}
+.section-card .icon{font-size:2rem;margin-bottom:12px}
+.section-card h3{font-size:1.1rem;font-weight:600;margin-bottom:8px}
+.section-card .total-q{color:var(--text-s);font-size:.85rem;margin-bottom:12px}
+.section-card .diff-counts{display:flex;gap:8px;flex-wrap:wrap}
+.diff-tag{font-size:.72rem;padding:4px 10px;border-radius:100px;background:var(--surface-h);color:var(--text-s);font-weight:500}
+.diff-tag.easy{color:var(--green);background:rgba(0,232,143,.08)}
+.diff-tag.medium{color:var(--cyan);background:rgba(0,212,255,.08)}
+.diff-tag.hard{color:var(--warm);background:rgba(255,107,107,.08)}
+
+/* Resume Banner */
+.resume-banner{background:rgba(108,99,255,.08);border:1px solid rgba(108,99,255,.2);border-radius:14px;padding:16px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.resume-banner p{font-size:.9rem;color:var(--text)}
+.resume-banner .resume-btn{padding:10px 24px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:transform .2s}
+.resume-banner .resume-btn:hover{transform:translateY(-1px)}
+.resume-banner .discard-btn{padding:10px 16px;background:transparent;color:var(--text-s);border:1px solid var(--border);border-radius:10px;font-size:.85rem;cursor:pointer;font-family:var(--font);transition:all .3s}
+.resume-banner .discard-btn:hover{border-color:var(--warm);color:var(--warm)}
+
+/* Session Config */
+.config-section{margin-bottom:24px}
+.config-section h3{font-size:.85rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;font-weight:500}
+.config-back{display:inline-flex;align-items:center;gap:6px;color:var(--text-s);font-size:.85rem;cursor:pointer;background:none;border:none;font-family:var(--font);margin-bottom:20px;transition:color .3s}
+.config-back:hover{color:var(--accent)}
+.count-input{width:80px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:.95rem;text-align:center;outline:none;transition:border-color .3s}
+[data-theme="light"] .count-input{background:rgba(0,0,0,0.03)}
+.count-input:focus{border-color:var(--accent)}
+.unattempted-info{font-size:.82rem;color:var(--text-s);margin-top:12px;padding:10px 14px;background:var(--surface);border-radius:10px;border:1px solid var(--border)}
+.unattempted-info.warning{border-color:rgba(255,107,107,.3);background:rgba(255,107,107,.05);color:var(--warm)}
+.warning-actions{display:flex;gap:8px;margin-top:10px}
+.warning-actions button{padding:8px 16px;border-radius:8px;font-size:.82rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s}
+.warning-actions .shorter-btn{background:rgba(108,99,255,.1);border:1px solid var(--accent);color:var(--accent-l)}
+.warning-actions .reset-btn{background:transparent;border:1px solid var(--border);color:var(--text-s)}
+.warning-actions .reset-btn:hover{border-color:var(--warm);color:var(--warm)}
+
+/* Question View */
+.question-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px}
+.question-num{font-size:.85rem;color:var(--text-s);font-weight:500}
+.question-prompt{font-size:1.1rem;line-height:1.7;margin-bottom:24px;font-weight:400}
+.rc-passage-panel{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:0;margin-bottom:24px;max-height:350px;overflow:hidden;display:flex;flex-direction:column}
+.rc-passage-header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0}
+.rc-passage-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan);font-weight:700;display:flex;align-items:center;gap:6px}
+.rc-passage-label::before{content:'📖'}
+.rc-passage-meta{font-size:.7rem;color:var(--text-s);font-weight:500}
+.rc-passage-scroll{overflow-y:auto;padding:16px 20px;flex:1;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}
+.rc-passage-scroll::-webkit-scrollbar{width:5px}
+.rc-passage-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:10px}
+.rc-passage-text{font-size:.92rem;line-height:1.85;color:var(--text-p);text-align:justify}
+.rc-passage-toggle{background:none;border:1px solid rgba(255,255,255,.1);color:var(--text-s);font-size:.7rem;padding:3px 10px;border-radius:6px;cursor:pointer;transition:all .2s}
+.rc-passage-toggle:hover{border-color:var(--cyan);color:var(--cyan)}
+.rc-q-indicator{font-size:.75rem;color:var(--text-s);margin-bottom:8px;font-weight:500}
+.difficulty-badge{display:inline-block;font-size:.7rem;padding:4px 12px;border-radius:100px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px}
+.difficulty-badge.easy{color:var(--green);background:rgba(0,232,143,.1);border:1px solid rgba(0,232,143,.2)}
+.difficulty-badge.medium{color:var(--cyan);background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2)}
+.difficulty-badge.hard{color:var(--warm);background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.2)}
+
+/* Answer Choices */
+.choices-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.choice-btn{display:flex;align-items:center;gap:14px;width:100%;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:.95rem;cursor:pointer;font-family:var(--font);transition:all .2s;text-align:left;line-height:1.5}
+.choice-btn:hover{border-color:var(--border-h);background:var(--surface-h)}
+.choice-btn.selected{border-color:var(--accent);background:rgba(108,99,255,.08)}
+.choice-id{width:32px;height:32px;border-radius:50%;background:var(--surface-h);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.85rem;flex-shrink:0;transition:all .2s}
+.choice-btn.selected .choice-id{background:var(--accent);color:#fff}
+
+/* Timer */
+.timer-display{font-family:var(--mono);font-size:1.3rem;font-weight:600;padding:6px 16px;border-radius:10px;background:var(--surface);border:1px solid var(--border);transition:all .3s}
+.timer-display.normal{color:var(--text)}
+.timer-display.warning{color:#f0a500;border-color:rgba(240,165,0,.3);background:rgba(240,165,0,.06)}
+.timer-display.urgent{color:var(--warm);border-color:rgba(255,107,107,.3);background:rgba(255,107,107,.06);animation:pulse-urgent 1s ease-in-out infinite}
+.timer-display.overtime{color:var(--warm);border-color:rgba(255,107,107,.2);background:rgba(255,107,107,.04);opacity:.7}
+@keyframes pulse-urgent{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* Progress Bar */
+.progress-bar-wrap{width:100%;height:6px;background:var(--surface-h);border-radius:100px;margin-bottom:24px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--accent);border-radius:100px;transition:width .4s ease}
+
+/* Pause Overlay */
+.pause-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+.pause-overlay h2{font-size:1.8rem;font-weight:700}
+.pause-overlay p{color:var(--text-s);font-size:.9rem}
+.pause-overlay .resume-btn{padding:14px 40px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;font-family:var(--font);box-shadow:0 4px 24px var(--accent-g);transition:transform .2s}
+.pause-overlay .resume-btn:hover{transform:translateY(-2px)}
+
+/* Navigation Buttons */
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.question-fade{animation:fadeSlideIn .3s ease-out}
+@keyframes confettiFall{0%{transform:translateY(-100vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.confetti-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:confettiFall 3s ease-in forwards}
+.analytics-bar{height:20px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden;margin-bottom:6px}
+.analytics-fill{height:100%;border-radius:6px;transition:width .6s ease}
+.analytics-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.analytics-label{font-size:.75rem;color:var(--text-s);margin-bottom:4px}
+.analytics-value{font-size:1.4rem;font-weight:700;color:var(--text)}
+.time-comparison{display:flex;gap:20px;margin-top:12px}
+.time-stat{flex:1;text-align:center;padding:12px;border-radius:10px;background:rgba(255,255,255,.03)}
+.time-stat-label{font-size:.7rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.05em}
+.time-stat-value{font-size:1.3rem;font-weight:700;margin-top:4px}
+.next-btn{padding:14px 32px;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:.95rem;font-weight:600;cursor:pointer;font-family:var(--font);box-shadow:0 4px 24px var(--accent-g);transition:all .2s;margin-left:auto}
+.next-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 32px var(--accent-g)}
+.next-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.pause-btn{padding:10px 20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text-s);font-size:.85rem;cursor:pointer;font-family:var(--font);transition:all .3s}
+.pause-btn:hover{border-color:var(--accent);color:var(--accent)}
+.header-actions{display:flex;align-items:center;gap:8px}
+
+/* Responsive */
+@media(max-width:768px){
+    .section-grid{grid-template-columns:1fr}
+    .question-prompt{font-size:1rem}
+    .timer-display{font-size:1.1rem}
+    .nav-row{flex-direction:column}
+    .next-btn{width:100%;text-align:center;margin-left:0}
+    .resume-banner{flex-direction:column;text-align:center}
+}
+@media(max-width:480px){
+    .container{padding:16px}
+    .choice-btn{padding:12px 14px;font-size:.88rem}
+    .choice-id{width:28px;height:28px;font-size:.78rem}
+    .hub-title h1{font-size:1.4rem}
+}
+@media(min-width:1600px){
+    .container{max-width:1200px}
+}
+
+/* Review View */
+.review-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.review-header h2{font-size:1.3rem;font-weight:700}
+.review-header .review-count{color:var(--text-s);font-size:.88rem}
+.review-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;transition:border-color .3s}
+.review-card:hover{border-color:var(--border-h)}
+.review-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.review-marker{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:100px}
+.review-marker.correct{color:var(--green);background:rgba(0,232,143,.1);border:1px solid rgba(0,232,143,.2)}
+.review-marker.incorrect{color:var(--warm);background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.2)}
+.review-marker.unanswered{color:var(--text-s);background:var(--surface-h);border:1px solid var(--border)}
+.review-prompt{font-size:1.05rem;line-height:1.7;margin-bottom:16px}
+.review-choices{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.review-choice{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;border:2px solid var(--border);font-size:.92rem;line-height:1.5;transition:all .2s}
+.review-choice .choice-id{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.82rem;flex-shrink:0;background:var(--surface-h)}
+.review-choice.is-correct{border-color:var(--green);background:rgba(0,232,143,.06)}
+.review-choice.is-correct .choice-id{background:var(--green);color:#000}
+.review-choice.is-selected-correct{border-color:var(--green);background:rgba(0,232,143,.08)}
+.review-choice.is-selected-correct .choice-id{background:var(--green);color:#000}
+.review-choice.is-selected-incorrect{border-color:var(--warm);background:rgba(255,107,107,.06)}
+.review-choice.is-selected-incorrect .choice-id{background:var(--warm);color:#fff}
+.review-meta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px;font-size:.8rem;color:var(--text-s)}
+.review-meta span{display:inline-flex;align-items:center;gap:4px}
+.review-explanation{padding:16px;background:rgba(108,99,255,.05);border:1px solid rgba(108,99,255,.12);border-radius:12px;font-size:.88rem;line-height:1.7;color:var(--text)}
+.review-explanation strong{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-l);margin-bottom:6px}
+.back-top-btn{padding:10px 20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text-s);font-size:.85rem;cursor:pointer;font-family:var(--font);transition:all .3s}
+.back-top-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Score Summary Animations */
+.summary-reveal{animation:fadeSlideUp .5s ease both}
+.summary-reveal:nth-child(2){animation-delay:.1s}
+.summary-reveal:nth-child(3){animation-delay:.15s}
+.summary-reveal:nth-child(4){animation-delay:.2s}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.breakdown-bar-wrap{width:100%;height:8px;background:var(--surface-h);border-radius:100px;overflow:hidden;margin-top:4px}
+.breakdown-bar-fill{height:100%;border-radius:100px;transition:width .6s ease}
+.breakdown-bar-fill.easy{background:var(--green)}
+.breakdown-bar-fill.medium{background:var(--cyan)}
+.breakdown-bar-fill.hard{background:var(--warm)}
+
+/* Progress Dashboard */
+.progress-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
+.progress-stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center}
+.progress-stat .stat-val{font-family:var(--mono);font-size:1.5rem;font-weight:700;margin-bottom:4px}
+.progress-stat .stat-label{font-size:.72rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.08em}
+.chart-container{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
+.chart-container h3{font-size:.95rem;font-weight:600;margin-bottom:16px}
+.chart-container canvas{width:100%;height:200px;display:block}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-s)}
+.empty-state .empty-icon{font-size:3rem;margin-bottom:16px}
+.empty-state p{font-size:1rem;margin-bottom:8px}
+.empty-state .empty-sub{font-size:.85rem;color:var(--text-s)}
+.weakest-area{background:rgba(255,107,107,.06);border:1px solid rgba(255,107,107,.15);border-radius:14px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.weakest-area .wa-icon{font-size:1.4rem}
+.weakest-area .wa-text{font-size:.9rem}
+.weakest-area .wa-text strong{color:var(--warm)}
+.section-breakdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.section-breakdown-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}
+.section-breakdown-card h4{font-size:.88rem;font-weight:600;margin-bottom:8px}
+.section-breakdown-card .sb-stat{font-size:.82rem;color:var(--text-s);margin-bottom:4px}
+.session-history{margin-bottom:24px}
+.session-history h3{font-size:.95rem;font-weight:600;margin-bottom:12px}
+.session-item{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+.session-item .si-left{display:flex;align-items:center;gap:10px}
+.session-item .si-section{font-weight:600;font-size:.88rem}
+.session-item .si-diff{font-size:.75rem;color:var(--text-s)}
+.session-item .si-right{display:flex;align-items:center;gap:16px;font-size:.82rem;color:var(--text-s)}
+.session-item .si-acc{font-family:var(--mono);font-weight:600;color:var(--text)}
+
+@media(max-width:480px){
+    .review-card{padding:16px}
+    .review-choice{padding:10px 12px;font-size:.85rem}
+    .progress-stats{grid-template-columns:1fr 1fr}
+    .section-breakdown{grid-template-columns:1fr}
+}
+
+/* Question History */
+.qh-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.qh-tab{padding:8px 18px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--text-s);font-size:.82rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s}
+.qh-tab.active{background:rgba(108,99,255,.12);border-color:var(--accent);color:var(--accent-l)}
+.qh-summary-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.qh-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 20px;text-align:center;flex:1;min-width:100px}
+.qh-stat .qh-stat-val{font-family:var(--mono);font-size:1.3rem;font-weight:700}
+.qh-stat .qh-stat-label{font-size:.7rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+.qh-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.qh-item:hover{border-color:var(--border-h)}
+.qh-item.expanded{border-color:var(--accent);background:rgba(108,99,255,.03)}
+.qh-item-row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.qh-item-prompt{flex:1;font-size:.9rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.qh-item-meta{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.qh-status{font-weight:700;font-size:.9rem;width:24px;text-align:center}
+.qh-status.correct{color:var(--green)}
+.qh-status.incorrect{color:var(--warm)}
+.qh-status.unanswered{color:var(--text-s)}
+.qh-detail{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.qh-detail-prompt{font-size:1rem;line-height:1.7;margin-bottom:14px}
+
+/* Retry Wrong Card */
+.retry-card{background:rgba(255,107,107,.04);border:1px solid rgba(255,107,107,.15);border-radius:16px;padding:24px;margin-bottom:24px;cursor:pointer;transition:all .3s}
+.retry-card:hover{border-color:rgba(255,107,107,.35);transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,107,107,.1)}
+.retry-card h3{font-size:1.1rem;font-weight:600;margin-bottom:8px}
+.retry-card .retry-desc{color:var(--text-s);font-size:.85rem;margin-bottom:12px}
+.retry-card .retry-counts{display:flex;gap:8px;flex-wrap:wrap}
+.retry-count-tag{font-size:.72rem;padding:4px 10px;border-radius:100px;background:rgba(255,107,107,.08);color:var(--warm);font-weight:500}
+.retry-count-tag.none{background:rgba(0,232,143,.08);color:var(--green)}
+
+/* History Button */
+.history-btn-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:16px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:14px}
+.history-btn-card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 4px 20px var(--accent-g)}
+.history-btn-card .hbc-icon{font-size:1.6rem}
+.history-btn-card .hbc-text h3{font-size:1rem;font-weight:600;margin-bottom:2px}
+.history-btn-card .hbc-text p{font-size:.82rem;color:var(--text-s)}
+
+/* Clear Data / Settings */
+.settings-btn{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-s);transition:all .3s;font-size:1rem}
+.settings-btn:hover{border-color:var(--warm);color:var(--warm)}
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px}
+.confirm-dialog{background:var(--bg-el);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:420px;width:100%;text-align:center}
+.confirm-dialog h3{font-size:1.2rem;font-weight:700;margin-bottom:10px}
+.confirm-dialog p{color:var(--text-s);font-size:.9rem;margin-bottom:24px;line-height:1.6}
+.confirm-dialog .confirm-actions{display:flex;gap:10px;justify-content:center}
+.confirm-dialog .confirm-actions button{padding:12px 28px;border-radius:12px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s;border:none}
+.confirm-dialog .btn-danger{background:var(--warm);color:#fff}
+.confirm-dialog .btn-danger:hover{opacity:.85}
+.confirm-dialog .btn-cancel{background:var(--surface);color:var(--text-s);border:1px solid var(--border) !important}
+.confirm-dialog .btn-cancel:hover{border-color:var(--border-h) !important}
+
+/* Toast */
+/* Math rendering */
+.question-prompt sup,.review-prompt sup,.qh-detail-prompt sup,.review-explanation sup{font-size:.75em;vertical-align:super}
+.question-prompt sub,.review-prompt sub,.qh-detail-prompt sub,.review-explanation sub{font-size:.75em;vertical-align:sub}
+.question-prompt table,.review-prompt table,.qh-detail-prompt table,.review-explanation table{border-collapse:collapse;margin:12px 0;font-size:.88rem}
+.question-prompt th,.question-prompt td,.review-prompt th,.review-prompt td,.qh-detail-prompt th,.qh-detail-prompt td,.review-explanation th,.review-explanation td{border:1px solid var(--border);padding:6px 12px;text-align:center}
+.question-prompt th,.review-prompt th,.qh-detail-prompt th,.review-explanation th{background:var(--surface-h);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+.math-frac{display:inline-block;text-align:center;vertical-align:middle;margin:0 2px}
+.math-frac .num{display:block;border-bottom:1px solid var(--text);padding:0 4px 2px;font-size:.85em}
+.math-frac .den{display:block;padding:2px 4px 0;font-size:.85em}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg-el);border:1px solid var(--border);border-radius:14px;padding:14px 28px;font-size:.9rem;font-weight:500;z-index:3000;box-shadow:0 8px 32px rgba(0,0,0,.3);animation:toastIn .3s ease,toastOut .3s ease 2.2s forwards}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(20px)}}
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script>var GMAT_QUESTIONS = [];</script>
+    <script src="questions/quant-easy.js"></script>
+    <script src="questions/quant-medium.js"></script>
+    <script src="questions/quant-hard.js"></script>
+    <script src="questions/verbal-rc-easy.js"></script>
+    <script src="questions/verbal-rc-medium.js"></script>
+    <script src="questions/verbal-rc-hard.js"></script>
+    <script src="questions/verbal-cr-easy.js"></script>
+    <script src="questions/verbal-cr-medium.js"></script>
+    <script src="questions/verbal-cr-hard.js"></script>
+    <script src="questions/di-ds-easy.js"></script>
+    <script src="questions/di-ds-medium.js"></script>
+    <script src="questions/di-ds-hard.js"></script>
+    <script type="text/babel">
+
+const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+// ═══════════════════════════════════════════════════════════
+// PURE UTILITY FUNCTIONS
+// ═══════════════════════════════════════════════════════════
+
+// localStorage helpers
+function loadJSON(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch { return fallback; }
+}
+function saveJSON(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); }
+  catch(e) { console.warn('localStorage write failed:', e); }
+}
+
+// Question validation
+function validateQuestion(q) {
+  const validSections = ['quant', 'verbal', 'data-insights'];
+  const validDifficulties = ['easy', 'medium', 'hard'];
+  return q && typeof q.id === 'string' && validSections.includes(q.section) &&
+    validDifficulties.includes(q.difficulty) && typeof q.prompt === 'string' && q.prompt.length > 0 &&
+    Array.isArray(q.choices) && q.choices.length >= 2 &&
+    q.choices.some(c => c.id === q.correctAnswer) &&
+    typeof q.explanation === 'string' && q.explanation.length > 0;
+}
+
+// Filtering
+function filterQuestions(bank, section, difficulty) {
+  return bank.filter(q => q.section === section && (!difficulty || q.difficulty === difficulty));
+}
+
+// Fisher-Yates shuffle
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Shuffle that keeps passageGroup questions together and in order
+function shuffleWithGroups(questions) {
+  const grouped = [];
+  const standalone = [];
+  const seen = new Set();
+
+  for (const q of questions) {
+    if (q.passageGroup && !seen.has(q.passageGroup)) {
+      seen.add(q.passageGroup);
+      const group = questions.filter(x => x.passageGroup === q.passageGroup);
+      grouped.push(group);
+    } else if (!q.passageGroup) {
+      standalone.push([q]);
+    }
+  }
+
+  const units = [...grouped, ...standalone];
+  // Shuffle the units (each unit is a group or single question)
+  for (let i = units.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [units[i], units[j]] = [units[j], units[i]];
+  }
+  return units.flat();
+}
+
+// Non-repetition question selection
+function selectSessionQuestions(bank, section, difficulty, count, attempts) {
+  const trackingKey = difficulty ? `${section}:${difficulty}` : section;
+  const pool = filterQuestions(bank, section, difficulty);
+  const attempted = attempts[trackingKey] || [];
+  let unattempted = pool.filter(q => !attempted.includes(q.id));
+
+  if (unattempted.length === 0) {
+    // Auto-reset
+    attempts[trackingKey] = [];
+    unattempted = pool;
+  }
+
+  // Use group-aware shuffle for verbal RC (keeps passage questions together)
+  const hasGroups = unattempted.some(q => q.passageGroup);
+  const shuffled = hasGroups ? shuffleWithGroups(unattempted) : shuffle(unattempted);
+
+  if (unattempted.length < count) {
+    return { questions: shuffled, needsReset: true, available: unattempted.length };
+  }
+
+  // For grouped questions, include complete groups up to count
+  if (hasGroups) {
+    const result = [];
+    const includedGroups = new Set();
+    for (const q of shuffled) {
+      if (result.length >= count && (!q.passageGroup || !includedGroups.has(q.passageGroup))) break;
+      result.push(q);
+      if (q.passageGroup) includedGroups.add(q.passageGroup);
+    }
+    return { questions: result, needsReset: false, available: unattempted.length };
+  }
+
+  return { questions: shuffled.slice(0, count), needsReset: false, available: unattempted.length };
+}
+
+// Answer evaluation (result stored internally, NOT shown during session)
+function evaluateAnswer(question, selectedId) {
+  return { correct: selectedId === question.correctAnswer };
+}
+
+// Progress indicators
+function getProgressIndicators(currentIndex, totalQuestions) {
+  return { questionNumber: currentIndex + 1, progressFraction: totalQuestions > 0 ? currentIndex / totalQuestions : 0 };
+}
+
+// Timer utilities
+function getTimerDuration(section, subsection) {
+  if (subsection === 'rc') return 150;  // 2.5 min for RC
+  if (subsection === 'cr') return 120;  // 2 min for CR
+  if (subsection === 'ds') return 150;  // 2.5 min for DS
+  const durations = { 'quant': 120, 'verbal': 120, 'data-insights': 150 };
+  return durations[section] || 120;
+}
+
+function formatTime(seconds) {
+  const abs = Math.abs(Math.round(seconds));
+  const m = Math.floor(abs / 60);
+  const s = abs % 60;
+  const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return seconds < 0 ? `+${str}` : str;
+}
+
+function getTimerColor(seconds) {
+  if (seconds < 0) return 'overtime';
+  if (seconds <= 10) return 'urgent';
+  if (seconds <= 30) return 'warning';
+  return 'normal';
+}
+
+function computeTimeTaken(limit, remaining) {
+  return limit - remaining;
+}
+
+// Session config validation
+function validateSessionConfig(count) {
+  return Number.isInteger(count) && count >= 1 && count <= 50;
+}
+
+// Score computation
+function computeScoreSummary(answers, questions) {
+  const qMap = {};
+  questions.forEach(q => { qMap[q.id] = q; });
+
+  let correct = 0, incorrect = 0, unanswered = 0, totalTime = 0;
+  const diffBreakdown = { easy: {correct:0,total:0}, medium: {correct:0,total:0}, hard: {correct:0,total:0} };
+
+  answers.forEach(a => {
+    totalTime += a.timeTaken || 0;
+    const q = qMap[a.questionId];
+    const diff = q ? q.difficulty : 'medium';
+    diffBreakdown[diff].total++;
+
+    if (a.selectedAnswer === null) { unanswered++; }
+    else if (a.correct) { correct++; diffBreakdown[diff].correct++; }
+    else { incorrect++; }
+  });
+
+  const total = answers.length;
+  return {
+    correct, incorrect, unanswered, total,
+    accuracy: total > 0 ? (correct / total) * 100 : 0,
+    avgTimeSec: total > 0 ? totalTime / total : 0,
+    totalTimeSec: totalTime,
+    difficultyBreakdown: diffBreakdown
+  };
+}
+
+// Review helpers
+function getReviewMarker(answer) {
+  if (answer.selectedAnswer === null) return 'unanswered';
+  return answer.correct ? 'correct' : 'incorrect';
+}
+
+function buildReviewItem(answer, question) {
+  return {
+    questionId: answer.questionId,
+    prompt: question.prompt,
+    passage: question.passage || null,
+    choices: question.choices,
+    selectedAnswer: answer.selectedAnswer,
+    correctAnswer: question.correctAnswer,
+    explanation: question.explanation,
+    section: question.section,
+    subsection: question.subsection || null,
+    difficulty: question.difficulty,
+    timeTaken: answer.timeTaken,
+    marker: getReviewMarker(answer)
+  };
+}
+
+// Progress aggregation
+function aggregateProgress(sessions) {
+  if (!sessions.length) return { totalQuestions: 0, totalTime: 0, accuracy: 0, totalCorrect: 0 };
+  const totalQ = sessions.reduce((s, sess) => s + sess.totalQuestions, 0);
+  const totalC = sessions.reduce((s, sess) => s + sess.correct, 0);
+  const totalT = sessions.reduce((s, sess) => s + sess.totalTimeSec, 0);
+  return { totalQuestions: totalQ, totalTime: totalT, accuracy: totalQ > 0 ? (totalC / totalQ) * 100 : 0, totalCorrect: totalC };
+}
+
+// Weakest area detection
+function findWeakestArea(sessions, minAttempts = 5) {
+  const combos = {};
+  sessions.forEach(sess => {
+    if (!sess.answers) return;
+    sess.answers.forEach(a => {
+      const q = GMAT_QUESTIONS.find(qq => qq.id === a.questionId);
+      if (!q) return;
+      const key = `${q.section}:${q.difficulty}`;
+      if (!combos[key]) combos[key] = { correct: 0, total: 0, section: q.section, difficulty: q.difficulty };
+      combos[key].total++;
+      if (a.correct) combos[key].correct++;
+    });
+  });
+
+  let weakest = null, lowestAcc = Infinity;
+  Object.values(combos).forEach(c => {
+    if (c.total >= minAttempts) {
+      const acc = (c.correct / c.total) * 100;
+      if (acc < lowestAcc) { lowestAcc = acc; weakest = c; }
+    }
+  });
+  return weakest;
+}
+
+// Attempt tracker helpers
+function updateAttemptTracker(tracker, questionId, section, difficulty) {
+  const sectionKey = section;
+  const diffKey = `${section}:${difficulty}`;
+  if (!tracker[sectionKey]) tracker[sectionKey] = [];
+  if (!tracker[diffKey]) tracker[diffKey] = [];
+  if (!tracker[sectionKey].includes(questionId)) tracker[sectionKey].push(questionId);
+  if (!tracker[diffKey].includes(questionId)) tracker[diffKey].push(questionId);
+  return tracker;
+}
+
+function resetAttemptsIfExhausted(tracker, key, poolSize) {
+  if (tracker[key] && tracker[key].length >= poolSize) {
+    tracker[key] = [];
+    return true;
+  }
+  return false;
+}
+
+function getUnattemptedCount(bank, section, difficulty, tracker) {
+  const pool = filterQuestions(bank, section, difficulty);
+  const key = difficulty ? `${section}:${difficulty}` : section;
+  const attempted = tracker[key] || [];
+  return pool.filter(q => !attempted.includes(q.id)).length;
+}
+
+// Get wrong questions: questions user got wrong and hasn't subsequently gotten right
+function getWrongQuestions(sessions, bank) {
+  const lastResult = {};
+  const lastWrongTime = {};
+  const wrongCount = {};
+  sessions.forEach((sess, sIdx) => {
+    if (!sess.answers) return;
+    sess.answers.forEach(a => {
+      lastResult[a.questionId] = { correct: a.correct, selectedAnswer: a.selectedAnswer };
+      if (!a.correct && a.selectedAnswer !== null) {
+        wrongCount[a.questionId] = (wrongCount[a.questionId] || 0) + 1;
+        lastWrongTime[a.questionId] = sIdx; // older sessions = lower index = higher priority
+      }
+    });
+  });
+
+  const wrongIds = Object.entries(lastResult)
+    .filter(([id, r]) => !r.correct)
+    .map(([id]) => id);
+
+  const bankMap = {};
+  bank.forEach(q => { bankMap[q.id] = q; });
+
+  // Spaced repetition: prioritize questions wrong more times and wrong longer ago
+  return wrongIds
+    .map(id => bankMap[id])
+    .filter(Boolean)
+    .sort((a, b) => {
+      const aAge = sessions.length - (lastWrongTime[a.id] || 0);
+      const bAge = sessions.length - (lastWrongTime[b.id] || 0);
+      const aScore = (wrongCount[a.id] || 1) * aAge;
+      const bScore = (wrongCount[b.id] || 1) * bAge;
+      return bScore - aScore; // higher score = higher priority
+    });
+}
+
+// Section display names
+const SECTION_NAMES = {
+  'quant': 'Quantitative Reasoning',
+  'verbal': 'Verbal Reasoning',
+  'data-insights': 'Data Insights',
+  'mixed': 'Retry Wrong Questions'
+};
+
+const SECTION_ICONS = {
+  'quant': '📐',
+  'verbal': '📖',
+  'data-insights': '📊',
+  'mixed': '🔄'
+};
+
+// ═══════════════════════════════════════════════════════════
+// REACT COMPONENTS (Tasks 3-6)
+// ═══════════════════════════════════════════════════════════
+
+// --- Confetti ---
+function Confetti() {
+  const colors = ['#00e88f','#6c63ff','#00d4ff','#ff6b6b','#ffd93d','#ff9ff3','#54a0ff'];
+  const pieces = Array.from({length: 60}, (_, i) => ({
+    id: i, left: Math.random() * 100, delay: Math.random() * 2, dur: 2 + Math.random() * 2,
+    color: colors[i % colors.length], size: 6 + Math.random() * 8, rot: Math.random() * 360
+  }));
+  return (
+    <div className="confetti-wrap">
+      {pieces.map(p => <div key={p.id} className="confetti-piece" style={{
+        left: p.left + '%', background: p.color, width: p.size, height: p.size,
+        animationDelay: p.delay + 's', animationDuration: p.dur + 's',
+        transform: `rotate(${p.rot}deg)`
+      }} />)}
+    </div>
+  );
+}
+
+// --- ScoreSummaryView ---
+function ScoreSummaryView({ session, questions, onReview, onNewSession }) {
+  const { correct, incorrect, unanswered, accuracy, avgTimeSec, totalTimeSec, difficultyBreakdown } = session;
+
+  // Time analysis: avg time on correct vs incorrect
+  const answers = session.answers || [];
+  const correctTimes = answers.filter(a => a.correct && a.timeTaken).map(a => a.timeTaken);
+  const incorrectTimes = answers.filter(a => a.selectedAnswer !== null && !a.correct && a.timeTaken).map(a => a.timeTaken);
+  const avgCorrectTime = correctTimes.length ? correctTimes.reduce((a,b) => a+b, 0) / correctTimes.length : 0;
+  const avgIncorrectTime = incorrectTimes.length ? incorrectTimes.reduce((a,b) => a+b, 0) / incorrectTimes.length : 0;
+  const showConfetti = accuracy >= 80;
+
+  return (
+    <div>
+      {showConfetti && <Confetti />}
+      <div className="hub-title" style={{marginBottom:'24px'}}>
+        <h1>Session Complete</h1>
+        <p>{SECTION_NAMES[session.section] || (session.section === 'mixed' ? 'Retry Wrong Questions' : session.section)} — {session.totalQuestions} questions</p>
+      </div>
+
+      <div className="summary-grid">
+        <div className="summary-card summary-reveal" style={{borderColor:'rgba(0,232,143,.25)'}}>
+          <span className="s-label">Correct</span>
+          <span className="s-value" style={{color:'var(--green)'}}>{correct}</span>
+        </div>
+        <div className="summary-card summary-reveal" style={{borderColor:'rgba(255,107,107,.25)'}}>
+          <span className="s-label">Incorrect</span>
+          <span className="s-value" style={{color:'var(--warm)'}}>{incorrect}</span>
+        </div>
+        <div className="summary-card summary-reveal" style={{borderColor:'var(--border)'}}>
+          <span className="s-label">Unanswered</span>
+          <span className="s-value" style={{color:'var(--text-s)'}}>{unanswered}</span>
+        </div>
+        <div className="summary-card summary-reveal" style={{borderColor:'rgba(108,99,255,.3)'}}>
+          <span className="s-label">Accuracy</span>
+          <span className="s-value big" style={{color:'var(--accent-l)'}}>{accuracy.toFixed(1)}%</span>
+        </div>
+      </div>
+
+      <div className="card summary-reveal" style={{marginBottom:'16px'}}>
+        <div className="card-title">Time</div>
+        <div className="b-row">
+          <span className="b-label">Average per question</span>
+          <span className="b-val">{formatTime(Math.round(avgTimeSec))}</span>
+        </div>
+        <div className="b-row">
+          <span className="b-label">Total session duration</span>
+          <span className="b-val">{formatTime(Math.round(totalTimeSec))}</span>
+        </div>
+        <div className="time-comparison">
+          <div className="time-stat">
+            <div className="time-stat-label">Avg on Correct</div>
+            <div className="time-stat-value" style={{color:'var(--green)'}}>{correctTimes.length ? formatTime(Math.round(avgCorrectTime)) : '—'}</div>
+          </div>
+          <div className="time-stat">
+            <div className="time-stat-label">Avg on Incorrect</div>
+            <div className="time-stat-value" style={{color:'var(--warm)'}}>{incorrectTimes.length ? formatTime(Math.round(avgIncorrectTime)) : '—'}</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="card summary-reveal" style={{marginBottom:'16px'}}>
+        <div className="card-title">Difficulty Breakdown</div>
+        {['easy','medium','hard'].map(diff => {
+          const d = difficultyBreakdown[diff];
+          const pct = d.total > 0 ? (d.correct / d.total) * 100 : 0;
+          return (
+            <div key={diff} className="b-row" style={{flexDirection:'column',alignItems:'stretch',gap:'4px'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <span className="b-label" style={{textTransform:'capitalize'}}>{diff}</span>
+                <span className="b-val">{d.correct}/{d.total}</span>
+              </div>
+              <div className="breakdown-bar-wrap">
+                <div className={`breakdown-bar-fill ${diff}`} style={{width:`${pct}%`}} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <button className="calc-btn" onClick={onReview} style={{marginBottom:'12px'}}>Review All Questions</button>
+      <button className="calc-btn" onClick={onNewSession} style={{background:'var(--surface)',color:'var(--text)',border:'1px solid var(--border)',boxShadow:'none'}}>New Session</button>
+    </div>
+  );
+}
+
+// --- ReviewView ---
+function ReviewView({ session, questions, onBack }) {
+  const reviewItems = useMemo(() => {
+    return (session.answers || []).map(answer => {
+      const question = questions.find(q => q.id === answer.questionId);
+      if (!question) return null;
+      return buildReviewItem(answer, question);
+    }).filter(Boolean);
+  }, [session, questions]);
+
+  return (
+    <div>
+      <div className="review-header">
+        <button className="back-top-btn" onClick={onBack}>← Back to Summary</button>
+        <span className="review-count">Reviewing {reviewItems.length} questions</span>
+      </div>
+
+      {reviewItems.map((item, idx) => {
+        const markerLabel = item.marker === 'correct' ? '✓ Correct' : item.marker === 'incorrect' ? '✗ Incorrect' : '— Unanswered';
+        return (
+          <div key={item.questionId} className="review-card">
+            <div className="review-card-header">
+              <span style={{fontWeight:600,fontSize:'.9rem'}}>Question {idx + 1}</span>
+              <div style={{display:'flex',gap:'8px',alignItems:'center'}}>
+                <span className={`difficulty-badge ${item.difficulty}`}>{item.difficulty}</span>
+                <span className={`review-marker ${item.marker}`}>{markerLabel}</span>
+              </div>
+            </div>
+
+            <div className="review-prompt" dangerouslySetInnerHTML={{__html: item.prompt}} />
+
+            {item.passage && (
+              <div className="rc-passage-panel" style={{marginBottom:16,maxHeight:'200px'}}>
+                <div className="rc-passage-header">
+                  <span className="rc-passage-label">Reading Passage</span>
+                </div>
+                <div className="rc-passage-scroll" style={{maxHeight:'160px'}}>
+                  <div className="rc-passage-text" dangerouslySetInnerHTML={{__html: item.passage}} />
+                </div>
+              </div>
+            )}
+
+            <div className="review-choices">
+              {item.choices.map(c => {
+                const isCorrect = c.id === item.correctAnswer;
+                const isSelected = c.id === item.selectedAnswer;
+                let cls = 'review-choice';
+                if (isSelected && isCorrect) cls += ' is-selected-correct';
+                else if (isSelected && !isCorrect) cls += ' is-selected-incorrect';
+                else if (isCorrect) cls += ' is-correct';
+                return (
+                  <div key={c.id} className={cls}>
+                    <span className="choice-id">{c.id}</span>
+                    <span style={{flex:1}} dangerouslySetInnerHTML={{__html: c.text}} />
+                    {isSelected && isCorrect && <span style={{fontSize:'.78rem',color:'var(--green)',fontWeight:600}}>Your answer ✓</span>}
+                    {isSelected && !isCorrect && <span style={{fontSize:'.78rem',color:'var(--warm)',fontWeight:600}}>Your answer ✗</span>}
+                    {!isSelected && isCorrect && <span style={{fontSize:'.78rem',color:'var(--green)',fontWeight:600}}>Correct answer</span>}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="review-meta">
+              <span>📚 {SECTION_NAMES[item.section] || item.section}{item.subsection === 'rc' ? ' — Reading Comprehension' : item.subsection === 'cr' ? ' — Critical Reasoning' : ''}</span>
+              <span>⏱ {formatTime(item.timeTaken || 0)}</span>
+            </div>
+
+            <div className="review-explanation">
+              <strong>Explanation</strong>
+              <span dangerouslySetInnerHTML={{__html: item.explanation}} />
+            </div>
+          </div>
+        );
+      })}
+
+      <button className="calc-btn" onClick={onBack} style={{marginTop:'8px'}}>← Back to Summary</button>
+    </div>
+  );
+}
+
+// --- AccuracyChart ---
+function AccuracyChart({ sessions }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+    const W = rect.width;
+    const H = rect.height;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const recent = sessions.slice(-10);
+    if (recent.length === 0) return;
+
+    const pad = { top: 20, right: 16, bottom: 30, left: 40 };
+    const chartW = W - pad.left - pad.right;
+    const chartH = H - pad.top - pad.bottom;
+    const barW = Math.min(32, (chartW / recent.length) * 0.6);
+    const gap = chartW / recent.length;
+
+    // Y-axis labels
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-s').trim() || '#8b92a5';
+    ctx.font = '11px JetBrains Mono, monospace';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+      const val = i * 25;
+      const y = pad.top + chartH - (val / 100) * chartH;
+      ctx.fillText(val + '%', pad.left - 6, y + 4);
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--border').trim() || 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, y);
+      ctx.lineTo(W - pad.right, y);
+      ctx.stroke();
+    }
+
+    // Bars
+    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#6c63ff';
+    recent.forEach((s, i) => {
+      const x = pad.left + i * gap + (gap - barW) / 2;
+      const barH = (s.accuracy / 100) * chartH;
+      const y = pad.top + chartH - barH;
+
+      ctx.fillStyle = accentColor;
+      ctx.beginPath();
+      const r = 3;
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + barW - r, y);
+      ctx.quadraticCurveTo(x + barW, y, x + barW, y + r);
+      ctx.lineTo(x + barW, pad.top + chartH);
+      ctx.lineTo(x, pad.top + chartH);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.fill();
+
+      // X-axis label
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-s').trim() || '#8b92a5';
+      ctx.font = '10px JetBrains Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('#' + (sessions.length - recent.length + i + 1), x + barW / 2, pad.top + chartH + 16);
+    });
+  }, [sessions]);
+
+  return <canvas ref={canvasRef} style={{width:'100%',height:'200px'}} />;
+}
+
+// --- ProgressDashboard ---
+function ProgressDashboard({ sessions, onBack }) {
+  if (!sessions || sessions.length === 0) {
+    return (
+      <div>
+        <button className="config-back" onClick={onBack}>← Back</button>
+        <div className="empty-state">
+          <div className="empty-icon">📊</div>
+          <p>No sessions yet. Start practicing!</p>
+          <p className="empty-sub">Complete a practice session to see your progress here.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const agg = aggregateProgress(sessions);
+  const weakest = findWeakestArea(sessions, 5);
+
+  // Section breakdown
+  const sectionStats = {};
+  sessions.forEach(s => {
+    if (!sectionStats[s.section]) sectionStats[s.section] = { total: 0, correct: 0 };
+    sectionStats[s.section].total += s.totalQuestions;
+    sectionStats[s.section].correct += s.correct;
+  });
+
+  const recentSessions = sessions.slice(-5).reverse();
+
+  return (
+    <div>
+      <button className="config-back" onClick={onBack}>← Back</button>
+      <div className="hub-title" style={{marginBottom:'24px'}}>
+        <h1>Progress Dashboard</h1>
+        <p>Your practice performance over time</p>
+      </div>
+
+      <div className="progress-stats">
+        <div className="progress-stat">
+          <div className="stat-val">{agg.totalQuestions}</div>
+          <div className="stat-label">Questions</div>
+        </div>
+        <div className="progress-stat">
+          <div className="stat-val">{formatTime(Math.round(agg.totalTime))}</div>
+          <div className="stat-label">Total Time</div>
+        </div>
+        <div className="progress-stat">
+          <div className="stat-val">{agg.accuracy.toFixed(1)}%</div>
+          <div className="stat-label">Accuracy</div>
+        </div>
+        <div className="progress-stat">
+          <div className="stat-val">{sessions.length}</div>
+          <div className="stat-label">Sessions</div>
+        </div>
+      </div>
+
+      {weakest && (
+        <div className="weakest-area">
+          <span className="wa-icon">⚠️</span>
+          <span className="wa-text">Weakest area: <strong>{SECTION_NAMES[weakest.section] || weakest.section} ({weakest.difficulty})</strong> — {((weakest.correct / weakest.total) * 100).toFixed(0)}% accuracy over {weakest.total} questions</span>
+        </div>
+      )}
+
+      <div className="chart-container">
+        <h3>Accuracy Trend (Last 10 Sessions)</h3>
+        <AccuracyChart sessions={sessions} />
+      </div>
+
+      <div className="section-breakdown">
+        {Object.entries(sectionStats).map(([sec, stats]) => {
+          const acc = stats.total > 0 ? ((stats.correct / stats.total) * 100).toFixed(1) : '0.0';
+          return (
+            <div key={sec} className="section-breakdown-card">
+              <h4>{SECTION_ICONS[sec] || ''} {SECTION_NAMES[sec] || sec}</h4>
+              <div className="sb-stat">{stats.total} questions attempted</div>
+              <div className="sb-stat">Accuracy: <strong style={{color:'var(--text)'}}>{acc}%</strong></div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="session-history">
+        <h3>Recent Sessions</h3>
+        {recentSessions.map(s => {
+          const dateStr = s.completedAt ? new Date(s.completedAt).toLocaleDateString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
+          return (
+            <div key={s.id} className="session-item">
+              <div className="si-left">
+                <span className="si-section">{SECTION_ICONS[s.section] || ''} {SECTION_NAMES[s.section] || s.section}</span>
+                <span className="si-diff">{s.difficulty || 'All'}</span>
+              </div>
+              <div className="si-right">
+                <span className="si-acc">{s.accuracy.toFixed(0)}%</span>
+                <span>{dateStr}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// --- Header ---
+function Header({ theme, onToggleTheme, onProgress, showPause, onPause, onClearData }) {
+  return (
+    <div className="hub-header">
+      <a href="index.html" className="back-link">← Portfolio</a>
+      <div className="header-actions">
+        {showPause && <button className="pause-btn" onClick={onPause}>⏸ Pause</button>}
+        <button className="pause-btn" onClick={onProgress} title="Progress Dashboard">📊</button>
+        <button className="settings-btn" onClick={onClearData} title="Clear All Data">⚙️</button>
+        <button className="theme-btn" onClick={onToggleTheme} title="Toggle theme">
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// --- LandingView ---
+function LandingView({ attempts, activeSession, onSelectSection, onResume, onDiscard, sessions, bank, onQuestionHistory, onRetryWrong, onAnalytics }) {
+  const sections = ['quant', 'verbal', 'data-insights'];
+
+  const wrongQuestions = useMemo(() => getWrongQuestions(sessions || [], bank), [sessions, bank]);
+  const wrongBySection = useMemo(() => {
+    const counts = { 'quant': 0, 'verbal': 0, 'data-insights': 0 };
+    wrongQuestions.forEach(q => { if (counts[q.section] !== undefined) counts[q.section]++; });
+    return counts;
+  }, [wrongQuestions]);
+  const totalWrong = wrongQuestions.length;
+
+  return (
+    <div>
+      <div className="hub-title">
+        <h1>GMAT Practice</h1>
+        <p>Focus Edition — Timed practice across all three sections</p>
+      </div>
+
+      {activeSession && (
+        <div className="resume-banner">
+          <p>📝 You have an active {SECTION_NAMES[activeSession.section]} session ({activeSession.currentIndex}/{activeSession.questionIds.length} questions)</p>
+          <div style={{display:'flex',gap:'8px'}}>
+            <button className="resume-btn" onClick={onResume}>Resume</button>
+            <button className="discard-btn" onClick={onDiscard}>Discard</button>
+          </div>
+        </div>
+      )}
+
+      <div className="section-grid">
+        {sections.map(sec => {
+          const total = filterQuestions(bank, sec, null).length;
+          const easyUn = getUnattemptedCount(bank, sec, 'easy', attempts);
+          const medUn = getUnattemptedCount(bank, sec, 'medium', attempts);
+          const hardUn = getUnattemptedCount(bank, sec, 'hard', attempts);
+          return (
+            <div key={sec} className="section-card" onClick={() => onSelectSection(sec)} role="button" tabIndex={0}
+              onKeyDown={e => { if (e.key === 'Enter') onSelectSection(sec); }}>
+              <div className="icon">{SECTION_ICONS[sec]}</div>
+              <h3>{SECTION_NAMES[sec]}</h3>
+              <div className="total-q">{total} questions</div>
+              <div className="diff-counts">
+                <span className="diff-tag easy">Easy: {easyUn} left</span>
+                <span className="diff-tag medium">Medium: {medUn} left</span>
+                <span className="diff-tag hard">Hard: {hardUn} left</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="history-btn-card" onClick={onQuestionHistory} role="button" tabIndex={0}
+        onKeyDown={e => { if (e.key === 'Enter') onQuestionHistory(); }}>
+        <span className="hbc-icon">📋</span>
+        <div className="hbc-text">
+          <h3>Question History</h3>
+          <p>Review all attempted questions across sessions</p>
+        </div>
+      </div>
+
+      <div className="history-btn-card" onClick={onAnalytics} role="button" tabIndex={0}
+        onKeyDown={e => { if (e.key === 'Enter') onAnalytics(); }}>
+        <span className="hbc-icon">📊</span>
+        <div className="hbc-text">
+          <h3>Performance Analytics</h3>
+          <p>Accuracy by section, difficulty, and session trends</p>
+        </div>
+      </div>
+
+      <div className={`retry-card${totalWrong === 0 ? '' : ''}`}
+        onClick={() => totalWrong > 0 && onRetryWrong()} role="button" tabIndex={0}
+        onKeyDown={e => { if (e.key === 'Enter' && totalWrong > 0) onRetryWrong(); }}
+        style={totalWrong === 0 ? {cursor:'default',opacity:.7} : {}}>
+        <h3>🔄 Retry Wrong Questions</h3>
+        {totalWrong > 0 ? (
+          <>
+            <div className="retry-desc">Practice {totalWrong} question{totalWrong !== 1 ? 's' : ''} you got wrong (excluding ones you later answered correctly)</div>
+            <div className="retry-counts">
+              {sections.map(sec => (
+                <span key={sec} className={`retry-count-tag${wrongBySection[sec] === 0 ? ' none' : ''}`}>
+                  {SECTION_ICONS[sec]} {SECTION_NAMES[sec]}: {wrongBySection[sec]}
+                </span>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="retry-desc" style={{color:'var(--green)'}}>No wrong questions — great job! 🎉</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// --- SessionConfigView ---
+function SessionConfigView({ section, attempts, onBack, onStart }) {
+  const [difficulty, setDifficulty] = useState(null);
+  const [count, setCount] = useState(10);
+  const [customInput, setCustomInput] = useState('');
+  const [useCustom, setUseCustom] = useState(false);
+
+  const bank = typeof GMAT_QUESTIONS !== 'undefined' ? GMAT_QUESTIONS : [];
+  const unattempted = getUnattemptedCount(bank, section, difficulty, attempts);
+  const actualCount = useCustom ? (parseInt(customInput, 10) || 0) : count;
+  const isValid = validateSessionConfig(actualCount);
+  const isInsufficient = isValid && unattempted < actualCount && unattempted > 0;
+  const isNone = unattempted === 0;
+
+  const handleStart = () => {
+    if (!isValid || isNone) return;
+    const c = isInsufficient ? unattempted : actualCount;
+    onStart(section, difficulty, c);
+  };
+
+  const handleReset = () => {
+    const key = difficulty ? `${section}:${difficulty}` : section;
+    attempts[key] = [];
+    saveJSON('gmat-attempts', attempts);
+    setCount(count); // force re-render
+  };
+
+  const diffs = [
+    { label: 'All', value: null },
+    { label: 'Easy', value: 'easy' },
+    { label: 'Medium', value: 'medium' },
+    { label: 'Hard', value: 'hard' }
+  ];
+
+  return (
+    <div>
+      <button className="config-back" onClick={onBack}>← Back to sections</button>
+      <div className="hub-title" style={{marginBottom:'24px'}}>
+        <h1>{SECTION_ICONS[section]} {SECTION_NAMES[section]}</h1>
+      </div>
+
+      <div className="card">
+        <div className="config-section">
+          <h3>Difficulty</h3>
+          <div className="toggle-wrap">
+            {diffs.map(d => (
+              <button key={d.label} className={`toggle-btn${difficulty === d.value ? ' active' : ''}`}
+                onClick={() => setDifficulty(d.value)}>{d.label}</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="config-section">
+          <h3>Number of Questions</h3>
+          <div className="presets">
+            {[10, 20].map(n => (
+              <button key={n} className={`preset-btn${!useCustom && count === n ? ' active' : ''}`}
+                onClick={() => { setUseCustom(false); setCount(n); }}>{n}</button>
+            ))}
+            <button className={`preset-btn${useCustom ? ' active' : ''}`}
+              onClick={() => setUseCustom(true)}>Custom</button>
+          </div>
+          {useCustom && (
+            <input type="number" className="count-input" min="1" max="50" placeholder="1-50"
+              value={customInput} onChange={e => setCustomInput(e.target.value)} />
+          )}
+        </div>
+
+        <div className={`unattempted-info${isInsufficient || isNone ? ' warning' : ''}`}>
+          {isNone
+            ? <>All questions attempted for this combination. <button className="preset-btn" style={{marginLeft:'8px'}} onClick={handleReset}>Reset Attempts</button></>
+            : isInsufficient
+              ? <>Only {unattempted} unattempted questions available (requested {actualCount}).
+                  <div className="warning-actions">
+                    <button className="shorter-btn" onClick={() => { setUseCustom(false); setCount(unattempted); }}>Start with {unattempted}</button>
+                    <button className="reset-btn" onClick={handleReset}>Reset Attempts</button>
+                  </div>
+                </>
+              : <>{unattempted} unattempted questions available</>
+          }
+        </div>
+
+        <button className="calc-btn" disabled={!isValid || isNone} onClick={handleStart}>
+          Start Session ({isInsufficient ? unattempted : actualCount} questions)
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// --- QuestionView ---
+function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
+  const { section, questionIds, currentIndex, answers } = session;
+  const questionId = questionIds[currentIndex];
+  const question = bank.find(q => q.id === questionId);
+  const timerLimit = getTimerDuration(question ? question.section : section, question ? question.subsection : null);
+
+  const [selected, setSelected] = useState(null);
+  const endTimeRef = useRef(Date.now() + timerLimit * 1000);
+  const [remaining, setRemaining] = useState(timerLimit);
+  const intervalRef = useRef(null);
+  const hasTimedOut = useRef(false);
+
+  // Reset selection when question changes
+  useEffect(() => {
+    setSelected(null);
+    hasTimedOut.current = false;
+  }, [currentIndex]);
+
+  const doSubmit = useCallback((answerId) => {
+    clearInterval(intervalRef.current);
+    const timeTaken = computeTimeTaken(timerLimit, Math.ceil((endTimeRef.current - Date.now()) / 1000));
+    const correct = answerId !== null ? evaluateAnswer(question, answerId).correct : false;
+    const answerRecord = { questionId: question.id, selectedAnswer: answerId, correct, timeTaken };
+    const isLast = currentIndex >= questionIds.length - 1;
+    onAnswer(answerRecord, isLast);
+  }, [question, currentIndex, questionIds, timerLimit, onAnswer]);
+
+  // Timer logic with Date.now() for drift protection
+  useEffect(() => {
+    endTimeRef.current = Date.now() + timerLimit * 1000;
+    setRemaining(timerLimit);
+    hasTimedOut.current = false;
+
+    const tick = () => {
+      const left = Math.ceil((endTimeRef.current - Date.now()) / 1000);
+      setRemaining(left);
+    };
+
+    intervalRef.current = setInterval(tick, 250);
+    return () => clearInterval(intervalRef.current);
+  }, [currentIndex, timerLimit]);
+
+  // Timer is informational only — no auto-submit on timeout
+  useEffect(() => {
+    if (remaining <= 0 && !hasTimedOut.current) {
+      hasTimedOut.current = true; // mark as overtime for styling
+    }
+  }, [remaining]);
+
+  // Visibility change handler for background tabs
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (!document.hidden) {
+        const left = Math.ceil((endTimeRef.current - Date.now()) / 1000);
+        setRemaining(left);
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key >= '1' && e.key <= '5' && question) {
+        const idx = parseInt(e.key) - 1;
+        if (idx < question.choices.length) {
+          setSelected(question.choices[idx].id);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [question]);
+
+  const handleNext = useCallback(() => {
+    if (selected) doSubmit(selected);
+  }, [selected, doSubmit]);
+
+  // Enter key for advancing
+  useEffect(() => {
+    const handleEnter = (e) => {
+      if (e.key === 'Enter' && selected) {
+        handleNext();
+      }
+    };
+    window.addEventListener('keydown', handleEnter);
+    return () => window.removeEventListener('keydown', handleEnter);
+  }, [selected, handleNext]);
+
+  const handlePause = useCallback(() => {
+    clearInterval(intervalRef.current);
+    const left = Math.ceil((endTimeRef.current - Date.now()) / 1000);
+    onPause(left);
+  }, [onPause]);
+
+  if (!question) return <div className="container"><p>Question not found.</p></div>;
+
+  const { questionNumber, progressFraction } = getProgressIndicators(currentIndex, questionIds.length);
+  const timerColor = getTimerColor(remaining);
+
+  return (
+    <div>
+      <div className="question-header">
+        <span className="question-num">Question {questionNumber} of {questionIds.length}</span>
+        <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
+          <button className="pause-btn" onClick={handlePause}>⏸ Pause</button>
+          <span className={`timer-display ${timerColor}`}>{formatTime(remaining)}</span>
+        </div>
+      </div>
+
+      <div className="progress-bar-wrap">
+        <div className="progress-bar-fill" style={{width: `${(currentIndex / questionIds.length) * 100}%`}} />
+      </div>
+
+      <div key={question.id} className="question-fade">
+      <span className={`difficulty-badge ${question.difficulty}`}>{question.difficulty}</span>
+      {question.subsection === 'rc' && <span className="difficulty-badge" style={{background:'#6366f1',marginLeft:4}}>RC</span>}
+      {question.subsection === 'cr' && <span className="difficulty-badge" style={{background:'#0891b2',marginLeft:4}}>CR</span>}
+
+      {question.passage && (() => {
+        const bank = typeof GMAT_QUESTIONS !== 'undefined' ? GMAT_QUESTIONS : [];
+        const groupQs = questionIds.filter(id => { const q = bank.find(x => x.id === id); return q && q.passageGroup === question.passageGroup; });
+        const posInGroup = groupQs.indexOf(question.id) + 1;
+        return (
+          <div className="rc-passage-panel">
+            <div className="rc-passage-header">
+              <span className="rc-passage-label">Reading Passage</span>
+              <span className="rc-passage-meta">Question {posInGroup} of {groupQs.length} for this passage</span>
+            </div>
+            <div className="rc-passage-scroll">
+              <div className="rc-passage-text" dangerouslySetInnerHTML={{__html: question.passage}} />
+            </div>
+          </div>
+        );
+      })()}
+
+      <div className="question-prompt" dangerouslySetInnerHTML={{__html: question.prompt}} />
+
+      <div className="choices-list">
+        {question.choices.map((c, i) => (
+          <button key={c.id}
+            className={`choice-btn${selected === c.id ? ' selected' : ''}`}
+            onClick={() => setSelected(c.id)}>
+            <span className="choice-id">{c.id}</span>
+            <span dangerouslySetInnerHTML={{__html: c.text}} />
+          </button>
+        ))}
+      </div>
+      </div>
+
+      <div className="nav-row">
+        <button className="next-btn" disabled={!selected} onClick={handleNext}>
+          {currentIndex >= questionIds.length - 1 ? 'Finish Session' : 'Next Question →'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// --- PauseOverlay ---
+function PauseOverlay({ onResume }) {
+  return (
+    <div className="pause-overlay">
+      <h2>⏸ Session Paused</h2>
+      <p>Your progress is saved. Take a break!</p>
+      <button className="resume-btn" onClick={onResume}>Resume Session</button>
+    </div>
+  );
+}
+
+// --- Toast Component ---
+function Toast({ message }) {
+  if (!message) return null;
+  return <div className="toast">{message}</div>;
+}
+
+// --- Confirm Dialog ---
+function ConfirmDialog({ title, message, onConfirm, onCancel }) {
+  return (
+    <div className="confirm-overlay" onClick={onCancel}>
+      <div className="confirm-dialog" onClick={e => e.stopPropagation()}>
+        <h3>{title}</h3>
+        <p>{message}</p>
+        <div className="confirm-actions">
+          <button className="btn-cancel" onClick={onCancel}>Cancel</button>
+          <button className="btn-danger" onClick={onConfirm}>Clear All Data</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- AnalyticsView ---
+function AnalyticsView({ sessions, bank, onBack }) {
+  const allAnswers = [];
+  sessions.forEach(s => {
+    if (!s.answers) return;
+    s.answers.forEach(a => {
+      const q = bank.find(x => x.id === a.questionId);
+      if (q) allAnswers.push({ ...a, section: q.section, subsection: q.subsection, difficulty: q.difficulty });
+    });
+  });
+
+  // By section
+  const bySection = {};
+  allAnswers.forEach(a => {
+    const key = a.section;
+    if (!bySection[key]) bySection[key] = { total: 0, correct: 0 };
+    bySection[key].total++;
+    if (a.correct) bySection[key].correct++;
+  });
+
+  // By difficulty
+  const byDiff = {};
+  allAnswers.forEach(a => {
+    if (!byDiff[a.difficulty]) byDiff[a.difficulty] = { total: 0, correct: 0 };
+    byDiff[a.difficulty].total++;
+    if (a.correct) byDiff[a.difficulty].correct++;
+  });
+
+  // Last 10 sessions
+  const recent = sessions.slice(-10).map(s => {
+    const total = s.answers ? s.answers.length : 0;
+    const correct = s.answers ? s.answers.filter(a => a.correct).length : 0;
+    return { accuracy: total > 0 ? (correct / total) * 100 : 0, date: s.completedAt ? new Date(s.completedAt).toLocaleDateString(undefined, {month:'short',day:'numeric'}) : '' };
+  });
+
+  const sectionColors = { 'quant': '#00e88f', 'verbal': '#6c63ff', 'data-insights': '#00d4ff' };
+  const diffColors = { 'easy': '#00e88f', 'medium': '#00d4ff', 'hard': '#ff6b6b' };
+
+  return (
+    <div>
+      <div className="hub-title" style={{marginBottom:'24px'}}>
+        <h1>📊 Performance Analytics</h1>
+        <p>{allAnswers.length} questions attempted across {sessions.length} sessions</p>
+      </div>
+
+      <div className="analytics-card">
+        <div className="card-title">Accuracy by Section</div>
+        {Object.entries(bySection).map(([sec, data]) => {
+          const pct = data.total > 0 ? (data.correct / data.total) * 100 : 0;
+          return (
+            <div key={sec} style={{marginBottom:12}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
+                <span className="analytics-label">{SECTION_NAMES[sec] || sec}</span>
+                <span className="analytics-label">{pct.toFixed(0)}% ({data.correct}/{data.total})</span>
+              </div>
+              <div className="analytics-bar">
+                <div className="analytics-fill" style={{width: pct + '%', background: sectionColors[sec] || '#6c63ff'}} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="analytics-card">
+        <div className="card-title">Accuracy by Difficulty</div>
+        {['easy','medium','hard'].map(diff => {
+          const data = byDiff[diff] || { total: 0, correct: 0 };
+          const pct = data.total > 0 ? (data.correct / data.total) * 100 : 0;
+          return (
+            <div key={diff} style={{marginBottom:12}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
+                <span className="analytics-label" style={{textTransform:'capitalize'}}>{diff}</span>
+                <span className="analytics-label">{pct.toFixed(0)}% ({data.correct}/{data.total})</span>
+              </div>
+              <div className="analytics-bar">
+                <div className="analytics-fill" style={{width: pct + '%', background: diffColors[diff]}} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {recent.length > 0 && (
+        <div className="analytics-card">
+          <div className="card-title">Last {recent.length} Sessions</div>
+          <div style={{display:'flex',alignItems:'flex-end',gap:6,height:120,marginTop:12}}>
+            {recent.map((s, i) => (
+              <div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:4}}>
+                <span style={{fontSize:'.65rem',color:'var(--text-s)'}}>{s.accuracy.toFixed(0)}%</span>
+                <div style={{width:'100%',borderRadius:4,background: s.accuracy >= 80 ? 'var(--green)' : s.accuracy >= 50 ? 'var(--cyan)' : 'var(--warm)',
+                  height: Math.max(4, (s.accuracy / 100) * 100), transition:'height .5s ease'}} />
+                <span style={{fontSize:'.55rem',color:'var(--text-s)'}}>{s.date}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <button className="calc-btn" onClick={onBack} style={{marginTop:'8px'}}>← Back</button>
+    </div>
+  );
+}
+// --- QuestionHistoryView ---
+function QuestionHistoryView({ sessions, bank, onBack, onRetryWrong }) {
+  const [sectionFilter, setSectionFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [expandedId, setExpandedId] = useState(null);
+
+  const allItems = useMemo(() => {
+    const items = [];
+    const bankMap = {};
+    bank.forEach(q => { bankMap[q.id] = q; });
+
+    sessions.forEach((sess, sIdx) => {
+      if (!sess.answers) return;
+      sess.answers.forEach(a => {
+        const q = bankMap[a.questionId];
+        if (!q) return;
+        const marker = a.selectedAnswer === null ? 'unanswered' : a.correct ? 'correct' : 'incorrect';
+        items.push({
+          key: `${sess.id}_${a.questionId}`,
+          questionId: a.questionId,
+          prompt: q.prompt,
+          passage: q.passage || null,
+          choices: q.choices,
+          selectedAnswer: a.selectedAnswer,
+          correctAnswer: q.correctAnswer,
+          explanation: q.explanation,
+          section: q.section,
+          subsection: q.subsection || null,
+          difficulty: q.difficulty,
+          timeTaken: a.timeTaken || 0,
+          marker,
+          sessionLabel: `Session #${sIdx + 1}`,
+          sessionDate: sess.completedAt ? new Date(sess.completedAt).toLocaleDateString(undefined, { month:'short', day:'numeric' }) : ''
+        });
+      });
+    });
+    return items;
+  }, [sessions, bank]);
+
+  const filtered = useMemo(() => {
+    return allItems.filter(item => {
+      if (sectionFilter !== 'all' && item.section !== sectionFilter) return false;
+      if (statusFilter !== 'all' && item.marker !== statusFilter) return false;
+      return true;
+    });
+  }, [allItems, sectionFilter, statusFilter]);
+
+  const stats = useMemo(() => {
+    const total = allItems.length;
+    const correct = allItems.filter(i => i.marker === 'correct').length;
+    const incorrect = allItems.filter(i => i.marker === 'incorrect').length;
+    const unanswered = allItems.filter(i => i.marker === 'unanswered').length;
+    return {
+      total,
+      correctPct: total > 0 ? ((correct / total) * 100).toFixed(1) : '0.0',
+      incorrectPct: total > 0 ? ((incorrect / total) * 100).toFixed(1) : '0.0',
+      unansweredPct: total > 0 ? ((unanswered / total) * 100).toFixed(1) : '0.0'
+    };
+  }, [allItems]);
+
+  if (allItems.length === 0) {
+    return (
+      <div>
+        <button className="config-back" onClick={onBack}>← Back</button>
+        <div className="empty-state">
+          <div className="empty-icon">📋</div>
+          <p>No question history yet</p>
+          <p className="empty-sub">Complete a practice session to see your history here.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const sectionTabs = [
+    { label: 'All', value: 'all' },
+    { label: 'Quant', value: 'quant' },
+    { label: 'Verbal', value: 'verbal' },
+    { label: 'Data Insights', value: 'data-insights' }
+  ];
+  const statusTabs = [
+    { label: 'All', value: 'all' },
+    { label: 'Correct', value: 'correct' },
+    { label: 'Incorrect', value: 'incorrect' },
+    { label: 'Unanswered', value: 'unanswered' }
+  ];
+
+  return (
+    <div>
+      <button className="config-back" onClick={onBack}>← Back</button>
+      <div className="hub-title" style={{marginBottom:'24px'}}>
+        <h1>Question History</h1>
+        <p>All attempted questions across sessions</p>
+      </div>
+
+      <div className="qh-summary-row">
+        <div className="qh-stat">
+          <div className="qh-stat-val">{stats.total}</div>
+          <div className="qh-stat-label">Attempted</div>
+        </div>
+        <div className="qh-stat">
+          <div className="qh-stat-val" style={{color:'var(--green)'}}>{stats.correctPct}%</div>
+          <div className="qh-stat-label">Correct</div>
+        </div>
+        <div className="qh-stat">
+          <div className="qh-stat-val" style={{color:'var(--warm)'}}>{stats.incorrectPct}%</div>
+          <div className="qh-stat-label">Incorrect</div>
+        </div>
+        <div className="qh-stat">
+          <div className="qh-stat-val" style={{color:'var(--text-s)'}}>{stats.unansweredPct}%</div>
+          <div className="qh-stat-label">Unanswered</div>
+        </div>
+      </div>
+
+      <div style={{marginBottom:'12px'}}>
+        <div style={{fontSize:'.75rem',color:'var(--text-s)',textTransform:'uppercase',letterSpacing:'.08em',marginBottom:'8px',fontWeight:500}}>Section</div>
+        <div className="qh-tabs">
+          {sectionTabs.map(t => (
+            <button key={t.value} className={`qh-tab${sectionFilter === t.value ? ' active' : ''}`}
+              onClick={() => setSectionFilter(t.value)}>{t.label}</button>
+          ))}
+        </div>
+      </div>
+      <div style={{marginBottom:'20px'}}>
+        <div style={{fontSize:'.75rem',color:'var(--text-s)',textTransform:'uppercase',letterSpacing:'.08em',marginBottom:'8px',fontWeight:500}}>Status</div>
+        <div className="qh-tabs">
+          {statusTabs.map(t => (
+            <button key={t.value} className={`qh-tab${statusFilter === t.value ? ' active' : ''}`}
+              onClick={() => setStatusFilter(t.value)}>{t.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {onRetryWrong && (
+        <button className="calc-btn" onClick={onRetryWrong}
+          style={{marginBottom:'20px',background:'var(--warm)',boxShadow:'0 4px 24px rgba(255,107,107,.3)'}}>
+          🔄 Practice Wrong Questions
+        </button>
+      )}
+
+      <div style={{fontSize:'.82rem',color:'var(--text-s)',marginBottom:'12px'}}>{filtered.length} question{filtered.length !== 1 ? 's' : ''}</div>
+
+      {filtered.map(item => {
+        const isExpanded = expandedId === item.key;
+        const plainPrompt = item.prompt.replace(/<[^>]*>/g, '');
+        const truncPrompt = plainPrompt.length > 80 ? plainPrompt.slice(0, 80) + '…' : plainPrompt;
+        const statusChar = item.marker === 'correct' ? '✓' : item.marker === 'incorrect' ? '✗' : '—';
+
+        return (
+          <div key={item.key} className={`qh-item${isExpanded ? ' expanded' : ''}`}
+            onClick={() => setExpandedId(isExpanded ? null : item.key)}>
+            <div className="qh-item-row">
+              <span className={`qh-status ${item.marker}`}>{statusChar}</span>
+              <span className="qh-item-prompt">{truncPrompt}</span>
+              <div className="qh-item-meta">
+                <span className={`difficulty-badge ${item.difficulty}`} style={{marginBottom:0}}>{item.difficulty}</span>
+                <span style={{fontSize:'.75rem',color:'var(--text-s)'}}>{formatTime(item.timeTaken)}</span>
+                <span style={{fontSize:'.72rem',color:'var(--text-s)',opacity:.7}}>{item.sessionDate}</span>
+              </div>
+            </div>
+
+            {isExpanded && (
+              <div className="qh-detail">
+                {item.passage && (
+                  <div className="rc-passage-panel" style={{marginBottom:16,maxHeight:'200px'}}>
+                    <div className="rc-passage-header">
+                      <span className="rc-passage-label">Reading Passage</span>
+                    </div>
+                    <div className="rc-passage-scroll" style={{maxHeight:'160px'}}>
+                      <div className="rc-passage-text" dangerouslySetInnerHTML={{__html: item.passage}} />
+                    </div>
+                  </div>
+                )}
+                <div className="qh-detail-prompt" dangerouslySetInnerHTML={{__html: item.prompt}} />
+                <div className="review-choices" style={{marginBottom:'14px'}}>
+                  {item.choices.map(c => {
+                    const isCorrect = c.id === item.correctAnswer;
+                    const isSelected = c.id === item.selectedAnswer;
+                    let cls = 'review-choice';
+                    if (isSelected && isCorrect) cls += ' is-selected-correct';
+                    else if (isSelected && !isCorrect) cls += ' is-selected-incorrect';
+                    else if (isCorrect) cls += ' is-correct';
+                    return (
+                      <div key={c.id} className={cls}>
+                        <span className="choice-id">{c.id}</span>
+                        <span style={{flex:1}} dangerouslySetInnerHTML={{__html: c.text}} />
+                        {isSelected && isCorrect && <span style={{fontSize:'.78rem',color:'var(--green)',fontWeight:600}}>Your answer ✓</span>}
+                        {isSelected && !isCorrect && <span style={{fontSize:'.78rem',color:'var(--warm)',fontWeight:600}}>Your answer ✗</span>}
+                        {!isSelected && isCorrect && <span style={{fontSize:'.78rem',color:'var(--green)',fontWeight:600}}>Correct answer</span>}
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="review-meta" style={{marginBottom:'10px'}}>
+                  <span>📚 {SECTION_NAMES[item.section] || item.section}</span>
+                  <span>⏱ {formatTime(item.timeTaken)}</span>
+                  <span>📁 {item.sessionLabel}</span>
+                </div>
+                <div className="review-explanation">
+                  <strong>Explanation</strong>
+                  <span dangerouslySetInnerHTML={{__html: item.explanation}} />
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// --- GmatApp (Root) ---
+function GmatApp() {
+  const [view, setView] = useState('landing');
+  const [theme, setTheme] = useState(() => loadJSON('gmat-theme', 'dark'));
+  const [sessions, setSessions] = useState(() => loadJSON('gmat-sessions', []));
+  const [attempts, setAttempts] = useState(() => loadJSON('gmat-attempts', {}));
+  const [activeSession, setActiveSession] = useState(() => loadJSON('gmat-active-session', null));
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [completedSession, setCompletedSession] = useState(null);
+  const [pausedRemaining, setPausedRemaining] = useState(0);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [toastMsg, setToastMsg] = useState(null);
+
+  const bank = useMemo(() => {
+    if (typeof GMAT_QUESTIONS === 'undefined' || !Array.isArray(GMAT_QUESTIONS)) return [];
+    return GMAT_QUESTIONS.filter(validateQuestion);
+  }, []);
+
+  // Apply theme
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    saveJSON('gmat-theme', theme);
+  }, [theme]);
+
+  // Prune stale IDs from attempt tracker on mount
+  useEffect(() => {
+    const validIds = new Set(bank.map(q => q.id));
+    let changed = false;
+    const pruned = { ...attempts };
+    Object.keys(pruned).forEach(key => {
+      const before = pruned[key].length;
+      pruned[key] = pruned[key].filter(id => validIds.has(id));
+      if (pruned[key].length !== before) changed = true;
+    });
+    if (changed) {
+      setAttempts(pruned);
+      saveJSON('gmat-attempts', pruned);
+    }
+  }, []);
+
+  // Validate active session on mount
+  useEffect(() => {
+    if (activeSession) {
+      const validIds = new Set(bank.map(q => q.id));
+      const validQIds = activeSession.questionIds.filter(id => validIds.has(id));
+      if (validQIds.length === 0) {
+        setActiveSession(null);
+        localStorage.removeItem('gmat-active-session');
+      } else if (validQIds.length !== activeSession.questionIds.length) {
+        const fixed = { ...activeSession, questionIds: validQIds, currentIndex: Math.min(activeSession.currentIndex, validQIds.length - 1) };
+        setActiveSession(fixed);
+        saveJSON('gmat-active-session', fixed);
+      }
+      // If session was paused, keep it
+      if (activeSession && activeSession.isPaused) {
+        // Will show resume banner on landing
+      }
+    }
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(t => t === 'dark' ? 'light' : 'dark');
+  }, []);
+
+  const handleSelectSection = useCallback((sec) => {
+    setSelectedSection(sec);
+    setView('config');
+  }, []);
+
+  const handleStartSession = useCallback((section, difficulty, count) => {
+    const attemptsCopy = { ...attempts };
+    const result = selectSessionQuestions(bank, section, difficulty, count, attemptsCopy);
+    const newSession = {
+      section,
+      difficulty,
+      questionIds: result.questions.map(q => q.id),
+      currentIndex: 0,
+      answers: [],
+      isPaused: false,
+      startedAt: new Date().toISOString()
+    };
+    setActiveSession(newSession);
+    saveJSON('gmat-active-session', newSession);
+    setAttempts(attemptsCopy);
+    saveJSON('gmat-attempts', attemptsCopy);
+    setView('question');
+  }, [bank, attempts]);
+
+  const handleAnswer = useCallback((answerRecord, isLast) => {
+    setActiveSession(prev => {
+      const updated = {
+        ...prev,
+        answers: [...prev.answers, answerRecord],
+        currentIndex: isLast ? prev.currentIndex : prev.currentIndex + 1
+      };
+
+      // Update attempt tracker
+      const q = bank.find(qq => qq.id === answerRecord.questionId);
+      if (q) {
+        const newAttempts = { ...attempts };
+        updateAttemptTracker(newAttempts, q.id, q.section, q.difficulty);
+        const pool = filterQuestions(bank, q.section, q.difficulty);
+        resetAttemptsIfExhausted(newAttempts, `${q.section}:${q.difficulty}`, pool.length);
+        const sectionPool = filterQuestions(bank, q.section, null);
+        resetAttemptsIfExhausted(newAttempts, q.section, sectionPool.length);
+        setAttempts(newAttempts);
+        saveJSON('gmat-attempts', newAttempts);
+      }
+
+      if (isLast) {
+        // Session complete
+        const allAnswers = [...prev.answers, answerRecord];
+        const questions = prev.questionIds.map(id => bank.find(qq => qq.id === id)).filter(Boolean);
+        const summary = computeScoreSummary(allAnswers, questions);
+        const sessionRecord = {
+          id: `sess_${Date.now()}`,
+          section: prev.section,
+          difficulty: prev.difficulty,
+          totalQuestions: allAnswers.length,
+          ...summary,
+          answers: allAnswers,
+          completedAt: new Date().toISOString()
+        };
+        const newSessions = [...sessions, sessionRecord];
+        setSessions(newSessions);
+        saveJSON('gmat-sessions', newSessions);
+        setCompletedSession(sessionRecord);
+        setActiveSession(null);
+        localStorage.removeItem('gmat-active-session');
+        setTimeout(() => setView('summary'), 0);
+        return null;
+      }
+
+      saveJSON('gmat-active-session', updated);
+      return updated;
+    });
+  }, [bank, attempts, sessions]);
+
+  const handlePause = useCallback((remainingSec) => {
+    setPausedRemaining(remainingSec);
+    setActiveSession(prev => {
+      const updated = { ...prev, isPaused: true, pausedRemaining: remainingSec };
+      saveJSON('gmat-active-session', updated);
+      return updated;
+    });
+    setView('paused');
+  }, []);
+
+  const handleResume = useCallback(() => {
+    setActiveSession(prev => {
+      // Recalculate endTime based on pausedRemaining
+      const updated = { ...prev, isPaused: false };
+      saveJSON('gmat-active-session', updated);
+      return updated;
+    });
+    setView('question');
+  }, []);
+
+  const handleResumeFromLanding = useCallback(() => {
+    if (activeSession) {
+      if (activeSession.isPaused) {
+        setView('paused');
+      } else {
+        setView('question');
+      }
+    }
+  }, [activeSession]);
+
+  const handleDiscard = useCallback(() => {
+    setActiveSession(null);
+    localStorage.removeItem('gmat-active-session');
+  }, []);
+
+  const showToast = useCallback((msg) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(null), 2500);
+  }, []);
+
+  const handleClearAllData = useCallback(() => {
+    localStorage.removeItem('gmat-sessions');
+    localStorage.removeItem('gmat-attempts');
+    localStorage.removeItem('gmat-active-session');
+    setSessions([]);
+    setAttempts({});
+    setActiveSession(null);
+    setCompletedSession(null);
+    setShowClearConfirm(false);
+    setView('landing');
+    showToast('✓ All data cleared successfully');
+  }, [showToast]);
+
+  const handleRetryWrong = useCallback(() => {
+    const wrong = getWrongQuestions(sessions, bank);
+    if (wrong.length === 0) return;
+    const shuffled = shuffle(wrong);
+    const newSession = {
+      section: 'mixed',
+      difficulty: null,
+      questionIds: shuffled.map(q => q.id),
+      currentIndex: 0,
+      answers: [],
+      isPaused: false,
+      startedAt: new Date().toISOString()
+    };
+    setActiveSession(newSession);
+    saveJSON('gmat-active-session', newSession);
+    setView('question');
+  }, [sessions, bank]);
+
+  const showPauseInHeader = view === 'question';
+
+  return (
+    <div className="container">
+      <Header
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onProgress={() => setView('progress')}
+        showPause={false}
+        onPause={() => {}}
+        onClearData={() => setShowClearConfirm(true)}
+      />
+
+      {view === 'landing' && (
+        <LandingView
+          attempts={attempts}
+          activeSession={activeSession}
+          onSelectSection={handleSelectSection}
+          onResume={handleResumeFromLanding}
+          onDiscard={handleDiscard}
+          sessions={sessions}
+          bank={bank}
+          onQuestionHistory={() => setView('questionHistory')}
+          onRetryWrong={handleRetryWrong}
+          onAnalytics={() => setView('analytics')}
+        />
+      )}
+
+      {view === 'config' && (
+        <SessionConfigView
+          section={selectedSection}
+          attempts={attempts}
+          onBack={() => setView('landing')}
+          onStart={handleStartSession}
+        />
+      )}
+
+      {view === 'question' && activeSession && (
+        <QuestionView
+          key={activeSession.currentIndex}
+          session={activeSession}
+          bank={bank}
+          onAnswer={handleAnswer}
+          onComplete={() => {}}
+          onPause={handlePause}
+        />
+      )}
+
+      {view === 'paused' && (
+        <PauseOverlay onResume={handleResume} />
+      )}
+
+      {view === 'summary' && completedSession && (
+        <ScoreSummaryView
+          session={completedSession}
+          questions={bank}
+          onReview={() => setView('review')}
+          onNewSession={() => { setCompletedSession(null); setView('landing'); }}
+        />
+      )}
+
+      {view === 'review' && completedSession && (
+        <ReviewView
+          session={completedSession}
+          questions={bank}
+          onBack={() => setView('summary')}
+        />
+      )}
+
+      {view === 'progress' && (
+        <ProgressDashboard
+          sessions={sessions}
+          onBack={() => setView('landing')}
+        />
+      )}
+
+      {view === 'questionHistory' && (
+        <QuestionHistoryView
+          sessions={sessions}
+          bank={bank}
+          onBack={() => setView('landing')}
+          onRetryWrong={getWrongQuestions(sessions, bank).length > 0 ? handleRetryWrong : null}
+        />
+      )}
+
+      {view === 'analytics' && (
+        <AnalyticsView sessions={sessions} bank={bank} onBack={() => setView('landing')} />
+      )}
+
+      {showClearConfirm && (
+        <ConfirmDialog
+          title="Clear All Data?"
+          message="This will permanently delete all your sessions, attempt history, and active session. This action cannot be undone."
+          onConfirm={handleClearAllData}
+          onCancel={() => setShowClearConfirm(false)}
+        />
+      )}
+
+      <Toast message={toastMsg} />
+    </div>
+  );
+}
+
+// --- Password Gate ---
+const PASS_HASH = '0682158226f127cd831ed27a96f6bc6514f4f97b88bb69dc552ea62ee5135e06'; // sha256
+async function checkPass(input) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('') === PASS_HASH;
+}
+
+function PasswordGate() {
+  const [authed, setAuthed] = React.useState(() => sessionStorage.getItem('gmat_auth') === '1');
+  const [pw, setPw] = React.useState('');
+  const [err, setErr] = React.useState(false);
+
+  if (authed) return <GmatApp />;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (await checkPass(pw)) {
+      sessionStorage.setItem('gmat_auth', '1');
+      setAuthed(true);
+    } else {
+      setErr(true);
+      setPw('');
+    }
+  };
+
+  return (
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg)'}}>
+      <form onSubmit={handleSubmit} style={{textAlign:'center',maxWidth:340,width:'100%',padding:'0 20px'}}>
+        <div style={{fontSize:'2rem',marginBottom:8}}>🔒</div>
+        <h2 style={{color:'var(--text)',fontFamily:'var(--font)',marginBottom:8}}>GMAT Practice</h2>
+        <p style={{color:'var(--text-s)',fontSize:'.85rem',marginBottom:24}}>Enter password to continue</p>
+        <input type="password" value={pw} onChange={e => { setPw(e.target.value); setErr(false); }}
+          placeholder="Password" autoFocus
+          style={{width:'100%',padding:'12px 16px',borderRadius:10,border: err ? '1px solid var(--warm)' : '1px solid var(--border)',
+            background:'var(--surface)',color:'var(--text)',fontSize:'1rem',fontFamily:'var(--font)',outline:'none',marginBottom:12}} />
+        {err && <p style={{color:'var(--warm)',fontSize:'.8rem',marginBottom:12}}>Incorrect password</p>}
+        <button type="submit" style={{width:'100%',padding:'12px',borderRadius:10,border:'none',
+          background:'var(--accent)',color:'#fff',fontSize:'.95rem',fontWeight:600,cursor:'pointer',fontFamily:'var(--font)'}}>
+          Enter
+        </button>
+      </form>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<PasswordGate />);
+
+    </script>
+</body>
+</html>

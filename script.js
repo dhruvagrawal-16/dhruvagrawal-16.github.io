@@ -888,10 +888,10 @@
             setSending(true);
             showTyping();
 
-            // Build Gemini-format history
-            const geminiHistory = chatHistory.map(h => ({
-                role: h.role === 'user' ? 'user' : 'model',
-                parts: [{ text: h.content }]
+            // Build history for Groq (OpenAI format)
+            const apiHistory = chatHistory.map(h => ({
+                role: h.role === 'assistant' ? 'assistant' : 'user',
+                content: h.content
             }));
 
             chatHistory.push({ role: 'user', content: text });
@@ -900,7 +900,7 @@
                 const res = await fetch(CHATBOT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text, history: geminiHistory })
+                    body: JSON.stringify({ message: text, history: apiHistory })
                 });
 
                 hideTyping();
