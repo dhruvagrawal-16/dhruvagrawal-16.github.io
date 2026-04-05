@@ -445,6 +445,62 @@ function loadJSON(key, fallback) {
 function saveJSON(key, value) {
   try { localStorage.setItem(key, JSON.stringify(value)); }
   catch(e) { console.warn('localStorage write failed:', e); }
+  try { backupToIDB(); } catch(e) { /* silent */ }
+}
+
+// ═══════════════════════════════════════════════════════════
+// IndexedDB Auto-Backup (survives localStorage clears)
+// ═══════════════════════════════════════════════════════════
+const IDB_NAME = 'gmat-backup';
+const IDB_STORE = 'data';
+const BACKUP_KEYS = ['gmat-sessions', 'gmat-attempts', 'gmat-active-session', 'gmat-theme'];
+
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function backupToIDB() {
+  try {
+    const db = await openIDB();
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    const store = tx.objectStore(IDB_STORE);
+    const snapshot = {};
+    BACKUP_KEYS.forEach(k => {
+      const v = localStorage.getItem(k);
+      if (v !== null) snapshot[k] = v;
+    });
+    snapshot._ts = Date.now();
+    store.put(snapshot, 'latest');
+  } catch(e) { /* silent */ }
+}
+
+async function restoreFromIDB() {
+  try {
+    const db = await openIDB();
+    const tx = db.transaction(IDB_STORE, 'readonly');
+    const store = tx.objectStore(IDB_STORE);
+    return new Promise((resolve) => {
+      const req = store.get('latest');
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  } catch(e) { return null; }
+}
+
+// On load: if localStorage is empty but IDB has backup, offer restore
+async function checkAndRestore() {
+  const hasSessions = localStorage.getItem('gmat-sessions');
+  if (hasSessions) return false; // data exists, no need
+  const backup = await restoreFromIDB();
+  if (!backup || !backup['gmat-sessions']) return false;
+  const parsed = JSON.parse(backup['gmat-sessions']);
+  if (!Array.isArray(parsed) || parsed.length === 0) return false;
+  return backup; // return backup for user to confirm
 }
 
 // Question validation
@@ -2180,12 +2236,37 @@ function GmatApp() {
   const [completedSession, setCompletedSession] = useState(null);
   const [pausedRemaining, setPausedRemaining] = useState(0);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showRestoreBanner, setShowRestoreBanner] = useState(false);
+  const [pendingBackup, setPendingBackup] = useState(null);
   const [toastMsg, setToastMsg] = useState(null);
 
   const bank = useMemo(() => {
     if (typeof GMAT_QUESTIONS === 'undefined' || !Array.isArray(GMAT_QUESTIONS)) return [];
     return GMAT_QUESTIONS.filter(validateQuestion);
   }, []);
+
+  // Check for IDB backup if localStorage is empty
+  useEffect(() => {
+    checkAndRestore().then(function(backup) {
+      if (backup) {
+        setPendingBackup(backup);
+        setShowRestoreBanner(true);
+      }
+    }).catch(function() {});
+  }, []);
+
+  const handleRestore = useCallback(() => {
+    if (!pendingBackup) return;
+    BACKUP_KEYS.forEach(k => {
+      if (pendingBackup[k]) localStorage.setItem(k, pendingBackup[k]);
+    });
+    setSessions(loadJSON('gmat-sessions', []));
+    setAttempts(loadJSON('gmat-attempts', {}));
+    setActiveSession(loadJSON('gmat-active-session', null));
+    setTheme(loadJSON('gmat-theme', 'dark'));
+    setShowRestoreBanner(false);
+    setPendingBackup(null);
+  }, [pendingBackup]);
 
   // Apply theme
   useEffect(() => {
@@ -2522,6 +2603,16 @@ function GmatApp() {
           onConfirm={handleClearAllData}
           onCancel={() => setShowClearConfirm(false)}
         />
+      )}
+
+      {showRestoreBanner && (
+        <div className="resume-banner" style={{borderColor:'var(--cyan)',background:'rgba(0,212,255,.05)'}}>
+          <p>💾 Found a backup of your previous data ({pendingBackup && pendingBackup._ts ? new Date(pendingBackup._ts).toLocaleString() : ''}). Restore it?</p>
+          <div style={{display:'flex',gap:'8px'}}>
+            <button className="resume-btn" onClick={handleRestore}>Restore</button>
+            <button className="discard-btn" onClick={() => setShowRestoreBanner(false)}>Dismiss</button>
+          </div>
+        </div>
       )}
 
       <Toast message={toastMsg} />
