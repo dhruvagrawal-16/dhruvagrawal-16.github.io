@@ -31,6 +31,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* Shared */
 .container{max-width:1100px;margin:0 auto;padding:24px clamp(16px,4vw,40px)}
+.container.has-passage{max-width:1400px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;transition:border-color .3s}
 .card:hover{border-color:var(--border-h)}
 .card-title{font-size:1.05rem;font-weight:600;margin-bottom:20px}
@@ -129,7 +130,17 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* Question View */
 .question-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px}
 .question-num{font-size:.85rem;color:var(--text-s);font-weight:500}
-.question-prompt{font-size:1.1rem;line-height:1.7;margin-bottom:24px;font-weight:400}
+.question-prompt{font-size:1.15rem;line-height:1.85;margin-bottom:28px;font-weight:400;letter-spacing:.01em}
+
+/* Split layout: passage left, question right on desktop */
+.rc-split-layout{display:flex;gap:24px;align-items:flex-start}
+.rc-split-layout .rc-passage-panel{flex:0 0 45%;max-height:calc(100vh - 240px);position:sticky;top:20px;margin-bottom:0}
+.rc-split-layout .rc-question-side{flex:1;min-width:0}
+@media(max-width:900px){
+    .rc-split-layout{flex-direction:column}
+    .rc-split-layout .rc-passage-panel{flex:none;width:100%;max-height:350px;position:static}
+}
+
 .rc-passage-panel{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:0;margin-bottom:24px;max-height:350px;overflow:hidden;display:flex;flex-direction:column}
 .rc-passage-header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0}
 .rc-passage-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--cyan);font-weight:700;display:flex;align-items:center;gap:6px}
@@ -143,6 +154,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .rc-passage-toggle:hover{border-color:var(--cyan);color:var(--cyan)}
 .rc-q-indicator{font-size:.75rem;color:var(--text-s);margin-bottom:8px;font-weight:500}
 .difficulty-badge{display:inline-block;font-size:.7rem;padding:4px 12px;border-radius:100px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px}
+
+/* Improved question readability */
+.choice-btn{font-size:1rem;line-height:1.6;padding:18px 22px}
+.choice-btn .choice-text{letter-spacing:.01em}
 .difficulty-badge.easy{color:var(--green);background:rgba(0,232,143,.1);border:1px solid rgba(0,232,143,.2)}
 .difficulty-badge.medium{color:var(--cyan);background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2)}
 .difficulty-badge.hard{color:var(--warm);background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.2)}
@@ -214,6 +229,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 }
 @media(min-width:1600px){
     .container{max-width:1200px}
+    .container.has-passage{max-width:1500px}
 }
 
 /* Review View */
@@ -1370,35 +1386,51 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
       {question.subsection === 'rc' && <span className="difficulty-badge" style={{background:'#6366f1',marginLeft:4}}>RC</span>}
       {question.subsection === 'cr' && <span className="difficulty-badge" style={{background:'#0891b2',marginLeft:4}}>CR</span>}
 
-      {question.passage && (() => {
+      {question.passage ? (() => {
         const bank = typeof GMAT_QUESTIONS !== 'undefined' ? GMAT_QUESTIONS : [];
         const groupQs = questionIds.filter(id => { const q = bank.find(x => x.id === id); return q && q.passageGroup === question.passageGroup; });
         const posInGroup = groupQs.indexOf(question.id) + 1;
         return (
-          <div className="rc-passage-panel">
-            <div className="rc-passage-header">
-              <span className="rc-passage-label">Reading Passage</span>
-              <span className="rc-passage-meta">Question {posInGroup} of {groupQs.length} for this passage</span>
+          <div className="rc-split-layout">
+            <div className="rc-passage-panel">
+              <div className="rc-passage-header">
+                <span className="rc-passage-label">Reading Passage</span>
+                <span className="rc-passage-meta">Question {posInGroup} of {groupQs.length} for this passage</span>
+              </div>
+              <div className="rc-passage-scroll">
+                <div className="rc-passage-text" dangerouslySetInnerHTML={{__html: question.passage}} />
+              </div>
             </div>
-            <div className="rc-passage-scroll">
-              <div className="rc-passage-text" dangerouslySetInnerHTML={{__html: question.passage}} />
+            <div className="rc-question-side">
+              <div className="question-prompt" dangerouslySetInnerHTML={{__html: question.prompt}} />
+              <div className="choices-list">
+                {question.choices.map((c, i) => (
+                  <button key={c.id}
+                    className={`choice-btn${selected === c.id ? ' selected' : ''}`}
+                    onClick={() => setSelected(c.id)}>
+                    <span className="choice-id">{c.id}</span>
+                    <span dangerouslySetInnerHTML={{__html: c.text}} />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         );
-      })()}
-
-      <div className="question-prompt" dangerouslySetInnerHTML={{__html: question.prompt}} />
-
-      <div className="choices-list">
-        {question.choices.map((c, i) => (
-          <button key={c.id}
-            className={`choice-btn${selected === c.id ? ' selected' : ''}`}
-            onClick={() => setSelected(c.id)}>
-            <span className="choice-id">{c.id}</span>
-            <span dangerouslySetInnerHTML={{__html: c.text}} />
-          </button>
-        ))}
-      </div>
+      })() : (
+        <React.Fragment>
+          <div className="question-prompt" dangerouslySetInnerHTML={{__html: question.prompt}} />
+          <div className="choices-list">
+            {question.choices.map((c, i) => (
+              <button key={c.id}
+                className={`choice-btn${selected === c.id ? ' selected' : ''}`}
+                onClick={() => setSelected(c.id)}>
+                <span className="choice-id">{c.id}</span>
+                <span dangerouslySetInnerHTML={{__html: c.text}} />
+              </button>
+            ))}
+          </div>
+        </React.Fragment>
+      )}
       </div>
 
       <div className="nav-row">
@@ -1966,8 +1998,13 @@ function GmatApp() {
 
   const showPauseInHeader = view === 'question';
 
+  const currentQuestionHasPassage = view === 'question' && activeSession && (() => {
+    const q = bank.find(x => x.id === activeSession.questionIds[activeSession.currentIndex]);
+    return q && q.passage;
+  })();
+
   return (
-    <div className="container">
+    <div className={`container${currentQuestionHasPassage ? ' has-passage' : ''}`}>
       <Header
         theme={theme}
         onToggleTheme={toggleTheme}
@@ -2068,10 +2105,13 @@ function GmatApp() {
 }
 
 // --- Password Gate ---
-const PASS_HASH = '0682158226f127cd831ed27a96f6bc6514f4f97b88bb69dc552ea62ee5135e06'; // sha256
+const PASS_HASHES = [
+  '0682158226f127cd831ed27a96f6bc6514f4f97b88bb69dc552ea62ee5135e06', // user 1
+];
 async function checkPass(input) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('') === PASS_HASH;
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  return PASS_HASHES.includes(hash);
 }
 
 function PasswordGate() {
