@@ -370,6 +370,44 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .math-frac .num{display:block;border-bottom:1px solid var(--text);padding:0 4px 2px;font-size:.85em}
 .math-frac .den{display:block;padding:2px 4px 0;font-size:.85em}
 
+/* Streak Card */
+.streak-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.streak-fire{font-size:2.2rem;line-height:1}
+.streak-info{flex:1;min-width:140px}
+.streak-info h3{font-size:1.1rem;font-weight:700;margin-bottom:2px}
+.streak-info p{font-size:.82rem;color:var(--text-s)}
+.streak-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.streak-day{width:22px;height:22px;border-radius:5px;background:var(--surface-h);font-size:0}
+.streak-day.active{background:var(--green)}
+.streak-day.today{border:2px solid var(--accent)}
+.streak-day.missed{background:rgba(255,107,107,.15)}
+
+/* Spaced Repetition Card */
+.sr-card{background:var(--surface);border:1px solid rgba(0,212,255,.2);border-radius:16px;padding:20px 24px;margin-bottom:16px;cursor:pointer;transition:all .3s}
+.sr-card:hover{border-color:var(--cyan);transform:translateY(-1px)}
+.sr-card h3{font-size:1rem;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.sr-card .sr-desc{font-size:.82rem;color:var(--text-s);margin-bottom:10px}
+.sr-buckets{display:flex;gap:8px;flex-wrap:wrap}
+.sr-bucket{font-size:.72rem;padding:4px 12px;border-radius:100px;font-weight:600;background:var(--surface-h);color:var(--text-s)}
+.sr-bucket.due{background:rgba(0,212,255,.12);color:var(--cyan);border:1px solid rgba(0,212,255,.25)}
+
+/* Weak Topic Cards */
+.wt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:20px}
+.wt-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .3s}
+.wt-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.wt-card.weak{border-color:rgba(255,107,107,.3)}
+.wt-card .wt-name{font-size:.88rem;font-weight:600;margin-bottom:6px}
+.wt-card .wt-stats{font-size:.78rem;color:var(--text-s)}
+.wt-card .wt-bar{height:6px;border-radius:100px;background:var(--surface-h);margin-top:8px;overflow:hidden}
+.wt-card .wt-bar-fill{height:100%;border-radius:100px;transition:width .5s ease}
+
+/* Export Button */
+.export-btn{padding:12px 24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:.88rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:all .3s;display:inline-flex;align-items:center;gap:8px}
+.export-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Keyboard hint */
+.kb-hint{font-size:.65rem;color:var(--text-s);opacity:.5;margin-left:auto;font-family:var(--mono);background:var(--surface-h);padding:2px 6px;border-radius:4px}
+
 /* Toast */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg-el);border:1px solid var(--border);border-radius:14px;padding:14px 28px;font-size:.9rem;font-weight:500;z-index:3000;box-shadow:0 8px 32px rgba(0,0,0,.3);animation:toastIn .3s ease,toastOut .3s ease 2.2s forwards}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
@@ -687,6 +725,234 @@ function getWrongQuestions(sessions, bank) {
     });
 }
 
+// ═══════════════════════════════════════════════════════════
+// SPACED REPETITION
+// ═══════════════════════════════════════════════════════════
+const SR_INTERVALS = [1, 3, 7]; // days
+
+function getSpacedRepetitionDue(sessions, bank) {
+  const now = Date.now();
+  const lastWrong = {}; // questionId -> { timestamp, wrongCount }
+  const lastCorrect = {}; // questionId -> timestamp
+
+  sessions.forEach(sess => {
+    if (!sess.answers || !sess.completedAt) return;
+    const ts = new Date(sess.completedAt).getTime();
+    sess.answers.forEach(a => {
+      if (a.correct) {
+        lastCorrect[a.questionId] = ts;
+      } else if (a.selectedAnswer !== null) {
+        const prev = lastWrong[a.questionId];
+        lastWrong[a.questionId] = { timestamp: ts, wrongCount: prev ? prev.wrongCount + 1 : 1 };
+      }
+    });
+  });
+
+  const due = { 1: [], 3: [], 7: [] };
+  const bankMap = {};
+  bank.forEach(q => { bankMap[q.id] = q; });
+
+  Object.entries(lastWrong).forEach(([qId, info]) => {
+    // Skip if user got it right after getting it wrong
+    if (lastCorrect[qId] && lastCorrect[qId] > info.timestamp) return;
+    const daysSince = (now - info.timestamp) / (1000 * 60 * 60 * 24);
+    const q = bankMap[qId];
+    if (!q) return;
+    for (const interval of SR_INTERVALS) {
+      if (daysSince >= interval) {
+        due[interval].push(q);
+      }
+    }
+  });
+  return due;
+}
+
+function getTotalSRDue(srDue) {
+  // Unique questions due (7-day bucket includes all)
+  const seen = new Set();
+  [7, 3, 1].forEach(d => srDue[d].forEach(q => seen.add(q.id)));
+  return seen.size;
+}
+
+function getSRQuestions(srDue) {
+  const seen = new Set();
+  const result = [];
+  // Prioritize longest overdue first
+  [7, 3, 1].forEach(d => {
+    srDue[d].forEach(q => {
+      if (!seen.has(q.id)) { seen.add(q.id); result.push(q); }
+    });
+  });
+  return result;
+}
+
+// ═══════════════════════════════════════════════════════════
+// STREAK TRACKING
+// ═══════════════════════════════════════════════════════════
+function getDateKey(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function computeStreak(sessions) {
+  if (!sessions.length) return { current: 0, best: 0, activeDays: new Set(), todayCount: 0 };
+
+  const activeDays = new Set();
+  sessions.forEach(s => {
+    if (s.completedAt) activeDays.add(getDateKey(new Date(s.completedAt)));
+  });
+
+  const today = getDateKey(new Date());
+  const todayCount = sessions.filter(s => s.completedAt && getDateKey(new Date(s.completedAt)) === today).length;
+
+  // Current streak
+  let current = 0;
+  const d = new Date();
+  // Check if today has activity, if not start from yesterday
+  if (!activeDays.has(getDateKey(d))) {
+    d.setDate(d.getDate() - 1);
+  }
+  while (activeDays.has(getDateKey(d))) {
+    current++;
+    d.setDate(d.getDate() - 1);
+  }
+
+  // Best streak
+  const sorted = [...activeDays].sort();
+  let best = 0, run = 1;
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = new Date(sorted[i - 1]);
+    const curr = new Date(sorted[i]);
+    const diff = (curr - prev) / (1000 * 60 * 60 * 24);
+    if (diff === 1) { run++; } else { run = 1; }
+    if (run > best) best = run;
+  }
+  if (sorted.length === 1) best = 1;
+  if (run > best) best = run;
+
+  return { current, best, activeDays, todayCount };
+}
+
+function getLast14Days() {
+  const days = [];
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(getDateKey(d));
+  }
+  return days;
+}
+
+// ═══════════════════════════════════════════════════════════
+// WEAK TOPIC DRILL-DOWN
+// ═══════════════════════════════════════════════════════════
+const SUBTOPIC_NAMES = {
+  'quant:easy': 'Quant — Easy',
+  'quant:medium': 'Quant — Medium',
+  'quant:hard': 'Quant — Hard',
+  'verbal:rc:easy': 'Reading Comp — Easy',
+  'verbal:rc:medium': 'Reading Comp — Medium',
+  'verbal:rc:hard': 'Reading Comp — Hard',
+  'verbal:cr:easy': 'Critical Reasoning — Easy',
+  'verbal:cr:medium': 'Critical Reasoning — Medium',
+  'verbal:cr:hard': 'Critical Reasoning — Hard',
+  'data-insights:ds:easy': 'Data Sufficiency — Easy',
+  'data-insights:ds:medium': 'Data Sufficiency — Medium',
+  'data-insights:ds:hard': 'Data Sufficiency — Hard',
+};
+
+function getWeakTopics(sessions, bank, minAttempts = 3) {
+  const topics = {};
+
+  sessions.forEach(sess => {
+    if (!sess.answers) return;
+    sess.answers.forEach(a => {
+      const q = bank.find(x => x.id === a.questionId);
+      if (!q) return;
+      const key = q.subsection ? `${q.section}:${q.subsection}:${q.difficulty}` : `${q.section}:${q.difficulty}`;
+      if (!topics[key]) topics[key] = { key, section: q.section, subsection: q.subsection || null, difficulty: q.difficulty, total: 0, correct: 0 };
+      topics[key].total++;
+      if (a.correct) topics[key].correct++;
+    });
+  });
+
+  return Object.values(topics)
+    .filter(t => t.total >= minAttempts)
+    .map(t => ({ ...t, accuracy: (t.correct / t.total) * 100, name: SUBTOPIC_NAMES[t.key] || t.key }))
+    .sort((a, b) => a.accuracy - b.accuracy);
+}
+
+function getTopicQuestions(bank, section, subsection, difficulty) {
+  return bank.filter(q => q.section === section && q.difficulty === difficulty && (subsection ? q.subsection === subsection : true));
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXPORT PROGRESS REPORT
+// ═══════════════════════════════════════════════════════════
+function generateReportText(sessions, bank, streak) {
+  const agg = aggregateProgress(sessions);
+  const weakTopics = getWeakTopics(sessions, bank);
+  const lines = [];
+  lines.push('GMAT PRACTICE — PROGRESS REPORT');
+  lines.push('Generated: ' + new Date().toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' }));
+  lines.push('');
+  lines.push('═══ OVERVIEW ═══');
+  lines.push(`Sessions: ${agg.totalSessions}`);
+  lines.push(`Questions Attempted: ${agg.totalQuestions}`);
+  lines.push(`Overall Accuracy: ${agg.totalQuestions > 0 ? ((agg.totalCorrect / agg.totalQuestions) * 100).toFixed(1) : 0}%`);
+  lines.push(`Current Streak: ${streak.current} day${streak.current !== 1 ? 's' : ''}`);
+  lines.push(`Best Streak: ${streak.best} day${streak.best !== 1 ? 's' : ''}`);
+  lines.push('');
+
+  // Section breakdown
+  const bySection = {};
+  sessions.forEach(s => {
+    if (!s.answers) return;
+    s.answers.forEach(a => {
+      const q = bank.find(x => x.id === a.questionId);
+      if (!q) return;
+      if (!bySection[q.section]) bySection[q.section] = { total: 0, correct: 0 };
+      bySection[q.section].total++;
+      if (a.correct) bySection[q.section].correct++;
+    });
+  });
+  lines.push('═══ BY SECTION ═══');
+  Object.entries(bySection).forEach(([sec, d]) => {
+    const pct = d.total > 0 ? ((d.correct / d.total) * 100).toFixed(1) : '0.0';
+    lines.push(`${SECTION_NAMES[sec] || sec}: ${pct}% (${d.correct}/${d.total})`);
+  });
+  lines.push('');
+
+  if (weakTopics.length > 0) {
+    lines.push('═══ WEAK AREAS ═══');
+    weakTopics.slice(0, 5).forEach(t => {
+      lines.push(`${t.name}: ${t.accuracy.toFixed(1)}% (${t.correct}/${t.total})`);
+    });
+    lines.push('');
+  }
+
+  // Last 5 sessions
+  const recent = sessions.slice(-5).reverse();
+  if (recent.length > 0) {
+    lines.push('═══ RECENT SESSIONS ═══');
+    recent.forEach((s, i) => {
+      const date = s.completedAt ? new Date(s.completedAt).toLocaleDateString(undefined, { month:'short', day:'numeric' }) : '—';
+      lines.push(`${date} — ${SECTION_NAMES[s.section] || s.section}: ${s.accuracy.toFixed(1)}% (${s.correct}/${s.totalQuestions})`);
+    });
+  }
+
+  return lines.join('\n');
+}
+
+function downloadReport(text) {
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `gmat-progress-${getDateKey(new Date())}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 // Section display names
 const SECTION_NAMES = {
   'quant': 'Quantitative Reasoning',
@@ -725,7 +991,7 @@ function Confetti() {
 }
 
 // --- ScoreSummaryView ---
-function ScoreSummaryView({ session, questions, onReview, onNewSession }) {
+function ScoreSummaryView({ session, questions, onReview, onNewSession, sessions }) {
   const { correct, incorrect, unanswered, accuracy, avgTimeSec, totalTimeSec, difficultyBreakdown } = session;
 
   // Time analysis: avg time on correct vs incorrect
@@ -805,7 +1071,12 @@ function ScoreSummaryView({ session, questions, onReview, onNewSession }) {
       </div>
 
       <button className="calc-btn" onClick={onReview} style={{marginBottom:'12px'}}>Review All Questions</button>
-      <button className="calc-btn" onClick={onNewSession} style={{background:'var(--surface)',color:'var(--text)',border:'1px solid var(--border)',boxShadow:'none'}}>New Session</button>
+      <button className="calc-btn" onClick={onNewSession} style={{background:'var(--surface)',color:'var(--text)',border:'1px solid var(--border)',boxShadow:'none',marginBottom:'12px'}}>New Session</button>
+      <button className="export-btn" onClick={() => {
+        const streak = computeStreak(sessions || []);
+        const text = generateReportText(sessions || [], questions, streak);
+        downloadReport(text);
+      }} style={{width:'100%',justifyContent:'center'}}>📄 Export Progress Report</button>
     </div>
   );
 }
@@ -1061,6 +1332,12 @@ function ProgressDashboard({ sessions, onBack }) {
           );
         })}
       </div>
+
+      <button className="export-btn" onClick={() => {
+        const streak = computeStreak(sessions);
+        const text = generateReportText(sessions, typeof GMAT_QUESTIONS !== 'undefined' ? GMAT_QUESTIONS : [], streak);
+        downloadReport(text);
+      }} style={{width:'100%',justifyContent:'center',marginTop:'16px'}}>📄 Export Progress Report</button>
     </div>
   );
 }
@@ -1083,7 +1360,7 @@ function Header({ theme, onToggleTheme, onProgress, showPause, onPause, onClearD
 }
 
 // --- LandingView ---
-function LandingView({ attempts, activeSession, onSelectSection, onResume, onDiscard, sessions, bank, onQuestionHistory, onRetryWrong, onAnalytics }) {
+function LandingView({ attempts, activeSession, onSelectSection, onResume, onDiscard, sessions, bank, onQuestionHistory, onRetryWrong, onAnalytics, onSpacedRepetition, onWeakTopics }) {
   const sections = ['quant', 'verbal', 'data-insights'];
 
   const wrongQuestions = useMemo(() => getWrongQuestions(sessions || [], bank), [sessions, bank]);
@@ -1094,12 +1371,50 @@ function LandingView({ attempts, activeSession, onSelectSection, onResume, onDis
   }, [wrongQuestions]);
   const totalWrong = wrongQuestions.length;
 
+  const streak = useMemo(() => computeStreak(sessions || []), [sessions]);
+  const last14 = useMemo(() => getLast14Days(), []);
+  const srDue = useMemo(() => getSpacedRepetitionDue(sessions || [], bank), [sessions, bank]);
+  const totalSRDue = getTotalSRDue(srDue);
+  const weakTopics = useMemo(() => getWeakTopics(sessions || [], bank), [sessions, bank]);
+
   return (
     <div>
       <div className="hub-title">
         <h1>GMAT Practice</h1>
         <p>Focus Edition — Timed practice across all three sections</p>
       </div>
+
+      {/* Streak Card */}
+      <div className="streak-card">
+        <div className="streak-fire">{streak.current > 0 ? '🔥' : '💤'}</div>
+        <div className="streak-info">
+          <h3>{streak.current} Day Streak</h3>
+          <p>Best: {streak.best} days · Today: {streak.todayCount} session{streak.todayCount !== 1 ? 's' : ''}</p>
+        </div>
+        <div className="streak-cal">
+          {last14.map(day => {
+            const isActive = streak.activeDays.has(day);
+            const isToday = day === getDateKey(new Date());
+            return <div key={day} className={`streak-day${isActive ? ' active' : ''}${isToday ? ' today' : ''}`} title={day} />;
+          })}
+        </div>
+      </div>
+
+      {/* Spaced Repetition */}
+      {totalSRDue > 0 && (
+        <div className="sr-card" onClick={onSpacedRepetition} role="button" tabIndex={0}
+          onKeyDown={e => { if (e.key === 'Enter') onSpacedRepetition(); }}>
+          <h3>🧠 Spaced Repetition <span style={{fontSize:'.78rem',color:'var(--cyan)',fontWeight:700}}>{totalSRDue} due</span></h3>
+          <div className="sr-desc">Questions you got wrong are scheduled for review at increasing intervals</div>
+          <div className="sr-buckets">
+            {SR_INTERVALS.map(d => (
+              <span key={d} className={`sr-bucket${srDue[d].length > 0 ? ' due' : ''}`}>
+                {d}d: {srDue[d].length}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {activeSession && (
         <div className="resume-banner">
@@ -1171,6 +1486,18 @@ function LandingView({ attempts, activeSession, onSelectSection, onResume, onDis
           <div className="retry-desc" style={{color:'var(--green)'}}>No wrong questions — great job! 🎉</div>
         )}
       </div>
+
+      {/* Weak Topics Drill-Down */}
+      {weakTopics.length > 0 && (
+        <div className="history-btn-card" onClick={onWeakTopics} role="button" tabIndex={0}
+          onKeyDown={e => { if (e.key === 'Enter') onWeakTopics(); }}>
+          <span className="hbc-icon">🎯</span>
+          <div className="hbc-text">
+            <h3>Weak Areas Drill-Down</h3>
+            <p>Weakest: {weakTopics[0].name} ({weakTopics[0].accuracy.toFixed(0)}%) · {weakTopics.filter(t => t.accuracy < 60).length} areas below 60%</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1330,11 +1657,17 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
   // Keyboard navigation
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.key >= '1' && e.key <= '5' && question) {
+      if (!question) return;
+      // 1-5 keys
+      if (e.key >= '1' && e.key <= '5') {
         const idx = parseInt(e.key) - 1;
-        if (idx < question.choices.length) {
-          setSelected(question.choices[idx].id);
-        }
+        if (idx < question.choices.length) setSelected(question.choices[idx].id);
+      }
+      // A-E keys
+      const letter = e.key.toUpperCase();
+      if (letter >= 'A' && letter <= 'E') {
+        const choice = question.choices.find(c => c.id === letter);
+        if (choice) setSelected(choice.id);
       }
     };
     window.addEventListener('keydown', handleKey);
@@ -1410,6 +1743,7 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
                     onClick={() => setSelected(c.id)}>
                     <span className="choice-id">{c.id}</span>
                     <span dangerouslySetInnerHTML={{__html: c.text}} />
+                    <span className="kb-hint">{c.id}</span>
                   </button>
                 ))}
               </div>
@@ -1426,6 +1760,7 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
                 onClick={() => setSelected(c.id)}>
                 <span className="choice-id">{c.id}</span>
                 <span dangerouslySetInnerHTML={{__html: c.text}} />
+                <span className="kb-hint">{c.id}</span>
               </button>
             ))}
           </div>
@@ -1787,6 +2122,53 @@ function QuestionHistoryView({ sessions, bank, onBack, onRetryWrong }) {
   );
 }
 
+// --- WeakTopicsView ---
+function WeakTopicsView({ sessions, bank, onBack, onPractice }) {
+  const topics = useMemo(() => getWeakTopics(sessions || [], bank, 1), [sessions, bank]);
+
+  if (topics.length === 0) {
+    return (
+      <div>
+        <button className="config-back" onClick={onBack}>← Back</button>
+        <div className="empty-state">
+          <div className="empty-icon">🎯</div>
+          <p>No topic data yet</p>
+          <p className="empty-sub">Complete some sessions to see your weak areas.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const barColor = (acc) => acc >= 80 ? 'var(--green)' : acc >= 60 ? 'var(--cyan)' : acc >= 40 ? '#f0a500' : 'var(--warm)';
+
+  return (
+    <div>
+      <button className="config-back" onClick={onBack}>← Back</button>
+      <div className="hub-title" style={{marginBottom:'24px'}}>
+        <h1>🎯 Weak Areas</h1>
+        <p>Sorted by accuracy — weakest first</p>
+      </div>
+
+      <div className="wt-grid">
+        {topics.map(t => (
+          <div key={t.key} className={`wt-card${t.accuracy < 50 ? ' weak' : ''}`}
+            onClick={() => onPractice(t.section, t.subsection, t.difficulty)}
+            role="button" tabIndex={0}
+            onKeyDown={e => { if (e.key === 'Enter') onPractice(t.section, t.subsection, t.difficulty); }}>
+            <div className="wt-name">{t.name}</div>
+            <div className="wt-stats">{t.accuracy.toFixed(0)}% · {t.correct}/{t.total} correct</div>
+            <div className="wt-bar">
+              <div className="wt-bar-fill" style={{width: t.accuracy + '%', background: barColor(t.accuracy)}} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button className="calc-btn" onClick={onBack} style={{marginTop:'8px'}}>← Back</button>
+    </div>
+  );
+}
+
 // --- GmatApp (Root) ---
 function GmatApp() {
   const [view, setView] = useState('landing');
@@ -1996,6 +2378,42 @@ function GmatApp() {
     setView('question');
   }, [sessions, bank]);
 
+  const handleSpacedRepetition = useCallback(() => {
+    const srDue = getSpacedRepetitionDue(sessions, bank);
+    const questions = getSRQuestions(srDue);
+    if (questions.length === 0) return;
+    const newSession = {
+      section: 'mixed',
+      difficulty: null,
+      questionIds: questions.map(q => q.id),
+      currentIndex: 0,
+      answers: [],
+      isPaused: false,
+      startedAt: new Date().toISOString()
+    };
+    setActiveSession(newSession);
+    saveJSON('gmat-active-session', newSession);
+    setView('question');
+  }, [sessions, bank]);
+
+  const handleWeakTopicPractice = useCallback((section, subsection, difficulty) => {
+    const pool = getTopicQuestions(bank, section, subsection, difficulty);
+    if (pool.length === 0) return;
+    const shuffled = shuffle(pool).slice(0, Math.min(10, pool.length));
+    const newSession = {
+      section,
+      difficulty,
+      questionIds: shuffled.map(q => q.id),
+      currentIndex: 0,
+      answers: [],
+      isPaused: false,
+      startedAt: new Date().toISOString()
+    };
+    setActiveSession(newSession);
+    saveJSON('gmat-active-session', newSession);
+    setView('question');
+  }, [bank]);
+
   const showPauseInHeader = view === 'question';
 
   const currentQuestionHasPassage = view === 'question' && activeSession && (() => {
@@ -2026,6 +2444,8 @@ function GmatApp() {
           onQuestionHistory={() => setView('questionHistory')}
           onRetryWrong={handleRetryWrong}
           onAnalytics={() => setView('analytics')}
+          onSpacedRepetition={handleSpacedRepetition}
+          onWeakTopics={() => setView('weakTopics')}
         />
       )}
 
@@ -2057,6 +2477,7 @@ function GmatApp() {
         <ScoreSummaryView
           session={completedSession}
           questions={bank}
+          sessions={sessions}
           onReview={() => setView('review')}
           onNewSession={() => { setCompletedSession(null); setView('landing'); }}
         />
@@ -2088,6 +2509,10 @@ function GmatApp() {
 
       {view === 'analytics' && (
         <AnalyticsView sessions={sessions} bank={bank} onBack={() => setView('landing')} />
+      )}
+
+      {view === 'weakTopics' && (
+        <WeakTopicsView sessions={sessions} bank={bank} onBack={() => setView('landing')} onPractice={handleWeakTopicPractice} />
       )}
 
       {showClearConfirm && (
