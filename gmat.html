@@ -17,8 +17,13 @@
     --border:rgba(255,255,255,0.08);--border-h:rgba(255,255,255,0.15);
     --text:#eef0f4;--text-s:#8b92a5;--accent:#6c63ff;--accent-l:#8b83ff;--accent-g:rgba(108,99,255,0.4);
     --cyan:#00d4ff;--green:#00e88f;--warm:#ff6b6b;
+    --section-accent:var(--accent);--section-accent-l:var(--accent-l);--section-accent-g:var(--accent-g);
     --font:'Space Grotesk',-apple-system,sans-serif;--mono:'JetBrains Mono',monospace;
 }
+[data-section="quant"]{--section-accent:#a855f7;--section-accent-l:#c084fc;--section-accent-g:rgba(168,85,247,0.35)}
+[data-section="verbal"]{--section-accent:#0ea5e9;--section-accent-l:#38bdf8;--section-accent-g:rgba(14,165,233,0.35)}
+[data-section="data-insights"]{--section-accent:#14b8a6;--section-accent-l:#2dd4bf;--section-accent-g:rgba(20,184,166,0.35)}
+[data-section="mixed"]{--section-accent:#f97316;--section-accent-l:#fb923c;--section-accent-g:rgba(249,115,22,0.35)}
 [data-theme="light"]{
     --bg:#f4f5f7;--bg-el:#fff;--surface:rgba(0,0,0,0.03);--surface-h:rgba(0,0,0,0.06);
     --border:rgba(0,0,0,0.1);--border-h:rgba(0,0,0,0.18);--text:#1a1a2e;--text-s:#5a607a;
@@ -193,6 +198,25 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .nav-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
 @keyframes fadeSlideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .question-fade{animation:fadeSlideIn .3s ease-out}
+.question-fade.slide-out{animation:slideOut .25s ease-in forwards}
+@keyframes slideOut{to{opacity:0;transform:translateX(-30px)}}
+
+/* Choice select animation */
+@keyframes choicePop{0%{transform:scale(1)}40%{transform:scale(1.02)}100%{transform:scale(1)}}
+.choice-btn.selected{animation:choicePop .25s ease-out;border-color:var(--section-accent);background:color-mix(in srgb, var(--section-accent) 8%, transparent)}
+.choice-btn.selected .choice-id{background:var(--section-accent);color:#fff}
+
+/* Section-colored elements during quiz */
+.progress-bar-fill{background:var(--section-accent) !important}
+.next-btn{background:var(--section-accent);box-shadow:0 4px 24px var(--section-accent-g)}
+.next-btn:hover:not(:disabled){box-shadow:0 8px 32px var(--section-accent-g)}
+
+/* Running stats toast */
+.running-stats{position:fixed;bottom:24px;right:24px;background:var(--bg-el);border:1px solid var(--border);border-radius:12px;padding:10px 18px;font-size:.78rem;color:var(--text-s);z-index:2000;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,.3);animation:statsIn .3s ease,statsOut .4s ease 2s forwards;pointer-events:none}
+.running-stats .rs-correct{color:var(--green);font-weight:700;font-family:var(--mono)}
+.running-stats .rs-sep{opacity:.3}
+@keyframes statsIn{from{opacity:0;transform:translateY(12px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes statsOut{to{opacity:0;transform:translateY(8px) scale(.95)}}
 @keyframes confettiFall{0%{transform:translateY(-100vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 .confetti-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden}
 .confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:confettiFall 3s ease-in forwards}
@@ -212,8 +236,160 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .pause-btn:hover{border-color:var(--accent);color:var(--accent)}
 .header-actions{display:flex;align-items:center;gap:8px}
 
+/* ── View Transitions ── */
+.view-transition{animation:viewIn .4s ease both}
+@keyframes viewIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Cinematic Score Reveal ── */
+.score-reveal{text-align:center;padding:40px 0 20px}
+.score-reveal-blur{filter:blur(12px);opacity:0;animation:scoreUnblur 1.2s cubic-bezier(.16,1,.3,1) forwards;animation-delay:.3s}
+@keyframes scoreUnblur{to{filter:blur(0);opacity:1}}
+.score-reveal-number{font-family:var(--mono);font-weight:700;font-size:4.5rem;line-height:1;background:linear-gradient(135deg,#6c63ff,#00d4ff,#00e88f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:scoreGradient 3s ease infinite}
+@keyframes scoreGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.score-reveal-label{font-size:.75rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.12em;margin-top:6px}
+.score-reveal-pct{font-size:1.1rem;color:var(--accent-l);font-weight:600;margin-top:10px;opacity:0;animation:fadeUp .5s ease forwards;animation-delay:1.6s}
+.score-reveal-section{font-size:.85rem;color:var(--text-s);margin-top:4px;opacity:0;animation:fadeUp .5s ease forwards;animation-delay:1.9s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.score-confetti-trigger{position:relative}
+
+/* ── Floating Particles Background ── */
+.cc-particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.cc-particle-dot{position:absolute;width:2px;height:2px;border-radius:50%;background:var(--accent);opacity:0;animation:particleFloat linear infinite}
+[data-theme="light"] .cc-particle-dot{background:rgba(108,99,255,.3)}
+@keyframes particleFloat{0%{opacity:0;transform:translateY(0)}10%{opacity:.4}90%{opacity:.4}100%{opacity:0;transform:translateY(-100vh)}}
+
+/* ── Animated Gradient Border on Mission Cards ── */
+.cc-mission{background:var(--surface);border:1px solid transparent;border-radius:16px;padding:20px;cursor:pointer;transition:all .35s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.cc-mission::after{content:'';position:absolute;inset:-1px;border-radius:16px;padding:1px;background:linear-gradient(135deg,var(--section-accent,var(--accent)),transparent 40%,transparent 60%,var(--section-accent-l,var(--accent-l)));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.3;transition:opacity .4s;pointer-events:none;animation:borderShift 6s ease-in-out infinite alternate}
+.cc-mission:hover::after{opacity:.8}
+@keyframes borderShift{0%{background:linear-gradient(135deg,var(--section-accent,var(--accent)),transparent 40%,transparent 60%,var(--section-accent-l,var(--accent-l)))}100%{background:linear-gradient(315deg,var(--section-accent-l,var(--accent-l)),transparent 40%,transparent 60%,var(--section-accent,var(--accent)))}}
+
+/* ── Staggered Entrance ── */
+.cc-entrance{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.cc-entrance.visible{opacity:1;transform:translateY(0)}
+
+/* ── Command Center ── */
+.cc-hero{text-align:center;padding:20px 0 24px;position:relative}
+.cc-hero h1{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;margin-bottom:2px}
+.cc-hero h1 .cc-flame{margin-left:8px;font-size:.85em}
+.cc-hero .cc-sub{color:var(--text-s);font-size:.82rem}
+
+/* ── Readiness Ring — Premium ── */
+.cc-ring-wrap{position:relative;width:190px;height:190px;margin:24px auto 12px}
+.cc-ring-svg{width:100%;height:100%;transform:rotate(-90deg);filter:drop-shadow(0 0 12px var(--accent-g))}
+.cc-ring-bg{fill:none;stroke:var(--border);stroke-width:5;opacity:.5}
+.cc-ring-track{fill:none;stroke:rgba(108,99,255,.08);stroke-width:8}
+.cc-ring-fill{fill:none;stroke-width:7;stroke-linecap:round;transition:none}
+.cc-ring-wrap.animated .cc-ring-fill{transition:stroke-dashoffset 2s cubic-bezier(.16,1,.3,1)}
+
+/* Glassmorphism center */
+.cc-ring-center{position:absolute;inset:28px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.03);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 0 30px rgba(108,99,255,.05)}
+[data-theme="light"] .cc-ring-center{background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.08);box-shadow:inset 0 0 30px rgba(108,99,255,.03)}
+[data-theme="light"] .cc-ring-glow{opacity:.12;background:conic-gradient(from 0deg,transparent 0%,rgba(108,99,255,.12) 25%,transparent 50%,rgba(0,180,220,.08) 75%,transparent 100%)}
+[data-theme="light"] .cc-ring-particle{background:#6c63ff;box-shadow:0 0 8px 2px rgba(108,99,255,.4),0 0 16px 4px rgba(108,99,255,.1)}
+[data-theme="light"] .cc-ring-pulse{border-color:rgba(108,99,255,.15)}
+[data-theme="light"] .cc-ring-svg{filter:drop-shadow(0 0 6px rgba(108,99,255,.1))}
+[data-theme="light"] .cc-ring-track{stroke:rgba(108,99,255,.05)}
+[data-theme="light"] .cc-ring-bg{stroke:rgba(0,0,0,.06)}
+[data-theme="light"] .cc-ring-score{background:linear-gradient(135deg,#5a52e0,#0090cc);-webkit-background-clip:text;background-clip:text}
+
+/* Light theme — Mission Cards */
+[data-theme="light"] .cc-mission{background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.08)}
+[data-theme="light"] .cc-mission:hover{box-shadow:0 12px 40px rgba(108,99,255,.1);border-color:rgba(108,99,255,.2)}
+[data-theme="light"] .cc-mission::after{opacity:.15}
+[data-theme="light"] .cc-mission:hover::after{opacity:.4}
+[data-theme="light"] .cc-mission::before{background:linear-gradient(90deg,var(--section-accent,#6c63ff),var(--section-accent-l,#8b83ff))}
+[data-theme="light"] .cc-mission-score{color:#5a52e0}
+[data-theme="light"] .cc-mission-new{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);color:#5a607a}
+
+/* Light theme — Progress Bar */
+[data-theme="light"] .cc-progress-bar{background:rgba(0,0,0,.06)}
+[data-theme="light"] .cc-progress-fill{background:linear-gradient(90deg,var(--section-accent,#6c63ff),var(--section-accent-l,#8b83ff))}
+
+/* Light theme — Toolbar */
+[data-theme="light"] .cc-tool{background:rgba(255,255,255,.7);border-color:rgba(0,0,0,.08)}
+[data-theme="light"] .cc-tool:hover{border-color:rgba(108,99,255,.3);box-shadow:0 6px 20px rgba(108,99,255,.1)}
+[data-theme="light"] .cc-tool-badge{background:#e53e3e}
+
+/* Light theme — Particles */
+[data-theme="light"] .cc-particle-dot{background:rgba(108,99,255,.15)}
+
+/* Light theme — Score Reveal */
+[data-theme="light"] .score-reveal-number{background:linear-gradient(135deg,#5a52e0,#0090cc,#00b87a);-webkit-background-clip:text;background-clip:text;background-size:200% 200%}
+[data-theme="light"] .score-reveal-pct{color:#5a52e0}
+
+/* Light theme — Stats text */
+[data-theme="light"] .cc-hero h1{color:#1a1a2e}
+[data-theme="light"] .cc-flame{color:#e53e3e}
+.cc-ring-score{font-family:var(--mono);font-weight:700;font-size:2.4rem;line-height:1;background:linear-gradient(135deg,#6c63ff,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cc-ring-label{font-size:.6rem;color:var(--text-s);text-transform:uppercase;letter-spacing:.14em;margin-top:4px}
+
+/* Rotating outer glow */
+.cc-ring-glow{position:absolute;inset:-15px;border-radius:50%;opacity:.35;animation:ringRotate 14s linear infinite;pointer-events:none;background:conic-gradient(from 0deg,transparent 0%,var(--accent-g) 25%,transparent 50%,rgba(0,212,255,.3) 75%,transparent 100%)}
+@keyframes ringRotate{to{transform:rotate(360deg)}}
+
+/* Orbiting particle */
+.cc-ring-orbit{position:absolute;inset:-6px;border-radius:50%;animation:ringRotate 8s linear infinite;pointer-events:none}
+.cc-ring-particle{position:absolute;top:0;left:50%;width:8px;height:8px;margin-left:-4px;margin-top:-4px;border-radius:50%;background:#00d4ff;box-shadow:0 0 12px 4px rgba(0,212,255,.6),0 0 24px 8px rgba(0,212,255,.2)}
+
+/* Pulse rings */
+.cc-ring-pulse{position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--accent);opacity:0;animation:ringPulse 4.5s ease-out infinite;pointer-events:none}
+.cc-ring-pulse:nth-child(2){animation-delay:1.5s}
+.cc-ring-pulse:nth-child(3){animation-delay:3s}
+@keyframes ringPulse{0%{opacity:.3;transform:scale(1)}100%{opacity:0;transform:scale(1.15)}}
+
+/* Hover: intensify effects */
+.cc-ring-wrap .cc-ring-fill{transition:stroke-dashoffset 2s cubic-bezier(.16,1,.3,1)}
+.cc-ring-wrap:hover .cc-ring-glow{opacity:.55}
+.cc-ring-wrap:hover .cc-ring-particle{box-shadow:0 0 16px 6px rgba(0,212,255,.8),0 0 32px 12px rgba(0,212,255,.3)}
+
+/* Mission Cards */
+.cc-missions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.cc-mission{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;cursor:pointer;transition:all .35s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden}
+.cc-mission:hover{transform:translateY(-4px) scale(1.02);border-color:var(--section-accent-l,var(--accent-l));box-shadow:0 16px 48px var(--section-accent-g,var(--accent-g))}
+.cc-mission::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--section-accent,var(--accent)),var(--section-accent-l,var(--accent-l)));opacity:0;transition:opacity .3s}
+.cc-mission:hover::before{opacity:1}
+.cc-mission-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.cc-mission-icon{font-size:2.2rem;display:inline-block;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.cc-mission:hover .cc-mission-icon{animation:iconDance .6s ease-in-out}
+@keyframes iconDance{0%{transform:scale(1) rotate(0)}20%{transform:scale(1.2) rotate(-10deg)}40%{transform:scale(1.1) rotate(8deg)}60%{transform:scale(1.15) rotate(-5deg)}80%{transform:scale(1.05) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
+.cc-mission-score{font-family:var(--mono);font-weight:700;font-size:1.5rem;color:var(--section-accent-l,var(--accent-l));opacity:.9}
+.cc-mission-score-label{font-size:.7rem;color:var(--text-s);font-weight:500;margin-left:1px}
+.cc-mission-stat{display:flex;align-items:baseline}
+.cc-mission-new{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-s);background:var(--surface-h);padding:4px 10px;border-radius:100px;border:1px solid var(--border)}
+.cc-mission h3{font-size:.92rem;font-weight:600;margin-bottom:10px}
+
+/* Progress ring inside mission card */
+.cc-mini-ring{width:36px;height:36px;flex-shrink:0}
+.cc-mini-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.cc-mini-ring .ring-bg{fill:none;stroke:var(--border);stroke-width:3}
+.cc-mini-ring .ring-fill{fill:none;stroke-width:3;stroke-linecap:round;stroke:var(--section-accent,var(--accent))}
+
+/* Difficulty heatmap */
+.cc-heatmap{display:flex;gap:3px;margin-top:6px;height:6px;border-radius:3px;overflow:hidden}
+
+/* Section progress bar — animates on hover */
+.cc-progress-bar{height:4px;border-radius:2px;background:var(--border);margin-top:10px;overflow:hidden}
+.cc-progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--section-accent,var(--accent)),var(--section-accent-l,var(--accent-l)));width:0%;transition:width 1s cubic-bezier(.16,1,.3,1)}
+.cc-mission:hover .cc-progress-fill{width:var(--prog) !important}
+.cc-heat-seg{flex:1;border-radius:3px;transition:opacity .3s}
+
+/* Action Toolbar */
+.cc-toolbar{display:flex;justify-content:center;gap:10px;padding:16px 0}
+.cc-tool{position:relative;width:60px;height:60px;border-radius:16px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.6rem;cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.cc-tool:hover{transform:translateY(-3px) scale(1.1);border-color:var(--accent);box-shadow:0 8px 24px var(--accent-g);animation:toolBounce .4s ease}
+@keyframes toolBounce{0%{transform:translateY(0) scale(1)}40%{transform:translateY(-6px) scale(1.15)}70%{transform:translateY(-2px) scale(1.08)}100%{transform:translateY(-3px) scale(1.1)}}
+.cc-tool-badge{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;border-radius:10px;background:var(--warm);color:#fff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px;font-family:var(--mono)}
+.cc-tool-label{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:.65rem;color:var(--text-s);white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+.cc-tool:hover .cc-tool-label{opacity:1}
+
 /* Responsive */
 @media(max-width:768px){
+    .cc-missions{grid-template-columns:1fr}
+    .cc-ring-wrap{width:160px;height:160px}
+    .cc-ring-score{font-size:2rem}
+    .cc-toolbar{gap:10px}
+    .cc-tool{width:52px;height:52px;font-size:1.4rem}
     .section-grid{grid-template-columns:1fr}
     .question-prompt{font-size:1rem}
     .timer-display{font-size:1.1rem}
@@ -429,6 +605,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <script src="di-ds-easy.js"></script>
     <script src="di-ds-medium.js"></script>
     <script src="di-ds-hard.js"></script>
+    <script src="gmat-irt.js"></script>
     <script type="text/babel">
 
 const { useState, useEffect, useRef, useCallback, useMemo } = React;
@@ -992,7 +1169,8 @@ function generateReportText(sessions, bank, streak) {
     lines.push('═══ RECENT SESSIONS ═══');
     recent.forEach((s, i) => {
       const date = s.completedAt ? new Date(s.completedAt).toLocaleDateString(undefined, { month:'short', day:'numeric' }) : '—';
-      lines.push(`${date} — ${SECTION_NAMES[s.section] || s.section}: ${s.accuracy.toFixed(1)}% (${s.correct}/${s.totalQuestions})`);
+      const scoreInfo = s.isAdaptive ? ` · Score: ${s.sectionScore}/90 (${s.percentile}th pct)` : '';
+      lines.push(`${date} — ${SECTION_NAMES[s.section] || s.section}: ${s.accuracy.toFixed(1)}% (${s.correct}/${s.totalQuestions})${scoreInfo}`);
     });
   }
 
@@ -1049,6 +1227,7 @@ function Confetti() {
 // --- ScoreSummaryView ---
 function ScoreSummaryView({ session, questions, onReview, onNewSession, sessions }) {
   const { correct, incorrect, unanswered, accuracy, avgTimeSec, totalTimeSec, difficultyBreakdown } = session;
+  const isAdaptive = session.isAdaptive;
 
   // Time analysis: avg time on correct vs incorrect
   const answers = session.answers || [];
@@ -1056,15 +1235,128 @@ function ScoreSummaryView({ session, questions, onReview, onNewSession, sessions
   const incorrectTimes = answers.filter(a => a.selectedAnswer !== null && !a.correct && a.timeTaken).map(a => a.timeTaken);
   const avgCorrectTime = correctTimes.length ? correctTimes.reduce((a,b) => a+b, 0) / correctTimes.length : 0;
   const avgIncorrectTime = incorrectTimes.length ? incorrectTimes.reduce((a,b) => a+b, 0) / incorrectTimes.length : 0;
-  const showConfetti = accuracy >= 80;
+  const showConfetti = isAdaptive ? (session.sectionScore >= 80) : (accuracy >= 80);
+
+  // Cinematic score counter for adaptive
+  const [revealScore, setRevealScore] = useState(0);
+  const [revealDone, setRevealDone] = useState(false);
+  useEffect(() => {
+    if (!isAdaptive) return;
+    const target = session.sectionScore;
+    const delay = setTimeout(() => {
+      const duration = 1500;
+      const start = performance.now();
+      const tick = (now) => {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        setRevealScore(Math.round(eased * target));
+        if (p < 1) requestAnimationFrame(tick);
+        else setRevealDone(true);
+      };
+      requestAnimationFrame(tick);
+    }, 800);
+    return () => clearTimeout(delay);
+  }, [isAdaptive, session.sectionScore]);
+
+  // Theta chart ref
+  const chartRef = useRef(null);
+  useEffect(() => {
+    if (!isAdaptive || !chartRef.current || !session.thetaHistory) return;
+    const canvas = chartRef.current;
+    const ctx = canvas.getContext('2d');
+    const hist = session.thetaHistory;
+    const w = canvas.width = canvas.offsetWidth * 2;
+    const h = canvas.height = canvas.offsetHeight * 2;
+    ctx.scale(2, 2);
+    const cw = w / 2, ch = h / 2;
+    const pad = { t: 20, b: 30, l: 40, r: 20 };
+    const pw = cw - pad.l - pad.r, ph = ch - pad.t - pad.b;
+    const minT = -3.5, maxT = 3.5;
+
+    ctx.clearRect(0, 0, cw, ch);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 0.5;
+    for (let v = -3; v <= 3; v++) {
+      const y = pad.t + ph - ((v - minT) / (maxT - minT)) * ph;
+      ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + pw, y); ctx.stroke();
+    }
+
+    // Zero line
+    const zeroY = pad.t + ph - ((0 - minT) / (maxT - minT)) * ph;
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(pad.l, zeroY); ctx.lineTo(pad.l + pw, zeroY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Theta line
+    if (hist.length > 1) {
+      const grad = ctx.createLinearGradient(pad.l, 0, pad.l + pw, 0);
+      grad.addColorStop(0, '#6c63ff');
+      grad.addColorStop(1, '#00d4ff');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 2;
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      for (let i = 0; i < hist.length; i++) {
+        const x = pad.l + (i / (hist.length - 1)) * pw;
+        const y = pad.t + ph - ((hist[i] - minT) / (maxT - minT)) * ph;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Dots
+      for (let i = 0; i < hist.length; i++) {
+        const x = pad.l + (i / (hist.length - 1)) * pw;
+        const y = pad.t + ph - ((hist[i] - minT) / (maxT - minT)) * ph;
+        ctx.fillStyle = i === hist.length - 1 ? '#00d4ff' : '#6c63ff';
+        ctx.beginPath(); ctx.arc(x, y, i === hist.length - 1 ? 4 : 2.5, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    // Labels
+    ctx.fillStyle = '#8b92a5';
+    ctx.font = '10px "Space Grotesk"';
+    ctx.textAlign = 'center';
+    ctx.fillText('Q1', pad.l, ch - 8);
+    ctx.fillText(`Q${hist.length - 1}`, pad.l + pw, ch - 8);
+    ctx.textAlign = 'right';
+    ctx.fillText('High', pad.l - 6, pad.t + 4);
+    ctx.fillText('Low', pad.l - 6, pad.t + ph + 4);
+  }, [isAdaptive, session.thetaHistory]);
 
   return (
     <div>
-      {showConfetti && <Confetti />}
+      {!isAdaptive && showConfetti && <Confetti />}
       <div className="hub-title" style={{marginBottom:'24px'}}>
         <h1>Session Complete</h1>
-        <p>{SECTION_NAMES[session.section] || (session.section === 'mixed' ? 'Retry Wrong Questions' : session.section)} — {session.totalQuestions} questions</p>
+        <p>{SECTION_NAMES[session.section] || (session.section === 'mixed' ? 'Retry Wrong Questions' : session.section)} — {session.totalQuestions} questions{isAdaptive ? ' (Adaptive)' : ''}</p>
       </div>
+
+      {/* GMAT Score Card for adaptive sessions */}
+      {isAdaptive && (
+        <div className="score-reveal score-confetti-trigger">
+          {revealDone && showConfetti && <Confetti />}
+          <div className="score-reveal-blur">
+            <div className="score-reveal-number">{revealScore}</div>
+            <div className="score-reveal-label">Estimated Section Score</div>
+          </div>
+          <div className="score-reveal-pct">{session.percentile}th percentile</div>
+          <div className="score-reveal-section">{SECTION_NAMES[session.section]} · {session.totalQuestions} questions</div>
+        </div>
+      )}
+
+      {/* Theta progression chart */}
+      {isAdaptive && session.thetaHistory && session.thetaHistory.length > 2 && (
+        <div className="card summary-reveal" style={{marginBottom:'16px'}}>
+          <div className="card-title">Ability Progression</div>
+          <canvas ref={chartRef} style={{width:'100%',height:'160px',display:'block'}} />
+          <div style={{fontSize:'.72rem',color:'var(--text-s)',marginTop:'8px',textAlign:'center'}}>
+            How the test adapted to your ability level question by question
+          </div>
+        </div>
+      )}
 
       <div className="summary-grid">
         <div className="summary-card summary-reveal" style={{borderColor:'rgba(0,232,143,.25)'}}>
@@ -1378,9 +1670,10 @@ function ProgressDashboard({ sessions, onBack }) {
             <div key={s.id} className="session-item">
               <div className="si-left">
                 <span className="si-section">{SECTION_ICONS[s.section] || ''} {SECTION_NAMES[s.section] || s.section}</span>
-                <span className="si-diff">{s.difficulty || 'All'}</span>
+                <span className="si-diff">{s.difficulty === 'adaptive' ? '🎯 Adaptive' : s.difficulty || 'All'}</span>
               </div>
               <div className="si-right">
+                {s.isAdaptive && <span style={{fontFamily:'var(--mono)',fontWeight:600,color:'var(--accent-l)'}}>{s.sectionScore}</span>}
                 <span className="si-acc">{s.accuracy.toFixed(0)}%</span>
                 <span>{dateStr}</span>
               </div>
@@ -1418,63 +1711,177 @@ function Header({ theme, onToggleTheme, onProgress, showPause, onPause, onClearD
 // --- LandingView ---
 function LandingView({ attempts, activeSession, onSelectSection, onResume, onDiscard, sessions, bank, onQuestionHistory, onRetryWrong, onAnalytics, onSpacedRepetition, onWeakTopics }) {
   const sections = ['quant', 'verbal', 'data-insights'];
+  const sectionColors = { quant: '#a855f7', verbal: '#0ea5e9', 'data-insights': '#14b8a6' };
 
   const wrongQuestions = useMemo(() => getWrongQuestions(sessions || [], bank), [sessions, bank]);
-  const wrongBySection = useMemo(() => {
-    const counts = { 'quant': 0, 'verbal': 0, 'data-insights': 0 };
-    wrongQuestions.forEach(q => { if (counts[q.section] !== undefined) counts[q.section]++; });
-    return counts;
-  }, [wrongQuestions]);
   const totalWrong = wrongQuestions.length;
-
   const streak = useMemo(() => computeStreak(sessions || []), [sessions]);
-  const last14 = useMemo(() => getLast14Days(), []);
   const srDue = useMemo(() => getSpacedRepetitionDue(sessions || [], bank), [sessions, bank]);
   const totalSRDue = getTotalSRDue(srDue);
   const weakTopics = useMemo(() => getWeakTopics(sessions || [], bank), [sessions, bank]);
+  const agg = useMemo(() => aggregateProgress(sessions || []), [sessions]);
+
+  // Readiness score: 0-100, hard to fill — requires volume + accuracy + consistency
+  const readiness = useMemo(() => {
+    const totalPool = bank.length || 1;
+    const attempted = new Set();
+    (sessions || []).forEach(s => (s.answers || []).forEach(a => attempted.add(a.questionId)));
+    const coverage = attempted.size / totalPool; // 0-1
+    // Accuracy only counts meaningfully after 50+ questions
+    const volumeWeight = Math.min(agg.totalQuestions / 200, 1); // ramps up over 200 Qs
+    const acc = agg.totalQuestions > 0 ? agg.totalCorrect / agg.totalQuestions : 0;
+    const accScore = acc * volumeWeight * 100;
+    const streakScore = Math.min(streak.current / 14, 1) * 100; // 14-day streak = max
+    const coverageScore = coverage * 100;
+    return Math.round(coverageScore * 0.5 + accScore * 0.35 + streakScore * 0.15);
+  }, [agg, streak, sessions, bank]);
+
+  // Latest adaptive score per section
+  const latestScore = useCallback((sec) => {
+    const s = [...(sessions || [])].reverse().find(s => s.section === sec && s.isAdaptive);
+    return s ? s.sectionScore : null;
+  }, [sessions]);
+
+  // Section accuracy for heatmap
+  const sectionAccuracy = useCallback((sec, diff) => {
+    let total = 0, correct = 0;
+    (sessions || []).forEach(s => (s.answers || []).forEach(a => {
+      const q = bank.find(x => x.id === a.questionId);
+      if (q && q.section === sec && q.difficulty === diff) { total++; if (a.correct) correct++; }
+    }));
+    return total > 0 ? correct / total : -1; // -1 = no data
+  }, [sessions, bank]);
+
+  // Section progress — unique questions attempted / total
+  const sectionProgress = useCallback((sec) => {
+    const total = filterQuestions(bank, sec, null).length;
+    if (!total) return 0;
+    const attempted = new Set();
+    (sessions || []).forEach(s => (s.answers || []).forEach(a => {
+      const q = bank.find(x => x.id === a.questionId);
+      if (q && q.section === sec) attempted.add(a.questionId);
+    }));
+    return attempted.size / total;
+  }, [sessions, bank]);
+
+  // Ring math
+  const ringR = 80, ringC = 2 * Math.PI * ringR;
+  const ringOffset = ringC - (readiness / 100) * ringC;
+
+  // Animate on mount
+  const [animated, setAnimated] = useState(false);
+  useEffect(() => {
+    const t = requestAnimationFrame(() => requestAnimationFrame(() => setAnimated(true)));
+    return () => cancelAnimationFrame(t);
+  }, []);
+
+  // Staggered entrance
+  const [entranceStage, setEntranceStage] = useState(0);
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setEntranceStage(1), 100),   // ring
+      setTimeout(() => setEntranceStage(2), 500),   // cards
+      setTimeout(() => setEntranceStage(3), 900),   // toolbar
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  // Score counter animation
+  const [displayScore, setDisplayScore] = useState(0);
+  useEffect(() => {
+    if (!animated) return;
+    const target = readiness;
+    const duration = 1200;
+    const start = performance.now();
+    const tick = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      setDisplayScore(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [animated, readiness]);
+
+  // Floating particles
+  const particles = useMemo(() =>
+    Array.from({length: 20}, (_, i) => ({
+      id: i, left: Math.random() * 100, delay: Math.random() * 8,
+      dur: 10 + Math.random() * 15, size: 1 + Math.random() * 2
+    })), []);
+
+  // Mini ring for mission cards
+  const MiniRing = ({ progress, color }) => {
+    const r = 14, c = 2 * Math.PI * r;
+    return (
+      <div className="cc-mini-ring">
+        <svg viewBox="0 0 36 36">
+          <circle className="ring-bg" cx="18" cy="18" r={r} />
+          <circle className="ring-fill" cx="18" cy="18" r={r}
+            style={{stroke:color,strokeDasharray:c,strokeDashoffset:c - progress * c}} />
+        </svg>
+      </div>
+    );
+  };
+
+  // Heatmap bar for difficulty accuracy
+  const HeatBar = ({ sec }) => {
+    const diffs = ['easy','medium','hard'];
+    const colors = (acc) => acc < 0 ? 'rgba(255,255,255,.06)' : acc >= .7 ? 'var(--green)' : acc >= .4 ? '#fbbf24' : 'var(--warm)';
+    return (
+      <div className="cc-heatmap">
+        {diffs.map(d => {
+          const acc = sectionAccuracy(sec, d);
+          return <div key={d} className="cc-heat-seg" style={{background:colors(acc),opacity:acc<0?.3:(.4+acc*.6)}} title={`${d}: ${acc<0?'—':(acc*100).toFixed(0)+'%'}`} />;
+        })}
+      </div>
+    );
+  };
 
   return (
     <div>
-      <div className="hub-title">
-        <h1>GMAT Practice</h1>
-        <p>Focus Edition — Timed practice across all three sections</p>
+      {/* Floating Particles */}
+      <div className="cc-particles">
+        {particles.map(p => <div key={p.id} className="cc-particle-dot" style={{
+          left: p.left+'%', bottom: '-10px', width: p.size, height: p.size,
+          animationDuration: p.dur+'s', animationDelay: p.delay+'s'
+        }} />)}
       </div>
 
-      {/* Streak Card */}
-      <div className="streak-card">
-        <div className="streak-fire">{streak.current > 0 ? '🔥' : '💤'}</div>
-        <div className="streak-info">
-          <h3>{streak.current} Day Streak</h3>
-          <p>Best: {streak.best} days · Today: {streak.todayCount} session{streak.todayCount !== 1 ? 's' : ''}</p>
-        </div>
-        <div className="streak-cal">
-          {last14.map(day => {
-            const isActive = streak.activeDays.has(day);
-            const isToday = day === getDateKey(new Date());
-            return <div key={day} className={`streak-day${isActive ? ' active' : ''}${isToday ? ' today' : ''}`} title={day} />;
-          })}
-        </div>
-      </div>
+      {/* Hero */}
+      <div className={`cc-hero cc-entrance${entranceStage >= 1 ? ' visible' : ''}`}>
+        <h1>GMAT Practice {streak.current > 0 && <span className="cc-flame">🔥{streak.current}</span>}</h1>
+        <div className="cc-sub">Focus Edition</div>
 
-      {/* Spaced Repetition */}
-      {totalSRDue > 0 && (
-        <div className="sr-card" onClick={onSpacedRepetition} role="button" tabIndex={0}
-          onKeyDown={e => { if (e.key === 'Enter') onSpacedRepetition(); }}>
-          <h3>🧠 Spaced Repetition <span style={{fontSize:'.78rem',color:'var(--cyan)',fontWeight:700}}>{totalSRDue} due</span></h3>
-          <div className="sr-desc">Questions you got wrong are scheduled for review at increasing intervals</div>
-          <div className="sr-buckets">
-            {SR_INTERVALS.map(d => (
-              <span key={d} className={`sr-bucket${srDue[d].length > 0 ? ' due' : ''}`}>
-                {d}d: {srDue[d].length}
-              </span>
-            ))}
+        {/* Readiness Ring */}
+        <div className={`cc-ring-wrap${animated ? ' animated' : ''}`} style={{'--ring-c':ringC,'--ring-offset':ringOffset}}>
+          <div className="cc-ring-glow" />
+          <div className="cc-ring-pulse" /><div className="cc-ring-pulse" /><div className="cc-ring-pulse" />
+          <div className="cc-ring-orbit"><div className="cc-ring-particle" /></div>
+          <svg className="cc-ring-svg" viewBox="0 0 190 190">
+            <circle className="cc-ring-track" cx="95" cy="95" r={ringR} />
+            <circle className="cc-ring-bg" cx="95" cy="95" r={ringR} />
+            <circle className="cc-ring-fill" cx="95" cy="95" r={ringR}
+              style={{stroke:'url(#ringGrad)',strokeDasharray:ringC,strokeDashoffset:animated ? ringOffset : ringC}} />
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#6c63ff" />
+                <stop offset="50%" stopColor="#00d4ff" />
+                <stop offset="100%" stopColor="#00e88f" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div className="cc-ring-center">
+            <div className="cc-ring-score">{displayScore}</div>
+            <div className="cc-ring-label">Readiness</div>
           </div>
         </div>
-      )}
+        <div style={{fontSize:'.72rem',color:'var(--text-s)'}}>{agg.totalQuestions} Qs · {agg.totalQuestions > 0 ? ((agg.totalCorrect/agg.totalQuestions)*100).toFixed(0) : 0}% acc · {(sessions||[]).length} sessions</div>
+      </div>
 
       {activeSession && (
         <div className="resume-banner">
-          <p>📝 You have an active {SECTION_NAMES[activeSession.section]} session ({activeSession.currentIndex}/{activeSession.questionIds.length} questions)</p>
+          <p>📝 Active {SECTION_NAMES[activeSession.section]} session ({activeSession.currentIndex}/{activeSession.isAdaptive ? activeSession.totalTarget : activeSession.questionIds.length}{activeSession.isAdaptive ? ' · Adaptive' : ''})</p>
           <div style={{display:'flex',gap:'8px'}}>
             <button className="resume-btn" onClick={onResume}>Resume</button>
             <button className="discard-btn" onClick={onDiscard}>Discard</button>
@@ -1482,91 +1889,77 @@ function LandingView({ attempts, activeSession, onSelectSection, onResume, onDis
         </div>
       )}
 
-      <div className="section-grid">
-        {sections.map(sec => {
+      {/* Mission Cards */}
+      <div className={`cc-missions cc-entrance${entranceStage >= 2 ? ' visible' : ''}`}>
+        {sections.map((sec, i) => {
           const total = filterQuestions(bank, sec, null).length;
-          const easyUn = getUnattemptedCount(bank, sec, 'easy', attempts);
-          const medUn = getUnattemptedCount(bank, sec, 'medium', attempts);
-          const hardUn = getUnattemptedCount(bank, sec, 'hard', attempts);
+          const score = latestScore(sec);
+          const prog = sectionProgress(sec);
           return (
-            <div key={sec} className="section-card" onClick={() => onSelectSection(sec)} role="button" tabIndex={0}
-              onKeyDown={e => { if (e.key === 'Enter') onSelectSection(sec); }}>
-              <div className="icon">{SECTION_ICONS[sec]}</div>
+            <div key={sec} className={`cc-mission${animated ? ' animated' : ''}`} data-section={sec} onClick={() => onSelectSection(sec)}
+              role="button" tabIndex={0} onKeyDown={e => { if (e.key === 'Enter') onSelectSection(sec); }}
+              style={{'--prog': `${prog*100}%`}}>
+              <div className="cc-mission-head">
+                <span className="cc-mission-icon">{SECTION_ICONS[sec]}</span>
+                <div className="cc-mission-stat">
+                  {score ? (
+                    <>
+                      <span className="cc-mission-score">{score}</span>
+                      <span className="cc-mission-score-label">/90</span>
+                    </>
+                  ) : (
+                    <span className="cc-mission-new">NEW</span>
+                  )}
+                </div>
+              </div>
               <h3>{SECTION_NAMES[sec]}</h3>
-              <div className="total-q">{total} questions</div>
-              <div className="diff-counts">
-                <span className="diff-tag easy">Easy: {easyUn} left</span>
-                <span className="diff-tag medium">Medium: {medUn} left</span>
-                <span className="diff-tag hard">Hard: {hardUn} left</span>
+              <div style={{fontSize:'.72rem',color:'var(--text-s)'}}>{total} questions · {(prog*100).toFixed(0)}% explored</div>
+              <div className="cc-progress-bar">
+                <div className="cc-progress-fill" />
               </div>
             </div>
           );
         })}
       </div>
 
-      <div className="history-btn-card" onClick={onQuestionHistory} role="button" tabIndex={0}
-        onKeyDown={e => { if (e.key === 'Enter') onQuestionHistory(); }}>
-        <span className="hbc-icon">📋</span>
-        <div className="hbc-text">
-          <h3>Question History</h3>
-          <p>Review all attempted questions across sessions</p>
+      {/* Action Toolbar */}
+      <div className={`cc-toolbar cc-entrance${entranceStage >= 3 ? ' visible' : ''}`}>
+        <div className="cc-tool" onClick={onAnalytics} role="button" tabIndex={0}>
+          📊<span className="cc-tool-label">Analytics</span>
         </div>
-      </div>
-
-      <div className="history-btn-card" onClick={onAnalytics} role="button" tabIndex={0}
-        onKeyDown={e => { if (e.key === 'Enter') onAnalytics(); }}>
-        <span className="hbc-icon">📊</span>
-        <div className="hbc-text">
-          <h3>Performance Analytics</h3>
-          <p>Accuracy by section, difficulty, and session trends</p>
+        <div className="cc-tool" onClick={onQuestionHistory} role="button" tabIndex={0}>
+          📋<span className="cc-tool-label">History</span>
         </div>
-      </div>
-
-      <div className={`retry-card${totalWrong === 0 ? '' : ''}`}
-        onClick={() => totalWrong > 0 && onRetryWrong()} role="button" tabIndex={0}
-        onKeyDown={e => { if (e.key === 'Enter' && totalWrong > 0) onRetryWrong(); }}
-        style={totalWrong === 0 ? {cursor:'default',opacity:.7} : {}}>
-        <h3>🔄 Retry Wrong Questions</h3>
-        {totalWrong > 0 ? (
-          <>
-            <div className="retry-desc">Practice {totalWrong} question{totalWrong !== 1 ? 's' : ''} you got wrong (excluding ones you later answered correctly)</div>
-            <div className="retry-counts">
-              {sections.map(sec => (
-                <span key={sec} className={`retry-count-tag${wrongBySection[sec] === 0 ? ' none' : ''}`}>
-                  {SECTION_ICONS[sec]} {SECTION_NAMES[sec]}: {wrongBySection[sec]}
-                </span>
-              ))}
-            </div>
-          </>
-        ) : (
-          <div className="retry-desc" style={{color:'var(--green)'}}>No wrong questions — great job! 🎉</div>
+        {totalSRDue > 0 && (
+          <div className="cc-tool" onClick={onSpacedRepetition} role="button" tabIndex={0}>
+            🧠<span className="cc-tool-badge">{totalSRDue}</span><span className="cc-tool-label">Review</span>
+          </div>
+        )}
+        {totalWrong > 0 && (
+          <div className="cc-tool" onClick={onRetryWrong} role="button" tabIndex={0}>
+            🔄<span className="cc-tool-badge">{totalWrong}</span><span className="cc-tool-label">Retry</span>
+          </div>
+        )}
+        {weakTopics.length > 0 && (
+          <div className="cc-tool" onClick={onWeakTopics} role="button" tabIndex={0}>
+            🎯<span className="cc-tool-badge">{weakTopics.filter(t=>t.accuracy<60).length}</span><span className="cc-tool-label">Weak Areas</span>
+          </div>
         )}
       </div>
-
-      {/* Weak Topics Drill-Down */}
-      {weakTopics.length > 0 && (
-        <div className="history-btn-card" onClick={onWeakTopics} role="button" tabIndex={0}
-          onKeyDown={e => { if (e.key === 'Enter') onWeakTopics(); }}>
-          <span className="hbc-icon">🎯</span>
-          <div className="hbc-text">
-            <h3>Weak Areas Drill-Down</h3>
-            <p>Weakest: {weakTopics[0].name} ({weakTopics[0].accuracy.toFixed(0)}%) · {weakTopics.filter(t => t.accuracy < 60).length} areas below 60%</p>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
 
 // --- SessionConfigView ---
 function SessionConfigView({ section, attempts, onBack, onStart }) {
-  const [difficulty, setDifficulty] = useState(null);
+  const [difficulty, setDifficulty] = useState('adaptive');
   const [count, setCount] = useState(10);
   const [customInput, setCustomInput] = useState('');
   const [useCustom, setUseCustom] = useState(false);
 
   const bank = typeof GMAT_QUESTIONS !== 'undefined' ? GMAT_QUESTIONS : [];
-  const unattempted = getUnattemptedCount(bank, section, difficulty, attempts);
+  const isAdaptive = difficulty === 'adaptive';
+  const unattempted = getUnattemptedCount(bank, section, isAdaptive ? null : difficulty, attempts);
   const actualCount = useCustom ? (parseInt(customInput, 10) || 0) : count;
   const isValid = validateSessionConfig(actualCount);
   const isInsufficient = isValid && unattempted < actualCount && unattempted > 0;
@@ -1579,14 +1972,15 @@ function SessionConfigView({ section, attempts, onBack, onStart }) {
   };
 
   const handleReset = () => {
-    const key = difficulty ? `${section}:${difficulty}` : section;
+    const key = isAdaptive ? section : (difficulty ? `${section}:${difficulty}` : section);
     attempts[key] = [];
+    if (isAdaptive) { ['easy','medium','hard'].forEach(d => { attempts[`${section}:${d}`] = []; }); }
     saveJSON('gmat-attempts', attempts);
     setCount(count); // force re-render
   };
 
   const diffs = [
-    { label: 'All', value: null },
+    { label: '🎯 Adaptive', value: 'adaptive' },
     { label: 'Easy', value: 'easy' },
     { label: 'Medium', value: 'medium' },
     { label: 'Hard', value: 'hard' }
@@ -1640,8 +2034,14 @@ function SessionConfigView({ section, attempts, onBack, onStart }) {
           }
         </div>
 
+        {isAdaptive && (
+          <div className="note" style={{marginBottom:'0'}}>
+            🎯 <strong>Adaptive mode:</strong> Questions start at medium difficulty and adjust based on your performance — just like the real GMAT. You'll receive an estimated section score (60–90) and percentile at the end.
+          </div>
+        )}
+
         <button className="calc-btn" disabled={!isValid || isNone} onClick={handleStart}>
-          Start Session ({isInsufficient ? unattempted : actualCount} questions)
+          {isAdaptive ? `Start Adaptive Session (${isInsufficient ? unattempted : actualCount} questions)` : `Start Session (${isInsufficient ? unattempted : actualCount} questions)`}
         </button>
       </div>
     </div>
@@ -1656,6 +2056,8 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
   const timerLimit = getTimerDuration(question ? question.section : section, question ? question.subsection : null);
 
   const [selected, setSelected] = useState(null);
+  const [slidingOut, setSlidingOut] = useState(false);
+  const [runningStats, setRunningStats] = useState(null);
   const endTimeRef = useRef(Date.now() + timerLimit * 1000);
   const [remaining, setRemaining] = useState(timerLimit);
   const intervalRef = useRef(null);
@@ -1664,17 +2066,35 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
   // Reset selection when question changes
   useEffect(() => {
     setSelected(null);
+    setSlidingOut(false);
     hasTimedOut.current = false;
   }, [currentIndex]);
+
+  // Auto-hide running stats
+  useEffect(() => {
+    if (runningStats) {
+      const t = setTimeout(() => setRunningStats(null), 2500);
+      return () => clearTimeout(t);
+    }
+  }, [runningStats]);
 
   const doSubmit = useCallback((answerId) => {
     clearInterval(intervalRef.current);
     const timeTaken = computeTimeTaken(timerLimit, Math.ceil((endTimeRef.current - Date.now()) / 1000));
     const correct = answerId !== null ? evaluateAnswer(question, answerId).correct : false;
     const answerRecord = { questionId: question.id, selectedAnswer: answerId, correct, timeTaken };
-    const isLast = currentIndex >= questionIds.length - 1;
+    const totalTarget = session.isAdaptive ? session.totalTarget : questionIds.length;
+    const isLast = (answers.length + 1) >= totalTarget;
+
+    // Show running stats
+    const prevCorrect = answers.filter(a => a.correct).length + (correct ? 1 : 0);
+    const prevTotal = answers.length + 1;
+    const avgTime = [...answers.map(a => a.timeTaken || 0), timeTaken];
+    const avg = avgTime.reduce((a, b) => a + b, 0) / avgTime.length;
+    setRunningStats({ correct: prevCorrect, total: prevTotal, avgTime: Math.round(avg) });
+
     onAnswer(answerRecord, isLast);
-  }, [question, currentIndex, questionIds, timerLimit, onAnswer]);
+  }, [question, currentIndex, questionIds, timerLimit, onAnswer, answers]);
 
   // Timer logic with Date.now() for drift protection
   useEffect(() => {
@@ -1731,8 +2151,10 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
   }, [question]);
 
   const handleNext = useCallback(() => {
-    if (selected) doSubmit(selected);
-  }, [selected, doSubmit]);
+    if (!selected || slidingOut) return;
+    setSlidingOut(true);
+    setTimeout(() => doSubmit(selected), 200);
+  }, [selected, doSubmit, slidingOut]);
 
   // Enter key for advancing
   useEffect(() => {
@@ -1753,13 +2175,14 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
 
   if (!question) return <div className="container"><p>Question not found.</p></div>;
 
-  const { questionNumber, progressFraction } = getProgressIndicators(currentIndex, questionIds.length);
+  const totalDisplay = session.isAdaptive ? session.totalTarget : questionIds.length;
+  const { questionNumber, progressFraction } = getProgressIndicators(currentIndex, totalDisplay);
   const timerColor = getTimerColor(remaining);
 
   return (
     <div>
       <div className="question-header">
-        <span className="question-num">Question {questionNumber} of {questionIds.length}</span>
+        <span className="question-num">Question {questionNumber} of {totalDisplay}</span>
         <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
           <button className="pause-btn" onClick={handlePause}>⏸ Pause</button>
           <span className={`timer-display ${timerColor}`}>{formatTime(remaining)}</span>
@@ -1767,10 +2190,10 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
       </div>
 
       <div className="progress-bar-wrap">
-        <div className="progress-bar-fill" style={{width: `${(currentIndex / questionIds.length) * 100}%`}} />
+        <div className="progress-bar-fill" style={{width: `${(currentIndex / totalDisplay) * 100}%`}} />
       </div>
 
-      <div key={question.id} className="question-fade">
+      <div key={question.id} className={`question-fade${slidingOut ? ' slide-out' : ''}`}>
       <span className={`difficulty-badge ${question.difficulty}`}>{question.difficulty}</span>
       {question.subsection === 'rc' && <span className="difficulty-badge" style={{background:'#6366f1',marginLeft:4}}>RC</span>}
       {question.subsection === 'cr' && <span className="difficulty-badge" style={{background:'#0891b2',marginLeft:4}}>CR</span>}
@@ -1825,10 +2248,20 @@ function QuestionView({ session, bank, onAnswer, onComplete, onPause }) {
       </div>
 
       <div className="nav-row">
-        <button className="next-btn" disabled={!selected} onClick={handleNext}>
-          {currentIndex >= questionIds.length - 1 ? 'Finish Session' : 'Next Question →'}
+        <button className="next-btn" disabled={!selected || slidingOut} onClick={handleNext}>
+          {(answers.length + 1) >= totalDisplay ? 'Finish Session' : 'Next Question →'}
         </button>
       </div>
+
+      {runningStats && (
+        <div className="running-stats" key={runningStats.total}>
+          <span className="rs-correct">{runningStats.correct}/{runningStats.total}</span>
+          <span className="rs-sep">|</span>
+          <span>{((runningStats.correct / runningStats.total) * 100).toFixed(0)}%</span>
+          <span className="rs-sep">|</span>
+          <span>avg {formatTime(runningStats.avgTime)}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -2274,6 +2707,15 @@ function GmatApp() {
     saveJSON('gmat-theme', theme);
   }, [theme]);
 
+  // Apply section accent color during quiz
+  useEffect(() => {
+    if (view === 'question' && activeSession) {
+      document.documentElement.setAttribute('data-section', activeSession.section);
+    } else {
+      document.documentElement.removeAttribute('data-section');
+    }
+  }, [view, activeSession]);
+
   // Prune stale IDs from attempt tracker on mount
   useEffect(() => {
     const validIds = new Set(bank.map(q => q.id));
@@ -2320,31 +2762,46 @@ function GmatApp() {
   }, []);
 
   const handleStartSession = useCallback((section, difficulty, count) => {
+    const isAdaptive = difficulty === 'adaptive';
     const attemptsCopy = { ...attempts };
-    const result = selectSessionQuestions(bank, section, difficulty, count, attemptsCopy);
-    const newSession = {
-      section,
-      difficulty,
-      questionIds: result.questions.map(q => q.id),
-      currentIndex: 0,
-      answers: [],
-      isPaused: false,
-      startedAt: new Date().toISOString()
-    };
-    setActiveSession(newSession);
-    saveJSON('gmat-active-session', newSession);
-    setAttempts(attemptsCopy);
-    saveJSON('gmat-attempts', attemptsCopy);
-    setView('question');
+
+    if (isAdaptive) {
+      // Adaptive: pick only the first question (medium start), rest chosen dynamically
+      const pool = filterQuestions(bank, section, null);
+      const usedIds = new Set();
+      const firstQ = selectAdaptiveQuestion(pool, 0, usedIds);
+      if (!firstQ) return;
+      const newSession = {
+        section, difficulty: 'adaptive', isAdaptive: true,
+        totalTarget: count,
+        questionIds: [firstQ.id],
+        currentIndex: 0, answers: [],
+        thetaHistory: [0],
+        isPaused: false, startedAt: new Date().toISOString()
+      };
+      setActiveSession(newSession);
+      saveJSON('gmat-active-session', newSession);
+      setView('question');
+    } else {
+      const result = selectSessionQuestions(bank, section, difficulty, count, attemptsCopy);
+      const newSession = {
+        section, difficulty,
+        questionIds: result.questions.map(q => q.id),
+        currentIndex: 0, answers: [],
+        isPaused: false, startedAt: new Date().toISOString()
+      };
+      setActiveSession(newSession);
+      saveJSON('gmat-active-session', newSession);
+      setAttempts(attemptsCopy);
+      saveJSON('gmat-attempts', attemptsCopy);
+      setView('question');
+    }
   }, [bank, attempts]);
 
   const handleAnswer = useCallback((answerRecord, isLast) => {
     setActiveSession(prev => {
-      const updated = {
-        ...prev,
-        answers: [...prev.answers, answerRecord],
-        currentIndex: isLast ? prev.currentIndex : prev.currentIndex + 1
-      };
+      if (!prev) return null;
+      const allAnswers = [...prev.answers, answerRecord];
 
       // Update attempt tracker
       const q = bank.find(qq => qq.id === answerRecord.questionId);
@@ -2359,18 +2816,86 @@ function GmatApp() {
         saveJSON('gmat-attempts', newAttempts);
       }
 
+      // Adaptive: compute theta and pick next question
+      if (prev.isAdaptive) {
+        const responses = allAnswers.map(a => {
+          const aq = bank.find(x => x.id === a.questionId);
+          return { correct: a.correct, difficulty: aq ? aq.difficulty : 'medium' };
+        });
+        const theta = estimateTheta(responses);
+        const thetaHistory = [...(prev.thetaHistory || [0]), theta];
+        const done = allAnswers.length >= prev.totalTarget;
+
+        if (done) {
+          const questions = prev.questionIds.map(id => bank.find(qq => qq.id === id)).filter(Boolean);
+          const summary = computeScoreSummary(allAnswers, questions);
+          const sectionScore = thetaToScore(theta);
+          const percentile = getSectionPercentile(prev.section, sectionScore);
+          const sessionRecord = {
+            id: `sess_${Date.now()}`, section: prev.section, difficulty: 'adaptive',
+            isAdaptive: true, totalQuestions: allAnswers.length,
+            ...summary, answers: allAnswers,
+            thetaHistory, finalTheta: theta, sectionScore, percentile,
+            completedAt: new Date().toISOString()
+          };
+          const newSessions = [...sessions, sessionRecord];
+          setSessions(newSessions);
+          saveJSON('gmat-sessions', newSessions);
+          setCompletedSession(sessionRecord);
+          setActiveSession(null);
+          localStorage.removeItem('gmat-active-session');
+          setTimeout(() => setView('summary'), 0);
+          return null;
+        }
+
+        // Pick next question
+        const usedIds = new Set(prev.questionIds);
+        const sectionPool = filterQuestions(bank, prev.section, null);
+        const nextQ = selectAdaptiveQuestion(sectionPool, theta, usedIds);
+        if (!nextQ) {
+          // No more questions available — end session early
+          const questions = prev.questionIds.map(id => bank.find(qq => qq.id === id)).filter(Boolean);
+          const summary = computeScoreSummary(allAnswers, questions);
+          const sectionScore = thetaToScore(theta);
+          const percentile = getSectionPercentile(prev.section, sectionScore);
+          const sessionRecord = {
+            id: `sess_${Date.now()}`, section: prev.section, difficulty: 'adaptive',
+            isAdaptive: true, totalQuestions: allAnswers.length,
+            ...summary, answers: allAnswers,
+            thetaHistory, finalTheta: theta, sectionScore, percentile,
+            completedAt: new Date().toISOString()
+          };
+          const newSessions = [...sessions, sessionRecord];
+          setSessions(newSessions);
+          saveJSON('gmat-sessions', newSessions);
+          setCompletedSession(sessionRecord);
+          setActiveSession(null);
+          localStorage.removeItem('gmat-active-session');
+          setTimeout(() => setView('summary'), 0);
+          return null;
+        }
+
+        const updated = {
+          ...prev, answers: allAnswers, thetaHistory,
+          questionIds: [...prev.questionIds, nextQ.id],
+          currentIndex: prev.currentIndex + 1
+        };
+        saveJSON('gmat-active-session', updated);
+        return updated;
+      }
+
+      // Non-adaptive: original logic
+      const updated = {
+        ...prev, answers: allAnswers,
+        currentIndex: isLast ? prev.currentIndex : prev.currentIndex + 1
+      };
+
       if (isLast) {
-        // Session complete
-        const allAnswers = [...prev.answers, answerRecord];
         const questions = prev.questionIds.map(id => bank.find(qq => qq.id === id)).filter(Boolean);
         const summary = computeScoreSummary(allAnswers, questions);
         const sessionRecord = {
-          id: `sess_${Date.now()}`,
-          section: prev.section,
-          difficulty: prev.difficulty,
-          totalQuestions: allAnswers.length,
-          ...summary,
-          answers: allAnswers,
+          id: `sess_${Date.now()}`, section: prev.section, difficulty: prev.difficulty,
+          totalQuestions: allAnswers.length, ...summary, answers: allAnswers,
           completedAt: new Date().toISOString()
         };
         const newSessions = [...sessions, sessionRecord];
@@ -2514,6 +3039,7 @@ function GmatApp() {
       />
 
       {view === 'landing' && (
+        <div className="view-transition" key="landing">
         <LandingView
           attempts={attempts}
           activeSession={activeSession}
@@ -2528,15 +3054,18 @@ function GmatApp() {
           onSpacedRepetition={handleSpacedRepetition}
           onWeakTopics={() => setView('weakTopics')}
         />
+        </div>
       )}
 
       {view === 'config' && (
+        <div className="view-transition" key="config">
         <SessionConfigView
           section={selectedSection}
           attempts={attempts}
           onBack={() => setView('landing')}
           onStart={handleStartSession}
         />
+        </div>
       )}
 
       {view === 'question' && activeSession && (
@@ -2555,6 +3084,7 @@ function GmatApp() {
       )}
 
       {view === 'summary' && completedSession && (
+        <div className="view-transition" key="summary">
         <ScoreSummaryView
           session={completedSession}
           questions={bank}
@@ -2562,38 +3092,49 @@ function GmatApp() {
           onReview={() => setView('review')}
           onNewSession={() => { setCompletedSession(null); setView('landing'); }}
         />
+        </div>
       )}
 
       {view === 'review' && completedSession && (
+        <div className="view-transition" key="review">
         <ReviewView
           session={completedSession}
           questions={bank}
           onBack={() => setView('summary')}
         />
+        </div>
       )}
 
       {view === 'progress' && (
+        <div className="view-transition" key="progress">
         <ProgressDashboard
           sessions={sessions}
           onBack={() => setView('landing')}
         />
+        </div>
       )}
 
       {view === 'questionHistory' && (
+        <div className="view-transition" key="history">
         <QuestionHistoryView
           sessions={sessions}
           bank={bank}
           onBack={() => setView('landing')}
           onRetryWrong={getWrongQuestions(sessions, bank).length > 0 ? handleRetryWrong : null}
         />
+        </div>
       )}
 
       {view === 'analytics' && (
+        <div className="view-transition" key="analytics">
         <AnalyticsView sessions={sessions} bank={bank} onBack={() => setView('landing')} />
+        </div>
       )}
 
       {view === 'weakTopics' && (
+        <div className="view-transition" key="weakTopics">
         <WeakTopicsView sessions={sessions} bank={bank} onBack={() => setView('landing')} onPractice={handleWeakTopicPractice} />
+        </div>
       )}
 
       {showClearConfirm && (
