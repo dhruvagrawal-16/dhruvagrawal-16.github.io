@@ -43,8 +43,8 @@ function estimateTheta(responses) {
   return theta;
 }
 
-// Pick next question: closest difficulty to current theta, with randomness
-function selectAdaptiveQuestion(pool, theta, usedIds) {
+// Pick next question: closest difficulty to current theta, prefer unseen questions
+function selectAdaptiveQuestion(pool, theta, usedIds, attemptedIds) {
   const available = pool.filter(q => !usedIds.has(q.id));
   if (!available.length) return null;
 
@@ -53,8 +53,14 @@ function selectAdaptiveQuestion(pool, theta, usedIds) {
   if (theta < -0.5) target = 'easy';
   else if (theta > 0.75) target = 'hard';
 
-  const preferred = available.filter(q => q.difficulty === target);
-  const candidates = preferred.length ? preferred : available;
+  // Split into never-attempted and previously-attempted
+  const seen = attemptedIds || new Set();
+  const fresh = available.filter(q => !seen.has(q.id));
+  const stale = available.filter(q => seen.has(q.id));
+  const source = fresh.length ? fresh : stale;
+
+  const preferred = source.filter(q => q.difficulty === target);
+  const candidates = preferred.length ? preferred : source;
 
   // Sort by closeness to theta, pick randomly from top 5
   candidates.sort((a, b) =>

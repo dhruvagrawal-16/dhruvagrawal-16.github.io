@@ -2769,7 +2769,8 @@ function GmatApp() {
       // Adaptive: pick only the first question (medium start), rest chosen dynamically
       const pool = filterQuestions(bank, section, null);
       const usedIds = new Set();
-      const firstQ = selectAdaptiveQuestion(pool, 0, usedIds);
+      const attemptedIds = new Set(Object.values(attemptsCopy).flat());
+      const firstQ = selectAdaptiveQuestion(pool, 0, usedIds, attemptedIds);
       if (!firstQ) return;
       const newSession = {
         section, difficulty: 'adaptive', isAdaptive: true,
@@ -2851,7 +2852,8 @@ function GmatApp() {
         // Pick next question
         const usedIds = new Set(prev.questionIds);
         const sectionPool = filterQuestions(bank, prev.section, null);
-        const nextQ = selectAdaptiveQuestion(sectionPool, theta, usedIds);
+        const attemptedIds = new Set(Object.values(attempts).flat());
+        const nextQ = selectAdaptiveQuestion(sectionPool, theta, usedIds, attemptedIds);
         if (!nextQ) {
           // No more questions available — end session early
           const questions = prev.questionIds.map(id => bank.find(qq => qq.id === id)).filter(Boolean);
